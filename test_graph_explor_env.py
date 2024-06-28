@@ -3,8 +3,8 @@ import time
 from simulator.env.graph_explore import GraphExplore
 
 if __name__ == '__main__':
-    env = GraphExplore(graph_name='random_internet',
-                       num_nodes=1000,
+    env = GraphExplore(graph_name='path_graph',
+                       num_nodes=10000000,
                        game_max=1000)
     _ = env.reset()
     done = False

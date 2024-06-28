@@ -1,3 +1,4 @@
+import random
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
@@ -32,8 +33,14 @@ def get_network_from_edges_and_positions(
     return network
 
 
-def get_network_from_nodes_edges(node_names: List[str],
-                                 edges: List[Tuple]) -> Network:
+def get_network_from_nodes_edges(
+    node_list: List[str],
+    edges_list: List[Tuple],
+    set_random_entry_nodes: bool = False,
+    num_of_random_entry_nodes: int = 0,
+    set_random_high_value_nodes: bool = False,
+    num_of_random_high_value_nodes: int = 0,
+) -> Network:
     """Create a network from a list of node names and a list of edges.
 
     :param node_names: A list of node names.
@@ -42,11 +49,36 @@ def get_network_from_nodes_edges(node_names: List[str],
     """
     network = Network()
     nodes: Dict[Any, Node] = {}
-    for node_name in node_names:
-        node = Node(name=str(node_name))
+    if set_random_entry_nodes:
+        possible_entry_nodes = set(node_list)
+        entry_nodes = random.sample(
+            possible_entry_nodes,
+            num_of_random_entry_nodes,
+        )
+
+    if set_random_high_value_nodes:
+        possible_high_value_nodes = set(node_list)
+        high_value_nodes = random.sample(
+            possible_high_value_nodes,
+            num_of_random_high_value_nodes,
+        )
+
+    for node_name in node_list:
+        entry_node = False
+        high_value_node = False
+        if node_name in entry_nodes:
+            entry_node = True
+        if node_name in high_value_nodes:
+            high_value_node = True
+        node = Node(
+            name=str(node_name),
+            entry_node=entry_node,
+            high_value_node=high_value_node,
+        )
         nodes[str(node_name)] = node
         network.add_node(node)
-    for edge in edges:
+
+    for edge in edges_list:
         node_a = str(edge[0])
         node_b = str(edge[1])
         network.add_edge(nodes[node_a], nodes[node_b])

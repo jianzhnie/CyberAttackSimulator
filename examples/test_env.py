@@ -10,7 +10,8 @@ from yawning_titan.envs.generic.generic_env import GenericNetworkEnv
 from yawning_titan.game_modes.game_mode_db import default_game_mode
 from yawning_titan.networks.network import Network
 
-from simulator.utils import get_network_from_nodes_edges, read_edges_from_file
+from nasimulator.utils import (get_network_from_nodes_edges,
+                               read_edges_from_file)
 
 
 def creat_genetic_network(

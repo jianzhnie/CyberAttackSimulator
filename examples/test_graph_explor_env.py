@@ -1,6 +1,6 @@
 import time
 
-from simulator.env.graph_explore import GraphExplore
+from nasimulator.env.graph_explore import GraphExplore
 
 if __name__ == '__main__':
     env = GraphExplore(graph_name='path_graph',

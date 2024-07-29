@@ -106,6 +106,32 @@ def get_network_from_matrix_and_positions(
     return network
 
 
+def get_network_from_dict(
+    matrix: np.ndarray,
+    positions: Dict[str, List[int]],
+    entry_nodes: Dict[str, List[int]],
+) -> Network:
+    network = Network()
+    edges = []
+    # Create all Nodes
+    nodes: Dict[Any, Node] = {i: Node(name=str(i)) for i in range(len(matrix))}
+    for y_idx, y_node in enumerate(matrix):
+        # Retrieve the Node and add to the Network
+        if str(y_idx) in entry_nodes:
+            nodes[y_idx].entry_node = True
+        if str(y_idx) in positions.keys():
+            x, y = positions[str(y_idx)]
+            nodes[y_idx].x_pos = x
+            nodes[
+                y_idx].y_pos = y  # If the edge hasn't already been added, add it
+        for x_idx, x_node in enumerate(y_node):
+            if x_node == 1:
+                edge = tuple(sorted([y_idx, x_idx]))
+                if edge not in edges:
+                    network.add_edge(nodes[edge[0]], nodes[edge[1]])
+    return network
+
+
 def get_18_node_network_mesh() -> Network:
     """The standard 18 node network found in the Ridley 2017 research paper.
 
@@ -151,7 +177,7 @@ def get_18_node_network_mesh() -> Network:
         '16': [4, 1],
         '17': [5, 1],
     }
-    return get_network_from_matrix_and_positions(matrix, positions)
+    return matrix, positions
 
 
 def dcbo_base_network() -> Network:

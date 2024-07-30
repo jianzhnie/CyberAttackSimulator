@@ -12,13 +12,9 @@ import pandas as pd
 from scipy.ndimage import uniform_filter1d
 
 # Staging
-current_dir = os.getcwd()
-output_dir = os.path.join(current_dir, 'networks')
-logs_dir = os.path.join(current_dir, 'logs_dir')
-plot_dir = os.path.join(current_dir, 'figures')
-
+current_work_dir = os.path.dirname(__file__)  # 当前文件所在的目录
 # Load the figure style, this is optional
-plt.style.use(os.path.join(plot_dir, 'figure_style.mplstyle'))
+plt.style.use(os.path.join(current_work_dir, 'figure_style.mplstyle'))
 
 
 def plot_training_performance(
@@ -27,6 +23,7 @@ def plot_training_performance(
     ylabel: str,
     title: str,
     model_names: list,
+    plot_dir: str,
     plot_name: str,
     colors: list = [],
     plot_mean: bool = True,
@@ -84,7 +81,6 @@ def plot_training_performance(
         plt.tight_layout()
         if save_plot:
             plt.savefig(os.path.join(plot_dir, plot_name + '.png'), dpi=200)
-            plt.savefig(os.path.join(plot_dir, plot_name + '.pdf'), dpi=200)
         else:
             plt.show()
     else:

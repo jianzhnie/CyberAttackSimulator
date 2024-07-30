@@ -40,7 +40,7 @@ def main() -> None:
     policies = [PPO_policy, A2C_policy, DQN_policy]
     dir_agent = [os.path.join(log_dir, imodel) for imodel in algorithms]
     # check with lower timesteps
-    timesteps = 100
+    timesteps = 5e5
     # for this example we can show only the stand setup,
     model_names = [
         'PPO_std',
@@ -87,6 +87,7 @@ def main() -> None:
         # need to load the various networks
         network = get_network_from_dict(matrix, positions,
                                         network_entry[index])
+        network.show(verbose=True)
         # Loop over the algorithms
         for idx, algorithm in enumerate(algorithms):
             agent = agents[idx]

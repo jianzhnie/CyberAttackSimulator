@@ -4,7 +4,6 @@ using the algorithms present and using the current version of YAWNING TITAN."""
 import glob
 import os
 
-import generate_test_networks as gtn
 import numpy as np
 # load the agents
 from stable_baselines3 import A2C, DQN, PPO
@@ -22,6 +21,7 @@ from yawning_titan.envs.generic.core.red_interface import RedInterface
 from yawning_titan.envs.generic.generic_env import GenericNetworkEnv
 from yawning_titan.game_modes.game_mode_db import default_game_mode
 
+import nasimulator.utils.generate_test_networks as gtn
 from nasimulator.agents.action_loop import ActionLoop
 from nasimulator.networks import network_creator
 from nasimulator.networks.network_creator import get_network_from_dict

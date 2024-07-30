@@ -415,9 +415,9 @@ class Network(nx.Graph):
                 'random_entry_node_preference'] = RandomEntryNodePreference[
                     config_dict['random_entry_node_preference']]
         if 'random_high_value_node_preference' in config_dict:
-            config_dict[
-                'random_high_value_node_preference'] = RandomHighValueNodePreference[
-                    config_dict['random_high_value_node_preference']]
+            config_dict['random_high_value_node_preference'] = (
+                RandomHighValueNodePreference[
+                    config_dict['random_high_value_node_preference']])
         if 'nodes' in config_dict:
             self.add_nodes_from_dict(
                 nodes_dict=config_dict.pop('nodes'),

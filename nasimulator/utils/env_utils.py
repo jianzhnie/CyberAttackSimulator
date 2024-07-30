@@ -85,7 +85,7 @@ def get_network_from_nodes_edges(
     return network
 
 
-def read_edges_from_file(file_path: str) -> tuple[list, list]:
+def read_nodes_edges_from_file(file_path: str) -> tuple[list, list]:
     """Read edges from a file and return a list of nodes and a list of edges.
 
     Args:

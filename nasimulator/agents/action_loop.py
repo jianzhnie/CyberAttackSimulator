@@ -245,7 +245,7 @@ class ActionLoop:
     #     clip = mp.ImageSequenceClip(frame_names[1:], fps=5)
     #     clip.write_gif(webm_path, program="ffmpeg")
 
-    def generate_webm(self, webm_path, frame_names, fps=5):
+    def generate_webm(self, webm_path, frame_names, fps=1):
         """Create a WebM video from a sequence of image files.
 
         Parameters:

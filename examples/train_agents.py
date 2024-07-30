@@ -22,6 +22,7 @@ from yawning_titan.envs.generic.core.red_interface import RedInterface
 from yawning_titan.envs.generic.generic_env import GenericNetworkEnv
 from yawning_titan.game_modes.game_mode_db import default_game_mode
 
+from nasimulator.agents.action_loop import ActionLoop
 from nasimulator.networks import network_creator
 from nasimulator.networks.network_creator import get_network_from_dict
 
@@ -32,6 +33,7 @@ def main() -> None:
     # directories
     log_dir = os.path.join(current_dir, 'work_dir', 'new_logs_dir')
     network_dir = os.path.join(current_dir, 'work_dir', 'networks')
+
     # Specify algorithms, policies and saving directories
     algorithms = ['PPO', 'A2C', 'DQN']
     agents = [PPO, A2C, DQN]
@@ -92,9 +94,8 @@ def main() -> None:
             model_dir = os.path.join(dir_agent[idx], algorithm)
             model_name = os.path.join(model_dir,
                                       model_names[idx] + f'_{isize}')
-
+            meida_path = model_name
             print(f'Starting the agent using {algorithm} algorithm')
-
             # here enters the random seed! - I must use them in the testing phase.
             network_interface = NetworkInterface(game_mode=game_mode,
                                                  network=network)
@@ -128,10 +129,11 @@ def main() -> None:
                 max_no_improvement_evals=3, min_evals=5, verbose=1)
             eval_callback = EvalCallback(
                 env,
-                best_model_save_path=model_dir,  # save the model
-                eval_freq=1000,
-                log_path=model_dir,  # save the logs
                 callback_after_eval=stop_train_callback,
+                n_eval_episodes=5,
+                eval_freq=1000,  # eval_freq
+                log_path=model_dir,  # save the logs
+                best_model_save_path=model_dir,  # save the model
                 deterministic=False,
                 verbose=1,
             )
@@ -151,6 +153,15 @@ def main() -> None:
                                    callback=eval_callback)
             # save the trained-converged model
             chosen_agent.save(model_name)
+            # visualize the trained-converged model
+            loop = ActionLoop(env, chosen_agent, episode_count=3)
+            loop.gif_action_loop(
+                save_gif=True,
+                render_network=True,
+                save_webm=True,
+                gif_output_directory=meida_path,
+                webm_output_directory=meida_path,
+            )
 
 
 if __name__ == '__main__':

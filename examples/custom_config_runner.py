@@ -26,7 +26,7 @@ from yawning_titan.game_modes.game_mode_db import default_game_mode
 from yawning_titan.networks import network_creator
 
 sys.path.append(os.getcwd())
-from nasimulator.agents.action_loop import ActionLoop
+from nasimulator.envs.generic.core.action_loops import ActionLoop
 
 
 def main():

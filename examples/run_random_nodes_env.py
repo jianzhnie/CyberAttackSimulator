@@ -14,7 +14,7 @@ sys.path.append(os.getcwd())
 import os
 import time
 
-from nasimulator.agents.action_loop import ActionLoop
+from nasimulator.envs.generic.core.action_loops import ActionLoop
 from nasimulator.utils.env_utils import (get_network_from_edges_and_positions,
                                          read_nodes_edges_from_file)
 

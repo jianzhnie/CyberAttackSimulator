@@ -18,7 +18,7 @@ from stable_baselines3.common.callbacks import (
     EvalCallback, StopTrainingOnNoModelImprovement)
 from stable_baselines3.common.monitor import Monitor
 
-from nasimulator.agents.action_loop import ActionLoop
+from nasimulator.envs.generic.core.action_loops import ActionLoop
 
 
 def main():

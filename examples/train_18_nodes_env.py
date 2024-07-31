@@ -50,6 +50,7 @@ def main():
         agent = agents[idx]
         policy = policies[idx]
         model_dir = os.path.join(log_dir, algorithm)
+        tf_log_dir = os.path.join(model_dir, 'tf_logs')
         model_name = os.path.join(model_dir, model_names[idx])
         media_dir = os.path.join(log_dir, algorithm, 'media')
 
@@ -87,20 +88,34 @@ def main():
             deterministic=False,
             verbose=1,
         )
-
+        print(eval_callback)
         # instantiate the agent - here we can set the various hyper parameters as the
         # Learning rate - tested to  learning_rate = 0.01 and the gamma = 0.75
         if algorithm == 'DQN':  # adapt in case of buffer size
-            chosen_agent = agent(policy, env, verbose=1, buffer_size=10000)
+            chosen_agent = DQN(
+                policy,
+                env,
+                verbose=1,
+                buffer_size=100000,
+                target_update_interval=1000,
+                tensorboard_log=tf_log_dir,
+            )
         else:
-            chosen_agent = agent(policy,
-                                 env,
-                                 verbose=1,
-                                 normalize_advantage=True)
+            chosen_agent = agent(
+                policy,
+                env,
+                verbose=1,
+                normalize_advantage=True,
+                tensorboard_log=tf_log_dir,
+            )
 
         # Train the agent
-        _ = chosen_agent.learn(total_timesteps=timesteps,
-                               callback=eval_callback)
+        _ = chosen_agent.learn(
+            total_timesteps=timesteps,
+            log_interval=10,
+            eval_freq=100,
+            progress_bar=True,
+        )
         # save the trained-converged model
         chosen_agent.save(model_name)
         # visualize the trained-converged model

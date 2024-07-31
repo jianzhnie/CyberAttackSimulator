@@ -23,12 +23,13 @@ from nasimulator.envs.generic.core.action_loops import ActionLoop
 def main():
     # get the current directory
     current_dir = os.getcwd()
-    # directories
-    log_dir = os.path.join(current_dir, 'work_dir', 'default_18_nodes')
     # setup the monitor to check the training
     algo_name = 'ppo'
+    # directories
+    log_dir = os.path.join(current_dir, 'work_dir', 'default_18_nodes')
     model_dir = os.path.join(log_dir, algo_name)
-    model_name = os.path.join(model_dir, 'ppo_18')
+    tf_log_dir = os.path.join(model_dir, 'tf_logs')
+    model_name = os.path.join(model_dir, algo_name + '_model')
     media_dir = os.path.join(log_dir, algo_name, 'media')
 
     if not os.path.exists(log_dir):
@@ -65,20 +66,28 @@ def main():
         env,
         callback_after_eval=stop_train_callback,
         n_eval_episodes=5,
-        eval_freq=1000,  # eval_freq
+        eval_freq=100,  # eval_freq
         log_path=model_dir,  # save the logs
         best_model_save_path=model_dir,  # save the model
         deterministic=False,
         verbose=1,
     )
+    print(eval_callback)
     # instantiate the agent - here we can set the various hyper parameters as the
     # Learning rate - tested to  learning_rate = 0.01 and the gamma = 0.75
-    agent = PPO(PPOMlp, env, verbose=1, normalize_advantage=True)
+    agent = PPO(
+        PPOMlp,
+        env,
+        verbose=1,
+        normalize_advantage=True,
+        tensorboard_log=tf_log_dir,
+    )
     # Train the agent
     agent.learn(
         total_timesteps=timesteps,
-        callback=eval_callback,
         log_interval=10,
+        eval_freq=100,
+        progress_bar=True,
     )
     # save the trained-converged model
     agent.save(model_name)

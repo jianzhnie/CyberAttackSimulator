@@ -179,6 +179,7 @@ class ActionLoop:
         """
         complete_results = []
         for i in range(self.episode_count):
+            # temporary log to satisfy repeatability tests until logging can be full implemented
             results = pd.DataFrame(columns=['action', 'rewards', 'info'])
             obs = self.env.reset()
             done = False
@@ -253,7 +254,7 @@ class ActionLoop:
     def generate_webm(self,
                       webm_path: str,
                       frame_names: List[str],
-                      fps: int = 5) -> None:
+                      fps: int = 1) -> None:
         """Create a WebM video from a sequence of image files.
 
         Args:
@@ -262,7 +263,7 @@ class ActionLoop:
             fps: Frames per second for the video. Default is 5.
         """
         # Create a video clip from the image sequence
-        clip = mp.ImageSequenceClip(frame_names, fps=fps)
+        clip = mp.ImageSequenceClip(frame_names[1:], fps=fps)
 
         # Write the video clip to a WebM file
         clip.write_videofile(webm_path, codec='mpeg4')

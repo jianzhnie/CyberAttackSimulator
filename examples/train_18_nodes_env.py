@@ -10,15 +10,14 @@ from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.dqn import MlpPolicy as DQN_policy
 from stable_baselines3.ppo import MlpPolicy as PPO_policy
 
+sys.path.append(os.getcwd())
+from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
 from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
 from cyberattacksim.envs.generic.core.red_interface import RedInterface
 from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
 from cyberattacksim.networks.network_db import default_18_node_network
-
-sys.path.append(os.getcwd())
-from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 
 
 def main():

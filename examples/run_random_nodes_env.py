@@ -6,15 +6,13 @@ import networkx as nx
 from stable_baselines3 import PPO
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 
+sys.path.append(os.getcwd())
+from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
 from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
 from cyberattacksim.envs.generic.core.red_interface import RedInterface
 from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
-
-sys.path.append(os.getcwd())
-
-from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import (
     get_network_from_edges_and_positions, read_nodes_edges_from_file)
 

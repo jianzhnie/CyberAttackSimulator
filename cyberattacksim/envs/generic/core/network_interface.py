@@ -66,7 +66,7 @@ class NetworkInterface:
 
         self.connectivity = -math.exp(-0.1 * edges_per_node) + 1
 
-        # self.adj_matrix = nx.to_numpy_array(self.current_graph)
+        self.adj_matrix = nx.to_numpy_array(self.current_graph)
 
     """
     GETTERS
@@ -225,9 +225,10 @@ class NetworkInterface:
         # Gets the isolation states for each node
         isolated_state = []
         if self.game_mode.observation_space.node_connections.value:
-            # node_connections = self.adj_matrix
+            node_connections = self.adj_matrix
             # pads the array to account for any missing deceptive nodes that may not have been placed yet
-            # node_connections = np.pad(node_connections, (0, open_spaces), "constant")
+            node_connections = np.pad(node_connections, (0, open_spaces),
+                                      'constant')
 
             # array used to keep track of which nodes are being isolated
             isolated_state = np.asarray(
@@ -532,7 +533,7 @@ class NetworkInterface:
         self.reset_stored_attacks()
 
         # updates the stored adj matrix
-        # self.adj_matrix = nx.to_numpy_array(self.current_graph)
+        self.adj_matrix = nx.to_numpy_array(self.current_graph)
 
         if self.game_mode.on_reset.choose_new_entry_nodes.value:
             self.current_graph.reset_random_entry_nodes()
@@ -650,7 +651,7 @@ class NetworkInterface:
             # updates the position of the node based on its new location
             deceptive_node.node_position = self.get_midpoint(node1, node2)
             # updates the current adjacency matrix
-            # self.adj_matrix = nx.to_numpy_array(self.current_graph)
+            self.adj_matrix = nx.to_numpy_array(self.current_graph)
             return deceptive_node
         else:
             # If no edge return false as the deceptive node cannot be put here

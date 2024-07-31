@@ -7,11 +7,10 @@ Serves a similar function to library helpers such as Stable Baselines 3
 
 import os
 import re
-import string
 from datetime import datetime
 from pathlib import Path
 from threading import Thread
-from typing import Any
+from typing import Any, List, Optional
 from uuid import uuid4
 
 import imageio
@@ -26,54 +25,58 @@ class ActionLoop:
     """A class that represents different post-training action loops for
     agents."""
 
-    def __init__(self, env, agent, filename=None, episode_count=None):
-        """Initialise Class.
+    def __init__(
+        self,
+        env: GenericNetworkEnv,
+        agent: Any,
+        filename: Optional[str] = None,
+        episode_count: Optional[int] = None,
+    ) -> None:
+        """Initialize the ActionLoop class.
 
         Args:
-            env: The environment to run through
-            agent: The agent to run in the environment
-            filename: The save name for the action lop
-            episode_count: The number of episodes to go through
+            env: The environment to run through.
+            agent: The agent to run in the environment.
+            filename: The save name for the action loop.
+            episode_count: The number of episodes to go through.
         """
-        if filename is None:
-            filename = uuid4()
         self.env: GenericNetworkEnv = env
         self.agent = agent
-        self.filename = filename
+        self.filename = filename if filename is not None else str(uuid4())
         self.episode_count = episode_count
 
     def gif_action_loop(
         self,
-        render_network=True,
-        prompt_to_close=False,
-        save_gif=False,
-        save_webm=False,
-        deterministic=False,
-        gif_output_directory: Path = None,
-        webm_output_directory: Path = None,
+        render_network: bool = True,
+        prompt_to_close: bool = False,
+        save_gif: bool = False,
+        save_webm: bool = False,
+        deterministic: bool = False,
+        gif_output_directory: Optional[Path] = None,
+        webm_output_directory: Optional[Path] = None,
         *args,
         **kwargs,
-    ):
-        """Run the agent in evaluation and create a gif from episodes.
+    ) -> List[pd.DataFrame]:
+        """Run the agent in evaluation and create a GIF from episodes.
 
         Args:
-            render_network: Bool to toggle rendering on or off. Has a default
-                value of True.
-            prompt_to_close: Bool to toggle if the output window should
-                close immediately on loop ending
-            save_gif: Bool to toggle if gif file should be saved to AppData
-            save_webm: Bool to toggle if webm file should be saved to AppData
-            deterministic: Bool to toggle if the agents actions should be deterministic
-            gif_output_directory: Directory where the GIF will be output
-            webm_output_directory: Directory where the WEBM file will be output
+            render_network: Toggle rendering on or off. Default is True.
+            prompt_to_close: Toggle if the output window should close immediately on loop ending. Default is False.
+            save_gif: Toggle if GIF file should be saved. Default is False.
+            save_webm: Toggle if WebM file should be saved. Default is False.
+            deterministic: Toggle if the agent's actions should be deterministic. Default is False.
+            gif_output_directory: Directory where the GIF will be output. Default is None.
+            webm_output_directory: Directory where the WebM file will be output. Default is None.
+
+        Returns:
+            A list of DataFrames containing the results of each episode.
         """
         gif_uuid = str(uuid4())
 
         complete_results = []
         for i in range(self.episode_count):
-            results = pd.DataFrame(
-                columns=['action', 'rewards', 'info']
-            )  # temporary log to satisfy repeatability tests until logging can be full implemented
+            # temporary log to satisfy repeatability tests until logging can be full implemented
+            results = pd.DataFrame(columns=['action', 'rewards', 'info'])
             obs = self.env.reset()
             done = False
             frame_names = []
@@ -83,14 +86,11 @@ class ActionLoop:
                 # gets the agents prediction for the best next action to take
                 action, _states = self.agent.predict(
                     obs, deterministic=deterministic)
-
                 # TODO: setup logging properly here
                 # logging.info(f'Blue Agent Action: {action}')
                 # step the env
                 obs, rewards, done, info = self.env.step(action)
-
                 results.loc[len(results.index)] = [action, rewards, info]
-
                 # TODO: setup logging properly here
                 # logging.info(f'Observations: {obs.flatten()} Rewards:{rewards} Done:{done}')
                 # self.env.render(episode=i+1)
@@ -109,11 +109,12 @@ class ActionLoop:
                     self.env.render(*args, **kwargs)
 
             # get current time
-            string_time = datetime.now().strftime('%Y-%d-%m-%H-%M-%S')
+            string_time = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
             generate_render_thread = []
 
-            def natural_sort_key(s, _nsre=re.compile('([0-9]+)')):
+            def natural_sort_key(
+                s: str, _nsre=re.compile('([0-9]+)')) -> List[Any]:
                 return [
                     int(text) if text.isdigit() else text.lower()
                     for text in _nsre.split(s)
@@ -132,13 +133,8 @@ class ActionLoop:
                 )
 
                 # gif generator thread
-                gif_thread = Thread(
-                    target=self.generate_gif,
-                    args=(
-                        gif_path,
-                        frame_names,
-                    ),
-                )
+                gif_thread = Thread(target=self.generate_gif,
+                                    args=(gif_path, frame_names))
 
                 generate_render_thread.append(gif_thread)
 
@@ -153,22 +149,14 @@ class ActionLoop:
                 )
 
                 # video generator thread
-                video_thread = Thread(
-                    target=self.generate_webm,
-                    args=(
-                        webm_path,
-                        frame_names,
-                    ),
-                )
-
+                video_thread = Thread(target=self.generate_webm,
+                                      args=(webm_path, frame_names))
                 generate_render_thread.append(video_thread)
-
             # if any threads were added to generate threads list, run them
-            if len(generate_render_thread):
+            if generate_render_thread:
                 for thread in generate_render_thread:
                     thread.start()
                     thread.join()
-
                 # clean up once done
                 self.render_cleanup(frame_names)
 
@@ -178,13 +166,20 @@ class ActionLoop:
             self.env.close()
         return complete_results
 
-    def standard_action_loop(self, deterministic=False):
-        """Indefinitely act within the environment using a trained agent."""
+    def standard_action_loop(self,
+                             deterministic: bool = False
+                             ) -> List[pd.DataFrame]:
+        """Indefinitely act within the environment using a trained agent.
+
+        Args:
+            deterministic: Toggle if the agent's actions should be deterministic. Default is False.
+
+        Returns:
+            A list of DataFrames containing the results of each episode.
+        """
         complete_results = []
         for i in range(self.episode_count):
-            results = pd.DataFrame(
-                columns=['action', 'rewards', 'info']
-            )  # temporary log to satisfy repeatability tests until logging can be full implemented
+            results = pd.DataFrame(columns=['action', 'rewards', 'info'])
             obs = self.env.reset()
             done = False
             while not done:
@@ -197,8 +192,12 @@ class ActionLoop:
             complete_results.append(results)
         return complete_results
 
-    def random_action_loop(self, deterministic=False):
-        """Indefinitely act within the environment taking random actions."""
+    def random_action_loop(self, deterministic: bool = False) -> None:
+        """Indefinitely act within the environment taking random actions.
+
+        Args:
+            deterministic: Toggle if the agent's actions should be deterministic. Default is False.
+        """
         for i in range(self.episode_count):
             obs = self.env.reset()
             done = False
@@ -213,15 +212,27 @@ class ActionLoop:
                     break
 
     @classmethod
-    def _get_render_figure(cls, gif_name: string) -> Any:
+    def _get_render_figure(cls, gif_name: str) -> Any:
+        """Save the current plot figure as an image.
+
+        Args:
+            gif_name: The filename for the image.
+
+        Returns:
+            The current figure.
+        """
         fig = plt.gcf()
         # save the current image
         plt.savefig(gif_name, bbox_inches='tight', dpi=100)
-
         return fig
 
-    def generate_gif(self, gif_path, frame_names):
-        """Generate GIF from images."""
+    def generate_gif(self, gif_path: str, frame_names: List[str]) -> None:
+        """Generate GIF from images.
+
+        Args:
+            gif_path: The path where the generated GIF will be saved.
+            frame_names: A list of file paths to the images that will be used as frames in the GIF.
+        """
         # TODO: Full docstring.
         with imageio.get_writer(gif_path, mode='I') as writer:
             # create a gif from the images
@@ -239,19 +250,16 @@ class ActionLoop:
                     for _ in range(10):
                         writer.append_data(image)
 
-    # def generate_webm(self, webm_path, frame_names):
-    #     """Create webm from image files."""
-    #     # TODO: Full docstring.
-    #     clip = mp.ImageSequenceClip(frame_names[1:], fps=5)
-    #     clip.write_gif(webm_path, program="ffmpeg")
-
-    def generate_webm(self, webm_path, frame_names, fps=1):
+    def generate_webm(self,
+                      webm_path: str,
+                      frame_names: List[str],
+                      fps: int = 5) -> None:
         """Create a WebM video from a sequence of image files.
 
-        Parameters:
-            - webm_path (str): The path where the generated WebM file will be saved.
-            - frame_names (list): A list of file paths to the images that will be used as frames in the video.
-            - fps (int): Frames per second for the video. Default is 5.
+        Args:
+            webm_path: The path where the generated WebM file will be saved.
+            frame_names: A list of file paths to the images that will be used as frames in the video.
+            fps: Frames per second for the video. Default is 5.
         """
         # Create a video clip from the image sequence
         clip = mp.ImageSequenceClip(frame_names, fps=fps)
@@ -259,9 +267,11 @@ class ActionLoop:
         # Write the video clip to a WebM file
         clip.write_videofile(webm_path, codec='mpeg4')
 
-    def render_cleanup(self, frame_names):
-        """Delete the frames image files."""
-        # TODO: Full docstring.
-        # delete images
+    def render_cleanup(self, frame_names: List[str]) -> None:
+        """Delete the frame image files.
+
+        Args:
+            frame_names: A list of file paths to the images that were used as frames.
+        """
         for filename in set(frame_names):
             os.remove(filename)

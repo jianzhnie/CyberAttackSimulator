@@ -26,7 +26,7 @@ from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
 from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
 from cyberattacksim.envs.generic.core.red_interface import RedInterface
 from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
-from cyberattacksim.exceptions import YawningTitanRunError
+from cyberattacksim.exceptions import CyberAttackRunError
 from cyberattacksim.game_modes.game_mode import GameMode
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
 from cyberattacksim.networks.network import Network
@@ -35,31 +35,31 @@ from cyberattacksim.networks.network_db import default_18_node_network
 _LOGGER = getLogger(__name__)
 
 
-class YawningTitanRun:
-    """The ``YawningTitanRun`` class is the run class for training YT agents
+class CyberAttackRun:
+    """The ``CyberAttackRun`` class is the run class for training YT agents
     from a given set of parameters.
 
-    The ``YawningTitanRun`` class can be used 'straight out of the box', as all params have default values.
+    The ``CyberAttackRun`` class can be used 'straight out of the box', as all params have default values.
 
     .. code:: python
 
-        yt_run = YawningTitanRun()
+        yt_run = CyberAttackRun()
 
-    The ``YawningTitanRun`` class can also be used manually by setting auto=False.
+    The ``CyberAttackn`` class can also be used manually by setting auto=False.
 
     .. code:: python
 
-        yt_run = YawningTitanRun(auto=False)
+        yt_run = CyberAttackRun(auto=False)
         yt_run.setup()
         yt_run.train()
         yt_run.evaluate()
 
     Trained agents can be saved by calling ``.save()``. If no path is provided, a path is generated using the
-    AGENTS_DIR, today's date, and the uuid of the instance of ``YawningTitanRun``.
+    AGENTS_DIR, today's date, and the uuid of the instance of ``CyberAttackRun``.
 
     .. code:: python
 
-        yt_run = YawningTitanRun()
+        yt_run = CyberAttackRun()
         yt_run.save()
 
     .. todo::
@@ -91,7 +91,7 @@ class YawningTitanRun:
         auto: bool = True,
         **kwargs,
     ):
-        """The YawningTitanRun constructor.
+        """The CyberAttackRun constructor.
 
         # TODO: Add proper Sphinx mapping for classes/methods.
 
@@ -116,7 +116,7 @@ class YawningTitanRun:
         :param logger: An optional custom logger to override the use of the default module logger.
         :param output_dir: An optional output path for eval output and saved agent zip file. If none is provided,
             a path is generated using the ``cyberattacksim.AGENTS_DIR``, today's date, and the uuid of the instance
-            of ``YawningTitanRun``.
+            of ``CyberAttackun``.
         :param auto: If True, ``setup()``, ``train()``, and ``evaluate()`` are called automatically.
         """
         # Give the run an uuid
@@ -337,9 +337,9 @@ class YawningTitanRun:
 
         The instance of PPO is saved to ppo.zip.
 
-        The YawningTitanRun args are saved to args.json.
+        The CyberAttackRun args are saved to args.json.
 
-        The YawningTitanRun.uuid is saved to UUID.
+        The CyberAttackun.uuid is saved to UUID.
 
 
         :return: The path the agent has been saved to.
@@ -396,12 +396,12 @@ class YawningTitanRun:
             f'YT run  {self.uuid}: Finished building INVENTORY file.')
 
     def export(self) -> str:
-        """Export the YawningTitanRun as a zip.
+        """Export the CyberAttack zip.
 
         The contents of output_dir is archived to the agents_dir exported dir.
 
         Included is an INVENTORY file that contains all files and their sizes. This is used for file verification when
-        an exported YawningTitanRun is imported.
+        an exported CyberAttackn is imported.
 
         :return: The exported filepath as a str.
         """
@@ -440,7 +440,7 @@ class YawningTitanRun:
     def _load_args_file(cls, path: str) -> Dict:
         """Load an args.json file and returns as a dict.
 
-        :param path: A saved YawningTitanRun path.
+        :param path: A saved CyberAttackRun path.
         :return: The args.json file as a dict.
 
         :raise ValueError: When an args.json file doesn't exist in the provided path. Or when it does exist but it's
@@ -452,7 +452,7 @@ class YawningTitanRun:
             with open(args_path, 'r') as file:
                 args = yaml.safe_load(file)
 
-            if args.keys() == YawningTitanRun(auto=False)._args_dict().keys():
+            if args.keys() == CyberAttackRun(auto=False)._args_dict().keys():
                 args['network'] = Network.create(args['network'])
                 args['game_mode'] = GameMode.create(args['game_mode'])
                 args['red_agent_class'] = cls._get_agent_class_from_str(
@@ -473,19 +473,19 @@ class YawningTitanRun:
 
     @classmethod
     def load(cls, path: str):
-        """Load and return a saved YawningTitanRun.
+        """Load and return a saved CyberAttackRun.
 
-        YawningTitanRun's that have auto=True will not be automatically ran on load.
+        CyberAttackRun's that have auto=True will not be automatically ran on load.
 
-        :param path: A saved YawningTitanRun path.
-        :return: An instance of YawningTitanRun.
+        :param path: A saved CyberAttackRun path.
+        :return: An instance of CyberAttackn.
         """
         args = cls._load_args_file(path)
 
         uuid = args.pop('uuid')
         args.pop('auto')
 
-        yt_run = YawningTitanRun(**args, auto=False)
+        yt_run = CyberAttackRun(**args, auto=False)
         yt_run.uuid = uuid  # noqa - We'll allow it here :)
         yt_run.setup(new=False, ppo_zip_path=os.path.join(path, 'ppo.zip'))
 
@@ -496,7 +496,7 @@ class YawningTitanRun:
         """Verifies an INVENTORY file with the files contained in its parent
         dir.
 
-        :param unzip_path: An unzipped exported YawningTitanRun path.
+        :param unzip_path: An unzipped exported CyberAttackth.
         :return: Whether the INVENTORY file matches the files.
         """
         with open(os.path.join(unzip_path, 'INVENTORY'),
@@ -526,20 +526,19 @@ class YawningTitanRun:
         return True
 
     @classmethod
-    def import_from_export(
-            cls,
-            exported_zip_file_path: str,
-            overwrite_existing: bool = False) -> YawningTitanRun:
-        """Import and return an exported YawningTitanRun.
+    def import_from_export(cls,
+                           exported_zip_file_path: str,
+                           overwrite_existing: bool = False) -> CyberAttackRun:
+        """Import and return an exported CyberAttackRun.
 
-        YawningTitanRun's that have auto=True will not be automatically ran on import.
+        CyberAttackRun's that have auto=True will not be automatically ran on import.
 
-        :param exported_zip_file_path: The path of an exported YawningTitanRun.
+        :param exported_zip_file_path: The path of an exported CyberAttackRun.
         :param overwrite_existing: If True, if the uuid of the imported agent already exists in the trainer agents dir
             it is overwritten.
-        :return: The imported instance of YawningTitanRun.
+        :return: The imported instance of CyberAttackRun.
 
-        :raise YawningTitanRunError: When the INVENTORY file fails its verification.
+        :raise CyberAttackRunError: When the INVENTORY file fails its verification.
         """
         _LOGGER.debug(
             f'Importing exported agent from {exported_zip_file_path}')
@@ -553,10 +552,10 @@ class YawningTitanRun:
         # Verify the contents
         verified = cls._verify_import_export_zip_file(unzip_path)
         if not verified:
-            msg = f'Failed to verify the contents while importing YawningTitanRun from {exported_zip_file_path}.'
+            msg = f'Failed to verify the contents while importing CyberAttackRun from {exported_zip_file_path}.'
             try:
-                raise YawningTitanRunError(msg)
-            except YawningTitanRunError as e:
+                raise CyberAttackRunError(msg)
+            except CyberAttackRunError as e:
                 _LOGGER.critical(e)
                 raise e
 
@@ -575,8 +574,7 @@ class YawningTitanRun:
                 shutil.rmtree(new_unzip_path)
                 os.rename(unzip_path, new_unzip_path)
                 _LOGGER.debug(
-                    f'Existing YawningTitanRun overwritten at {new_unzip_path}.'
-                )
+                    f'Existing CyberAttack overwritten at {new_unzip_path}.')
 
         # Pass new_unzip_path to .load and return
         return cls.load(str(new_unzip_path))

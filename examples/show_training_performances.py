@@ -7,8 +7,8 @@ import sys
 import pandas as pd
 
 sys.path.append(os.getcwd())
-from nasimulator.utils.file_utils import make_dirs
-from nasimulator.utils.plotting_utils import plot_training_performance
+from cyberattacksim.utils.file_utils import make_dirs
+from cyberattacksim.utils.plotting_utils import plot_training_performance
 
 
 def main() -> None:

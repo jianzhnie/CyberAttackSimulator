@@ -16,7 +16,7 @@ from __future__ import annotations
 from stable_baselines3 import PPO
 
 from cyberattacksim.agents.sinewave_red import SineWaveRedAgent
-from cyberattacksim.cyberattacksim_run import YawningTitanRun
+from cyberattacksim.cyberattacksim_run import CyberAttackRun
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
 from cyberattacksim.game_modes.game_mode_db import dcbo_game_mode
 from cyberattacksim.networks.network_db import dcbo_base_network
@@ -61,7 +61,7 @@ def generate(
     :return: A trained agent as an instance of
         :class:`stable_baselines3.ppo.ppo.PPO`.
     """
-    yt_run = YawningTitanRun(
+    yt_run = CyberAttackRun(
         network=dcbo_base_network(),
         game_mode=dcbo_game_mode(),
         red_agent_class=SineWaveRedAgent,

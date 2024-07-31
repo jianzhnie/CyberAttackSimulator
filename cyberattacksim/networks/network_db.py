@@ -11,10 +11,10 @@ from typing import Final, List, Optional, Union
 from tinydb import TinyDB
 from tinydb.queries import QueryInstance
 
-from cyberattacksim.db.cyberattacksim_db import (YawningTitanDB,
-                                                 YawningTitanDBSchema)
+from cyberattacksim.db.cyberattacksim_db import (CyberAttackDB,
+                                                 CyberAttackDBSchema)
 from cyberattacksim.db.doc_metadata import DocMetadataSchema
-from cyberattacksim.db.query import YawningTitanQuery
+from cyberattacksim.db.query import CyberAttackQuery
 from cyberattacksim.networks.network import Network
 
 __all__ = ['NetworkDB', 'NetworkSchema', 'default_18_node_network']
@@ -22,13 +22,13 @@ __all__ = ['NetworkDB', 'NetworkSchema', 'default_18_node_network']
 _LOGGER = getLogger(__name__)
 
 
-class NetworkQuery(YawningTitanQuery):
+class NetworkQuery(CyberAttackQuery):
 
     def __int__(self):
         super().__init__()
 
     @staticmethod
-    def num_of_nodes(n: int) -> YawningTitanQuery:
+    def num_of_nodes(n: int) -> CyberAttackQuery:
         """Returns all Networks with n number of nodes.
 
         :Example:
@@ -40,10 +40,10 @@ class NetworkQuery(YawningTitanQuery):
         :param n: The target number of nodes in a Network.
         :return: A list of Networks.
         """
-        return YawningTitanQuery()['nodes'].len_eq(n)
+        return CyberAttackQuery()['nodes'].len_eq(n)
 
     @staticmethod
-    def num_of_nodes_between(min: int, max: int) -> YawningTitanQuery:
+    def num_of_nodes_between(min: int, max: int) -> CyberAttackQuery:
         """Returns all Networks with between `min` and `max` number of nodes.
 
         :Example:
@@ -56,7 +56,7 @@ class NetworkQuery(YawningTitanQuery):
         :param max: The maximum number of nodes in a Network.
         :return: A list of Networks.
         """
-        return YawningTitanQuery()['nodes'].len_bt(min, max)
+        return CyberAttackQuery()['nodes'].len_bt(min, max)
 
     def _num_nodes_of_type(self, n, type):
         """Helper function for num_of_entry_nodes."""
@@ -83,7 +83,7 @@ class NetworkQuery(YawningTitanQuery):
         return self.test(test_len, min, max, type)
 
     @staticmethod
-    def num_of_entry_nodes(n: int) -> YawningTitanQuery:
+    def num_of_entry_nodes(n: int) -> CyberAttackQuery:
         """Returns all Networks with n number of entry nodes.
 
         :Example:
@@ -98,7 +98,7 @@ class NetworkQuery(YawningTitanQuery):
         return NetworkQuery().nodes._num_nodes_of_type(n, 'entry_node')
 
     @staticmethod
-    def num_of_entry_nodes_between(min: int, max: int) -> YawningTitanQuery:
+    def num_of_entry_nodes_between(min: int, max: int) -> CyberAttackQuery:
         """Returns all Networks with between `min` and `max` number of entry
         nodes.
 
@@ -115,7 +115,7 @@ class NetworkQuery(YawningTitanQuery):
             min, max, 'entry_node')
 
     @staticmethod
-    def num_of_high_value_nodes(n: int) -> YawningTitanQuery:
+    def num_of_high_value_nodes(n: int) -> CyberAttackQuery:
         """Returns all Networks with n number of high_value nodes.
 
         :Example:
@@ -132,7 +132,7 @@ class NetworkQuery(YawningTitanQuery):
 
     @staticmethod
     def num_of_high_value_nodes_between(min: int,
-                                        max: int) -> YawningTitanQuery:
+                                        max: int) -> CyberAttackQuery:
         """Returns all Networks with between `min` and `max` number of high
         value nodes.
 
@@ -150,10 +150,10 @@ class NetworkQuery(YawningTitanQuery):
             min, max, 'high_value_node')
 
 
-class NetworkSchema(YawningTitanDBSchema):
+class NetworkSchema(CyberAttackDBSchema):
     """A schema-like class that defines the network DB fields.
 
-    Fields are defined using the :class:`~cyberattacksim.db.query.YawningTitanQuery` class
+    Fields are defined using the :class:`~cyberattacksim.db.query.CyberAttackQuery` class
     so that schema paths can be used directly within :func:`tinydb.table.Table.search`
     function calls. All fields are mapped to a property in the
     :class:`~cyberattacksim.networks.network.Network` class.
@@ -165,29 +165,29 @@ class NetworkSchema(YawningTitanDBSchema):
     >>> network_configs = db.search(NetworkSchema.SET_RANDOM_ENTRY_NODES == True)
     """
 
-    SET_RANDOM_ENTRY_NODES: Final[YawningTitanQuery] = (
-        YawningTitanQuery().set_random_entry_nodes)
-    RANDOM_ENTRY_NODE_PREFERENCE: Final[YawningTitanQuery] = (
-        YawningTitanQuery().random_entry_node_preference)
-    NUM_OF_RANDOM_ENTRY_NODES: Final[YawningTitanQuery] = (
-        YawningTitanQuery().num_of_random_entry_nodes)
-    SET_RANDOM_HIGH_VALUE_NODES: Final[YawningTitanQuery] = (
-        YawningTitanQuery().set_random_high_value_nodes)
-    RANDOM_HIGH_VALUE_NODE_PREFERENCE: Final[YawningTitanQuery] = (
-        YawningTitanQuery().random_high_value_node_preference)
-    NUM_OF_RANDOM_HIGH_VALUE_NODES: Final[YawningTitanQuery] = (
-        YawningTitanQuery().num_of_random_high_value_nodes)
-    SET_RANDOM_VULNERABILITIES: Final[YawningTitanQuery] = (
-        YawningTitanQuery().set_random_vulnerabilities)
-    NODE_VULNERABILITY_LOWER_BOUND: Final[YawningTitanQuery] = (
-        YawningTitanQuery().node_vulnerability_lower_bound)
-    NODE_VULNERABILITY_UPPER_BOUND: Final[YawningTitanQuery] = (
-        YawningTitanQuery().node_vulnerability_upper_bound)
+    SET_RANDOM_ENTRY_NODES: Final[CyberAttackQuery] = (
+        CyberAttackQuery().set_random_entry_nodes)
+    RANDOM_ENTRY_NODE_PREFERENCE: Final[CyberAttackQuery] = (
+        CyberAttackQuery().random_entry_node_preference)
+    NUM_OF_RANDOM_ENTRY_NODES: Final[CyberAttackQuery] = (
+        CyberAttackQuery().num_of_random_entry_nodes)
+    SET_RANDOM_HIGH_VALUE_NODES: Final[CyberAttackQuery] = (
+        CyberAttackQuery().set_random_high_value_nodes)
+    RANDOM_HIGH_VALUE_NODE_PREFERENCE: Final[CyberAttackQuery] = (
+        CyberAttackQuery().random_high_value_node_preference)
+    NUM_OF_RANDOM_HIGH_VALUE_NODES: Final[CyberAttackQuery] = (
+        CyberAttackQuery().num_of_random_high_value_nodes)
+    SET_RANDOM_VULNERABILITIES: Final[CyberAttackQuery] = (
+        CyberAttackQuery().set_random_vulnerabilities)
+    NODE_VULNERABILITY_LOWER_BOUND: Final[CyberAttackQuery] = (
+        CyberAttackQuery().node_vulnerability_lower_bound)
+    NODE_VULNERABILITY_UPPER_BOUND: Final[CyberAttackQuery] = (
+        CyberAttackQuery().node_vulnerability_upper_bound)
 
 
 class NetworkDB:
     """The :class:`~cyberattacksim.db.networks.NetworkDB` class extends
-    :class:`~cyberattacksim.db.YawningTitanDB`.
+    :class:`~cyberattacksim.db.CyberAttackDB`.
 
     The below code blocks demonstrate how to use the :class:`~cyberattacksim.db.networks.NetworkDB` class.
 
@@ -206,7 +206,7 @@ class NetworkDB:
     """
 
     def __init__(self):
-        self._db = YawningTitanDB('networks')
+        self._db = CyberAttackDB('networks')
 
     def __enter__(self) -> NetworkDB:
         return NetworkDB()
@@ -267,11 +267,11 @@ class NetworkDB:
         if doc:
             return Network.create(doc)
 
-    def search(self, query: YawningTitanQuery) -> List[Network]:
+    def search(self, query: CyberAttackQuery) -> List[Network]:
         """Searches the :class:`~cyberattacksim.networks.network.Network` with a
         :class:`NetworkSchema` query.
 
-        :param query: A :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param query: A :class:`~cyberattacksim.db.query.CyberAttackQuery`.
         :return: A :class:`list` of :class:`~cyberattacksim.networks.network.Network`.
         """
         network_configs = []
@@ -283,10 +283,10 @@ class NetworkDB:
         """Count how many docs are in the db. Extends
         :class:`tinydb.table.Table.count`.
 
-        A :class:`~cyberattacksim.db.query.YawningTitanQuery` can be used to
+        A :class:`~cyberattacksim.db.query.CyberAttackQuery` can be used to
         filter the count.
 
-        :param cond: An optional :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param cond: An optional :class:`~cyberattacksim.db.query.CyberAttackQuery`.
             Has a default value of ``None``.
         :return: The number of docs counted.
         """
@@ -372,7 +372,7 @@ class NetworkDB:
         """Remove :class:`~cyberattacksim.networks.network.Network`. from the
         db that match the query.
 
-        :param cond: A :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param cond: A :class:`~cyberattacksim.db.query.CyberAttackQuery`.
         :return: The list of uuids of the removed :class:`~cyberattacksim.networks.network.Network`.
         """
         return self._db.remove_by_cond(cond)

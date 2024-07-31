@@ -7,8 +7,8 @@ from tinydb import Query
 from tinydb.queries import QueryInstance
 
 
-class YawningTitanQuery(Query):
-    """The :class:`~cyberattacksim.db.query.YawningTitanQuery` class extends
+class CyberAttackQuery(Query):
+    """The :class:`~cyberattacksim.db.query.CyberAttackQuery` class extends
     :class:`tinydb.queries.Query`.
 
     Extended to provide common pre-defined test functions that call
@@ -28,13 +28,13 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_eq(18)))
+        >>> db.search(CyberAttackQuery.matrix.len_eq(18)))
 
         :param i: The target length of a field as an int.
         :return: ``True`` if the field length matches ``i``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_eq` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_eq` is called on
             does not have a :func:`len` function.
         """
 
@@ -55,13 +55,13 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_lt(18)))
+        >>> db.search(CyberAttackQuery.matrix.len_lt(18)))
 
         :param i: The target length of a field as an int.
         :return: ``True`` if the field length is less than ``i``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_lt` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_lt` is called on
             does not have a :func:`len` function.
         """
 
@@ -82,13 +82,13 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_le(18)))
+        >>> db.search(CyberAttackQuery.matrix.len_le(18)))
 
         :param i: The target length of a field as an int.
         :return: ``True`` if the field length is less than or equal to ``i``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_lt` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_lt` is called on
             does not have a :func:`len` function.
         """
 
@@ -109,13 +109,13 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_gt(18)))
+        >>> db.search(CyberAttackQuery.matrix.len_gt(18)))
 
         :param i: The target length of a field as an int.
         :return: ``True`` if the field length is greater than ``i``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_lt` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_lt` is called on
             does not have a :func:`len` function.
         """
 
@@ -136,13 +136,13 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_ge(18)))
+        >>> db.search(CyberAttackQuery.matrix.len_ge(18)))
 
         :param i: The target length of a field as an int.
         :return: ``True`` if it does exist, otherwise ``False``. if the field length is greater than or equal to ``i``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_lt` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_lt` is called on
             does not have a :func:`len` function.
         """
 
@@ -163,15 +163,15 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_bt(1,18)))
+        >>> db.search(CyberAttackQuery.matrix.len_bt(1,18)))
 
         :param i: The minimum length of a field as an int.
         :param j: The maximum length of a field as an int.
         :return: ``True`` if it does exist, otherwise ``False``. if the field length is greater than or equal to ``i``
             and less than or equal to ``j``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_bt` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_bt` is called on
             does not have a :func:`len` function.
         """
 
@@ -192,15 +192,15 @@ class YawningTitanQuery(Query):
         :Example:
 
         >>> from cyberattacksim.networks.network_db import NetworkDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = NetworkDB()
-        >>> db.search(YawningTitanQuery.matrix.len_bt(1,18)))
+        >>> db.search(CyberAttackQuery.matrix.len_bt(1,18)))
 
         :param i: The minimum value of a field as an int.
         :param j: The maximum value of a field as an int.
         :return: ``True`` if it does exist, otherwise ``False``. if the field value is greater than or equal to ``i``
             and less than or equal to ``j``, otherwise ``False``.
-        :raises TypeError: When the field :func:`~cyberattacksim.db.query.YawningTitanQuery.len_bt` is called on
+        :raises TypeError: When the field :func:`~cyberattacksim.db.query.CyberAttackQuery.len_bt` is called on
             does not have a :func:`len` function.
         """
 

@@ -43,7 +43,7 @@ def check_element(el_dict: dict, n: int, include_unbounded: bool):
 
 
 class EntryNodeCompatibilityQuery(Query):
-    """The :class:`~cyberattacksim.db.query.YawningTitanQuery` class extends
+    """The :class:`~cyberattacksim.db.query.CyberAttackQuery` class extends
     :class:`tinydb.queries.Query`.
 
     Extended to provide common pre-defined test functions that call
@@ -63,7 +63,7 @@ class EntryNodeCompatibilityQuery(Query):
         :Example:
 
         >>> from cyberattacksim.game_modes.game_mode_db import GameModeDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = GameModeDB()
         >>> db.search(EntryNodeCompatibilityQuery.ENTRY_NODES.works_with(18)))
 
@@ -82,7 +82,7 @@ class EntryNodeCompatibilityQuery(Query):
 
 
 class HighValueNodeCompatibilityQuery(Query):
-    """The :class:`~cyberattacksim.db.query.YawningTitanQuery` class extends
+    """The :class:`~cyberattacksim.db.query.CyberAttackQuery` class extends
     :class:`tinydb.queries.Query`.
 
     Extended to provide common pre-defined test functions that call
@@ -102,7 +102,7 @@ class HighValueNodeCompatibilityQuery(Query):
         :Example:
 
         >>> from cyberattacksim.game_modes.game_mode_db import GameModeDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = GameModeDB()
         >>> db.search(HighValueNodeCompatibilityQuery.HIGH_VALUE_NODES.works_with(18)))
 
@@ -121,7 +121,7 @@ class HighValueNodeCompatibilityQuery(Query):
 
 
 class NetworkNodeCompatibilityQuery(Query):
-    """The :class:`~cyberattacksim.db.query.YawningTitanQuery` class extends
+    """The :class:`~cyberattacksim.db.query.CyberAttackQuery` class extends
     :class:`tinydb.queries.Query`.
 
     Extended to provide common pre-defined test functions that call
@@ -141,7 +141,7 @@ class NetworkNodeCompatibilityQuery(Query):
         :Example:
 
         >>> from cyberattacksim.game_modes.game_mode_db import GameModeDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = GameModeDB()
         >>> db.search(NetworkNodeCompatibilityQuery.HIGH_VALUE_NODES.works_with(18)))
 
@@ -159,7 +159,7 @@ class NetworkNodeCompatibilityQuery(Query):
 
 
 class NetworkCompatibilityQuery(Query):
-    """The :class:`~cyberattacksim.db.query.YawningTitanQuery` class extends
+    """The :class:`~cyberattacksim.db.query.CyberAttackQuery` class extends
     :class:`tinydb.queries.Query`.
 
     Extended to provide common pre-defined test functions that call
@@ -180,7 +180,7 @@ class NetworkCompatibilityQuery(Query):
         :Example:
 
         >>> from cyberattacksim.game_modes.game_mode_db import GameModeDB
-        >>> from cyberattacksim.db.query import YawningTitanQuery
+        >>> from cyberattacksim.db.query import CyberAttackQuery
         >>> db = GameModeDB()
         >>> db.search(NetworkCompatibilityQuery.compatible_with(network)))
 

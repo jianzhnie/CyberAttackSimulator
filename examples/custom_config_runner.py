@@ -18,15 +18,16 @@ from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
-from yawning_titan.agents.sinewave_red import SineWaveRedAgent
-from yawning_titan.envs.generic.core.blue_interface import BlueInterface
-from yawning_titan.envs.generic.core.network_interface import NetworkInterface
-from yawning_titan.envs.generic.generic_env import GenericNetworkEnv
-from yawning_titan.game_modes.game_mode_db import default_game_mode
-from yawning_titan.networks import network_creator
+
+from cyberattacksim.agents.sinewave_red import SineWaveRedAgent
+from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
+from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
+from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
+from cyberattacksim.game_modes.game_mode_db import default_game_mode
+from cyberattacksim.networks import network_creator
 
 sys.path.append(os.getcwd())
-from nasimulator.envs.generic.core.action_loops import ActionLoop
+from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 
 
 def main():

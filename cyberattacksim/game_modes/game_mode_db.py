@@ -16,9 +16,9 @@ from cyberattacksim.config import _LIB_CONFIG_ROOT_PATH
 from cyberattacksim.db.compatibility_query import (
     EntryNodeCompatibilityQuery, HighValueNodeCompatibilityQuery,
     NetworkCompatibilityQuery, NetworkNodeCompatibilityQuery)
-from cyberattacksim.db.cyberattacksim_db import YawningTitanDB
+from cyberattacksim.db.cyberattacksim_db import CyberAttackDB
 from cyberattacksim.db.doc_metadata import DocMetadata, DocMetadataSchema
-from cyberattacksim.db.query import YawningTitanQuery
+from cyberattacksim.db.query import CyberAttackQuery
 from cyberattacksim.db.schemas import GameModeConfigurationSchema
 from cyberattacksim.game_modes.game_mode import GameMode
 
@@ -30,7 +30,7 @@ _LOGGER = getLogger(__name__)
 class GameModeSchema:
     """A schema-like class that defines the game_mode DB fields.
 
-    Fields are defined using the :class:`~cyberattacksim.db.query.YawningTitanQuery` class
+    Fields are defined using the :class:`~cyberattacksim.db.query.CyberAttackQuery` class
     so that schema paths can be used directly within :func:`tinydb.table.Table.search`
     function calls. All fields are mapped to a property in the
     :class:~`cyberattacksim.game_modes.game_mode.GameMode` class.
@@ -68,7 +68,7 @@ class GameModeSchema:
 
 class GameModeDB:
     """The :class:`~cyberattacksim.config.game_modes.GameModeDB` class extends
-    :class:`~cyberattacksim.db.YawningTitanDB`.
+    :class:`~cyberattacksim.db.CyberAttackDB`.
 
     The below code blocks demonstrate how to use the :class:`~cyberattacksim.config.game_modes.GameModeDB` class.
 
@@ -87,7 +87,7 @@ class GameModeDB:
     """
 
     def __init__(self):
-        self._db = YawningTitanDB('game_modes')
+        self._db = CyberAttackDB('game_modes')
 
     def __enter__(self) -> GameModeDB:
         return GameModeDB()
@@ -167,11 +167,11 @@ class GameModeDB:
             return self._doc_to_game_mode(doc)
         return None
 
-    def search(self, query: YawningTitanQuery) -> List[GameMode]:
+    def search(self, query: CyberAttackQuery) -> List[GameMode]:
         """Searches the :class:`~cyberattacksim.game_modes.game_mode.GameMode`
         with a :class:`GameModeSchema` query.
 
-        :param query: A :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param query: A :class:`~cyberattacksim.db.query.CyberAttackQuery`.
         :return: A :class:`list` of :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
         """
         game_mode_configs = []
@@ -183,10 +183,10 @@ class GameModeDB:
         """Count how many docs are in the db. Extends
         :class:`tinydb.table.Table.count`.
 
-        A :class:`~cyberattacksim.db.query.YawningTitanQuery` can be used to
+        A :class:`~cyberattacksim.db.query.CyberAttackQuery` can be used to
         filter the count.
 
-        :param cond: An optional :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param cond: An optional :class:`~cyberattacksim.db.query.CyberAttackQuery`.
             Has a default value of ``None``.
         :return: The number of docs counted.
         """
@@ -272,7 +272,7 @@ class GameModeDB:
         """Remove :class:`~cyberattacksim.game_modes.game_mode.GameMode`. from
         the db that match the query.
 
-        :param cond: A :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param cond: A :class:`~cyberattacksim.db.query.CyberAttackQuery`.
         :return: The list of uuids of the removed :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
         """
         return self._db.remove_by_cond(cond)

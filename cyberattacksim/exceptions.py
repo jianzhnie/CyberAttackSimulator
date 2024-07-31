@@ -1,9 +1,9 @@
 """Custom Yawning-Titan exceptions."""
 
 
-class YawningTitanDBError(ValueError):
+class CyberAttackDBError(ValueError):
     """Raised during insert fails by
-    :class:`~yawning_titan.db.yawning_titan_db.YawningTitanDB`.
+    :class:`~yawning_titan.db.yawning_titan_db.CyberAttackB`.
 
     Should be handled and dealt with without exiting.
     """
@@ -11,9 +11,9 @@ class YawningTitanDBError(ValueError):
     pass
 
 
-class YawningTitanDBCriticalError(ValueError):
+class CyberAttackDBCriticalError(ValueError):
     """Raised during update and remove fails by
-    :class:`~yawning_titan.db.yawning_titan_db.YawningTitanDB`.
+    :class:`~yawning_titan.db.yawning_titan_db.CyberAttackDB`.
 
     Would suggest the DB is corrupted. Should be handled to ensure a 'graceful'
     exit.
@@ -35,8 +35,8 @@ class ConfigGroupValidationError(ValueError):
     pass
 
 
-class YawningTitanRunError(ValueError):
-    """An error has occurred during the instantiation of the YawningTitanRun
+class CyberAttackRunError(ValueError):
+    """An error has occurred during the instantiation of the CyberAttackRun
     class."""
 
     pass

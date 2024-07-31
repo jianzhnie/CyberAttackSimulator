@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Dict, Final, List, Optional, Union
 from uuid import uuid4
 
-from cyberattacksim.db.query import YawningTitanQuery
+from cyberattacksim.db.query import CyberAttackQuery
 from cyberattacksim.game_modes.components import _LOGGER
 
 
@@ -207,26 +207,26 @@ class DocMetadata:
 class DocMetadataSchema:
     """A schema-like class that defines the document metadata fields.
 
-    Fields are defined using the :class:`~cyberattacksim.db.query.YawningTitanQuery` class
+    Fields are defined using the :class:`~cyberattacksim.db.query.CyberAttackQuery` class
     so that schema paths can be used directly within :func:`tinydb.table.Table.search`
     function calls. All fields are mapped to a property in the
     :class:`~cyberattacksim.db.cyberattacksim_db.DocMetadata` class.
     """
 
-    UUID: Final[YawningTitanQuery] = YawningTitanQuery()._doc_metadata.uuid
+    UUID: Final[CyberAttackQuery] = CyberAttackQuery()._doc_metadata.uuid
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.uuid`."""
-    CREATED_AT: Final[YawningTitanQuery] = YawningTitanQuery(
+    CREATED_AT: Final[CyberAttackQuery] = CyberAttackQuery(
     )._doc_metadata.created_at
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.created_at`."""
-    UPDATED_AT: Final[YawningTitanQuery] = YawningTitanQuery(
+    UPDATED_AT: Final[CyberAttackQuery] = CyberAttackQuery(
     )._doc_metadata.updated_at
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.updated_at`."""
-    NAME: Final[YawningTitanQuery] = YawningTitanQuery()._doc_metadata.name
+    NAME: Final[CyberAttackQuery] = CyberAttackQuery()._doc_metadata.name
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.name`."""
-    DESCRIPTION: Final[YawningTitanQuery] = (
-        YawningTitanQuery()._doc_metadata.description)
+    DESCRIPTION: Final[CyberAttackQuery] = CyberAttackQuery(
+    )._doc_metadata.description
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.description`."""
-    AUTHOR: Final[YawningTitanQuery] = YawningTitanQuery()._doc_metadata.author
+    AUTHOR: Final[CyberAttackQuery] = CyberAttackQuery()._doc_metadata.author
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.author`."""
-    LOCKED: Final[YawningTitanQuery] = YawningTitanQuery()._doc_metadata.locked
+    LOCKED: Final[CyberAttackQuery] = CyberAttackQuery()._doc_metadata.locked
     """Mapped to :attr:`cyberattacksim.db.cyberattacksim_db.DocMetadata.locked`."""

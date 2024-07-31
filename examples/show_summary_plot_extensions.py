@@ -9,8 +9,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 
 sys.path.append(os.getcwd())
-from nasimulator.utils.df_utils import get_summary_statistics, process_df
-from nasimulator.utils.plotting_utils import \
+from cyberattacksim.utils.df_utils import get_summary_statistics, process_df
+from cyberattacksim.utils.plotting_utils import \
     plot_multi_extension_comparison_size
 
 

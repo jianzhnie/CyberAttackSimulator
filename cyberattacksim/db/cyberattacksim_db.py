@@ -22,19 +22,19 @@ from tinydb.table import Document
 
 from cyberattacksim import DB_DIR
 from cyberattacksim.db.doc_metadata import DocMetadata, DocMetadataSchema
-from cyberattacksim.exceptions import (YawningTitanDBCriticalError,
-                                       YawningTitanDBError)
+from cyberattacksim.exceptions import (CyberAttackDBCriticalError,
+                                       CyberAttackDBError)
 
 _LOGGER = getLogger(__name__)
 
 
-class YawningTitanDBSchema(ABC):
-    """YawningTitanDBSchema ABC that is implemented by all schema classes."""
+class CyberAttackDBSchema(ABC):
+    """CyberAttackDBSchema ABC that is implemented by all schema classes."""
 
     pass
 
 
-class YawningTitanDB:
+class CyberAttackDB:
     """An :py:class:`~abc.ABC` that implements and extends the
     :class:`~tinydb.database.TinyDB` query functions."""
 
@@ -50,7 +50,7 @@ class YawningTitanDB:
         self._db = TinyDB(self._path)
 
     def __enter__(self, name: str):
-        return YawningTitanDB(name)
+        return CyberAttackDB(name)
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
@@ -128,10 +128,10 @@ class YawningTitanDB:
         """Count how many docs are in the db. Extends
         :class:`tinydb.table.Table.count`.
 
-        A :class:`~cyberattacksim.db.query.YawningTitanQuery` can be used to
+        A :class:`~cyberattacksim.db.query.CyberAttackQuery` can be used to
         filter the count.
 
-        :param cond: An optional :class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param cond: An optional :class:`~cyberattacksim.db.query.CyberAttackQuery`.
             Has a default value of ``None``.
         :return: The number of docs counted.
         """
@@ -170,7 +170,7 @@ class YawningTitanDB:
 
         :param uuid: A uuid.
         :return: The matching doc if it exists, otherwise ``None``.
-        :raise: :class:`~cyberattacksim.exceptions.YawningTitanDBCriticalError`
+        :raise: :class:`~cyberattacksim.exceptions.CyberAttackDBCriticalError`
             when the search returns multiple docs with the same uuid.
         """
         results = self.db.search(DocMetadataSchema.UUID == uuid)
@@ -183,8 +183,8 @@ class YawningTitanDB:
                     f"Get from the {self._name} db with uuid='{uuid}' aborted as multiple docs with the uuid "
                     f"exist. The '{self._path}' db file is corrupted.")
                 try:
-                    raise YawningTitanDBCriticalError(msg)
-                except YawningTitanDBCriticalError as e:
+                    raise CyberAttackDBCriticalError(msg)
+                except CyberAttackDBCriticalError as e:
                     _LOGGER.critical(msg, exc_info=True)
                     raise e
 
@@ -206,7 +206,7 @@ class YawningTitanDB:
         If a doc doesn't have DocMetadata, the default DocMetadata is set.
 
         If a doc already exists with the same uuid, the insert is blocked and
-        a :class:`~cyberattacksim.exceptions.YawningTitanDBCriticalError` is
+        a :class:`~cyberattacksim.exceptions.CyberAttackCriticalError` is
         raised alongside a log as ``CRITICAL`` level, as this would indicate
         db file is corrupted.
 
@@ -215,7 +215,7 @@ class YawningTitanDB:
         :param description: The doc description.
         :param author: The docs author.
         :return: The inserted doc.
-        :raise: :class:`~cyberattacksim.exceptions.YawningTitanDBCriticalError`
+        :raise: :class:`~cyberattacksim.exceptions.CyberAttackBCriticalError`
             when a doc already exists with the same uuid.
         """
         if '_doc_metadata' not in doc:
@@ -228,8 +228,8 @@ class YawningTitanDB:
                     f"Failed to insert doc into the {self._name} db with uuid='{uuid}' as one already exists. "
                     f"The '{self._path}' db file is corrupted.")
                 try:
-                    raise YawningTitanDBCriticalError(msg)
-                except YawningTitanDBCriticalError as e:
+                    raise CyberAttackDBCriticalError(msg)
+                except CyberAttackDBCriticalError as e:
                     _LOGGER.critical(msg, exc_info=True)
                     raise e
         self._update_doc_metadata(doc, name, description, author)
@@ -252,7 +252,7 @@ class YawningTitanDB:
         """An extension of :func:`tinydb.table.Table.update`.
 
         Performs a check that prevents locked files from being updated and raises
-        :class:`~cyberattacksim.exceptions.YawningTitanDBError` alongside a log at
+        :class:`~cyberattacksim.exceptions.CyberAttackDBError` alongside a log at
         ``INFO`` level.
 
         :param doc: A doc.
@@ -261,7 +261,7 @@ class YawningTitanDB:
         :param description: The doc description.
         :param author: The docs author.
         :return: The updated doc.
-        :raise: :class:`~cyberattacksim.exceptions.YawningTitanDBError` if
+        :raise: :class:`~cyberattacksim.exceptions.CyberAttackDBError` if
             the doc is locked.
         """
         existing_doc = self.get(uuid)
@@ -269,8 +269,8 @@ class YawningTitanDB:
             msg = f"Cannot update doc with uuid='{uuid}' in the {self._name} db as it is locked for editing."
             _LOGGER.error(msg)
             try:
-                raise YawningTitanDBError(msg)
-            except YawningTitanDBError as e:
+                raise CyberAttackDBError(msg)
+            except CyberAttackDBError as e:
                 raise e
         self._update_doc_metadata(doc, name, description, author)
         self._update_doc_updated_at_datetime(doc)
@@ -289,9 +289,9 @@ class YawningTitanDB:
         :func:`tinydb.table.Table.upsert`.
 
         If the docs uuid already exists, the args are passed to
-        :func:`cyberattacksim.db.cyberattacksim_db.YawningTitanDB.update` to
+        :func:`cyberattacksim.db.cyberattacksim_db.CyberAttackate` to
         perform an update, otherwise they're passed to
-        :func:`~cyberattacksim.db.cyberattacksim_db.YawningTitanDB.insert` to
+        :func:`~cyberattacksim.db.cyberattacksim_db.CyberAttackDB.insert` to
         perform an insert. This is done to make use of the existing uuid and
         locked file handling in the two methods.
 
@@ -313,7 +313,7 @@ class YawningTitanDB:
     def remove_by_cond(self, cond: QueryInstance) -> List[str]:
         """Remove documents that match a query.
 
-        :param cond: A:class:`~cyberattacksim.db.query.YawningTitanQuery`.
+        :param cond: A:class:`~cyberattacksim.db.query.CyberAttackQuery`.
         :return: The list of uuids from documents removed.
         """
         results = self.search(cond)
@@ -330,9 +330,9 @@ class YawningTitanDB:
 
         :param uuid: A documents _doc_metadata.uuid.
         :return: The uuid of the removed document.
-        :raises: :class:`~cyberattacksim.exceptions.YawningTitanDBCriticalError`
+        :raises: :class:`~cyberattacksim.exceptions.CyberAttackDBCriticalError`
             when there is more than one doc with the same uuid to remove.
-            :class:`~cyberattacksim.exceptions.YawningTitanDBError` when
+            :class:`~cyberattacksim.exceptions.CyberAttackDBError` when
             an attempt to remove a locked doc is made.
         """
         doc = self.db.search(DocMetadataSchema.UUID == uuid)
@@ -343,8 +343,8 @@ class YawningTitanDB:
                     f"the uuid exist. The '{self._path}' db file is corrupted."
                 )
                 try:
-                    raise YawningTitanDBCriticalError(msg)
-                except YawningTitanDBError as e:
+                    raise CyberAttackDBCriticalError(msg)
+                except CyberAttackDBError as e:
                     _LOGGER.critical(msg, exc_info=True)
                     raise e
             else:
@@ -356,8 +356,8 @@ class YawningTitanDB:
                             f'for removal.')
                         _LOGGER.error(msg)
                         try:
-                            raise YawningTitanDBError(msg)
-                        except YawningTitanDBError as e:
+                            raise CyberAttackDBError(msg)
+                        except CyberAttackDBError as e:
                             raise e
                 self.db.remove(cond=DocMetadataSchema.UUID == uuid)
                 return uuid

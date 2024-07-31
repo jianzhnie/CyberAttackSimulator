@@ -1,5 +1,6 @@
 import os
 import sys
+import time
 
 import networkx as nx
 from stable_baselines3 import PPO
@@ -11,8 +12,6 @@ from yawning_titan.envs.generic.generic_env import GenericNetworkEnv
 from yawning_titan.game_modes.game_mode_db import default_game_mode
 
 sys.path.append(os.getcwd())
-import os
-import time
 
 from nasimulator.envs.generic.core.action_loops import ActionLoop
 from nasimulator.utils.env_utils import (get_network_from_edges_and_positions,

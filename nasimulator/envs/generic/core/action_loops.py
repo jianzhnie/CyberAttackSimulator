@@ -109,7 +109,7 @@ class ActionLoop:
                     self.env.render(*args, **kwargs)
 
             # get current time
-            string_time = datetime.now().strftime('%d-%m-%Y_%H-%M')
+            string_time = datetime.now().strftime('%Y-%d-%m-%H-%M-%S')
 
             generate_render_thread = []
 

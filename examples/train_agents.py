@@ -5,9 +5,7 @@ import glob
 import os
 
 import numpy as np
-# load the agents
 from stable_baselines3 import A2C, DQN, PPO
-# load the policies
 from stable_baselines3.a2c import MlpPolicy as A2C_policy
 from stable_baselines3.common.callbacks import (
     EvalCallback, StopTrainingOnNoModelImprovement)

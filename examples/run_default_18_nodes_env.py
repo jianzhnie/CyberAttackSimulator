@@ -2,7 +2,10 @@ import os
 import sys
 
 from stable_baselines3 import PPO
+from stable_baselines3.common.callbacks import (
+    EvalCallback, StopTrainingOnNoModelImprovement)
 from stable_baselines3.common.env_checker import check_env
+from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 from yawning_titan.envs.generic.core.blue_interface import BlueInterface
 from yawning_titan.envs.generic.core.network_interface import NetworkInterface
@@ -13,10 +16,6 @@ from yawning_titan.networks.network_db import default_18_node_network
 
 sys.path.append(os.getcwd())
 import os
-
-from stable_baselines3.common.callbacks import (
-    EvalCallback, StopTrainingOnNoModelImprovement)
-from stable_baselines3.common.monitor import Monitor
 
 from nasimulator.envs.generic.core.action_loops import ActionLoop
 
@@ -30,7 +29,7 @@ def main():
     algo_name = 'ppo'
     model_dir = os.path.join(log_dir, algo_name)
     model_name = os.path.join(model_dir, 'ppo_18')
-    media_dir = os.path.join(log_dir, 'media')
+    media_dir = os.path.join(log_dir, algo_name, 'media')
 
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
@@ -55,13 +54,13 @@ def main():
     # reset the environment
     env.reset()
 
-    timesteps = 1000
+    timesteps = 1000000
     env.reset()
     # setup the monitor to check the training
     env = Monitor(env, model_name)
     # define callback to stop the training
     stop_train_callback = StopTrainingOnNoModelImprovement(
-        max_no_improvement_evals=3, min_evals=5, verbose=1)
+        max_no_improvement_evals=5, min_evals=10, verbose=1)
     eval_callback = EvalCallback(
         env,
         callback_after_eval=stop_train_callback,

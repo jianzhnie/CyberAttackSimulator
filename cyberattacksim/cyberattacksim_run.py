@@ -43,24 +43,24 @@ class CyberAttackRun:
 
     .. code:: python
 
-        yt_run = CyberAttackRun()
+        cas_runner = CyberAttackRun()
 
     The ``CyberAttackn`` class can also be used manually by setting auto=False.
 
     .. code:: python
 
-        yt_run = CyberAttackRun(auto=False)
-        yt_run.setup()
-        yt_run.train()
-        yt_run.evaluate()
+        cas_runner = CyberAttackRun(auto=False)
+        cas_runner.setup()
+        cas_runner.train()
+        cas_runner.evaluate()
 
     Trained agents can be saved by calling ``.save()``. If no path is provided, a path is generated using the
     AGENTS_DIR, today's date, and the uuid of the instance of ``CyberAttackRun``.
 
     .. code:: python
 
-        yt_run = CyberAttackRun()
-        yt_run.save()
+        cas_runner = CyberAttackRun()
+        cas_runner.save()
 
     .. todo::
 
@@ -161,7 +161,7 @@ class CyberAttackRun:
         self.auto = auto
 
         self.logger = _LOGGER if logger is None else logger
-        self.logger.debug(f'YT run  {self.uuid}: Run initialised')
+        self.logger.debug(f'CyberAttackSim Run  {self.uuid}: Run initialised')
 
         self.output_dir = output_dir
 
@@ -245,13 +245,16 @@ class CyberAttackRun:
 
         self.network_interface = NetworkInterface(game_mode=self.game_mode,
                                                   network=self.network)
-        self.logger.debug(f'YT run  {self.uuid}: Network interface created')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Network interface created')
 
         self.red = self._red_agent_class(self.network_interface)
-        self.logger.debug(f'YT run  {self.uuid}: Red agent created')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Red agent created')
 
         self.blue = self._blue_agent_class(self.network_interface)
-        self.logger.debug(f'YT run  {self.uuid}: Blue agent created')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Blue agent created')
 
         self.env = GenericNetworkEnv(
             red_agent=self.red,
@@ -261,21 +264,27 @@ class CyberAttackRun:
             show_metrics_every=self.show_metrics_every,
             collect_additional_per_ts_data=self.collect_additional_per_ts_data,
         )
-        self.logger.debug(f'YT run  {self.uuid}: GenericNetworkEnv created')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: GenericNetworkEnv created')
 
-        self.logger.debug(f'YT run  {self.uuid}: Performing env check')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Performing env check')
         check_env(self.env, warn=self.warn)
-        self.logger.debug(f'YT run  {self.uuid}: Env checking complete')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Env checking complete')
 
         self.env.reset()
-        self.logger.debug(f'YT run  {self.uuid}: GenericNetworkEnv reset')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: GenericNetworkEnv reset')
 
-        self.logger.debug(f'YT run  {self.uuid}: Instantiating agent')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Instantiating agent')
         if new:
             self.agent = self._get_new_ppo()
         else:
             self.agent = self._load_existing_ppo(ppo_zip_path)
-        self.logger.debug(f'YT run  {self.uuid}: Agent instantiated')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Agent instantiated')
 
         self.eval_callback = EvalCallback(
             Monitor(self.env, str(self.output_dir)),
@@ -284,7 +293,8 @@ class CyberAttackRun:
             render=self.render,
             verbose=self.verbose,
         )
-        self.logger.debug(f'YT run  {self.uuid}: Eval callback set')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Eval callback set')
 
     def train(self) -> Union[PPO, None]:
         """Trains the agent.
@@ -293,7 +303,7 @@ class CyberAttackRun:
         """
         if self.env and self.agent and self.eval_callback:
             self.logger.debug(
-                f'YT run  {self.uuid}: Performing agent training')
+                f'CyberAttackSim Run  {self.uuid}: Performing agent training')
             for i in range(self.training_runs):
                 self.agent.learn(
                     total_timesteps=self.total_timesteps,
@@ -301,17 +311,20 @@ class CyberAttackRun:
                     callback=self.eval_callback,
                 )
                 self.logger.debug(
-                    f'YT run  {self.uuid}: Training run {i + 1} complete')
+                    f'CyberAttackSim Run  {self.uuid}: Training run {i + 1} complete'
+                )
 
                 self.env.reset()
                 self.logger.debug(
-                    f'YT run  {self.uuid}: GenericNetworkEnv reset')
+                    f'CyberAttackSim Run  {self.uuid}: GenericNetworkEnv reset'
+                )
 
-            self.logger.debug(f'YT run  {self.uuid}: Agent training complete')
+            self.logger.debug(
+                f'CyberAttackSim Run  {self.uuid}: Agent training complete')
             return self.agent
         else:
             self.logger.error(
-                f'Cannot train the agent for YT run  {self.uuid} as the run has not been setup. '
+                f'Cannot train the agent for CyberAttackSim Run  {self.uuid} as the run has not been setup. '
                 f'Call .setup() on the instance of {self.__class__.__name__} to setup the run.'
             )
 
@@ -327,7 +340,7 @@ class CyberAttackRun:
                                    n_eval_episodes=self.n_eval_episodes)
         else:
             self.logger.error(
-                f'Cannot evaluate YT run  {self.uuid} as the agent has not been trained. '
+                f'Cannot evaluate CyberAttackSim Run  {self.uuid} as the agent has not been trained. '
                 f'Call .train() on the instance of {self.__class__.__name__} to train the agent.'
             )
 
@@ -360,12 +373,12 @@ class CyberAttackRun:
                 file.write(self.uuid)
 
             self.logger.debug(
-                f'YT run  {self.uuid}: Saved trained agent (Stable Baselines3 PPO) to: {agent_path}'
+                f'CyberAttackSim Run  {self.uuid}: Saved trained agent (Stable Baselines3 PPO) to: {agent_path}'
             )
             return str(agent_path)
         else:
             self.logger.error(
-                f'Cannot save the trained agent from YT run  {self.uuid} as the agent has not been '
+                f'Cannot save the trained agent from CyberAttackSim Run  {self.uuid} as the agent has not been '
                 f'trained. Call .train() on the instance of {self.__class__.__name__} to train the agent.'
             )
 
@@ -375,7 +388,8 @@ class CyberAttackRun:
         if os.path.isfile(inventory_path):
             os.remove(inventory_path)
         self.logger.debug(
-            f'YT run  {self.uuid}: Building INVENTORY file {inventory_path}.')
+            f'CyberAttackSim Run  {self.uuid}: Building INVENTORY file {inventory_path}.'
+        )
 
         with open(inventory_path, 'w') as inventory:
             inventory.write('file, ST_SIZE')
@@ -390,10 +404,11 @@ class CyberAttackRun:
                         inventory.write(f'{dir_path}, {file_stat.st_size}')
                         inventory.write('\n')
                         self.logger.debug(
-                            f'YT run  {self.uuid}: File added to inventory: {dir_path}.'
+                            f'CyberAttackSim Run  {self.uuid}: File added to inventory: {dir_path}.'
                         )
         self.logger.debug(
-            f'YT run  {self.uuid}: Finished building INVENTORY file.')
+            f'CyberAttackSim Run  {self.uuid}: Finished building INVENTORY file.'
+        )
 
     def export(self) -> str:
         """Export the CyberAttack zip.
@@ -405,7 +420,8 @@ class CyberAttackRun:
 
         :return: The exported filepath as a str.
         """
-        self.logger.debug(f'YT run  {self.uuid}: Performing export.')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Performing export.')
         self.save()
 
         self._build_inventory_file()
@@ -414,12 +430,13 @@ class CyberAttackRun:
         exported_root = pathlib.Path(os.path.join(AGENTS_DIR, 'exported'))
         exported_root.mkdir(parents=True, exist_ok=True)
         export_path = os.path.join(exported_root,
-                                   f'EXPORTED_YT_RUN_{self.uuid}')
+                                   f'EXPORTED_cas_runner_{self.uuid}')
         self.logger.debug(
-            f'YT run  {self.uuid}: Making a zip archive of {self.output_dir} and writing to {export_path}.zip.'
+            f'CyberAttackSim Run  {self.uuid}: Making a zip archive of {self.output_dir} and writing to {export_path}.zip.'
         )
         shutil.make_archive(export_path, 'zip', self.output_dir)
-        self.logger.debug(f'YT run  {self.uuid}: Export completed.')
+        self.logger.debug(
+            f'CyberAttackSim Run  {self.uuid}: Export completed.')
         return f'{export_path}.zip'
 
     # TODO: Remove once proper AgentClass sub-classes have been created and mapped as a function in the main module.
@@ -485,11 +502,11 @@ class CyberAttackRun:
         uuid = args.pop('uuid')
         args.pop('auto')
 
-        yt_run = CyberAttackRun(**args, auto=False)
-        yt_run.uuid = uuid  # noqa - We'll allow it here :)
-        yt_run.setup(new=False, ppo_zip_path=os.path.join(path, 'ppo.zip'))
+        cas_runner = CyberAttackRun(**args, auto=False)
+        cas_runner.uuid = uuid  # noqa - We'll allow it here :)
+        cas_runner.setup(new=False, ppo_zip_path=os.path.join(path, 'ppo.zip'))
 
-        return yt_run
+        return cas_runner
 
     @classmethod
     def _verify_import_export_zip_file(cls, unzip_path) -> bool:

@@ -13,8 +13,12 @@ saves training metrics to tensorboard.
 
 from __future__ import annotations
 
+import os
+import sys
+
 from stable_baselines3 import PPO
 
+sys.path.append(os.getcwd())
 from cyberattacksim.agents.sinewave_red import SineWaveRedAgent
 from cyberattacksim.cyberattacksim_run import CyberAttackRun
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
@@ -61,7 +65,7 @@ def generate(
     :return: A trained agent as an instance of
         :class:`stable_baselines3.ppo.ppo.PPO`.
     """
-    yt_run = CyberAttackRun(
+    cas_runner = CyberAttackRun(
         network=dcbo_base_network(),
         game_mode=dcbo_game_mode(),
         red_agent_class=SineWaveRedAgent,
@@ -79,10 +83,10 @@ def generate(
     )
 
     if save:
-        path = yt_run.save()
-        return yt_run.agent, path
+        path = cas_runner.save()
+        return cas_runner.agent, path
     else:
-        return yt_run.agent, None
+        return cas_runner.agent, None
 
 
 generate(total_timesteps=10000)

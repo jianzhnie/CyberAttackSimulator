@@ -1,12 +1,12 @@
 """A custom config runner module.
 
 This module is used simple as a playground/testbed for custom configurations of
-Yawning-Titan.
+CyberAttack.
 
 .. warning::
 
     This module is being deprecated in a future release to make way for
-    Yawning-Titan runner module in the main package.
+    CyberAttack runner module in the main package.
 """
 
 import os
@@ -59,70 +59,39 @@ def main():
         print_per_ts_data=False,
     )
 
-    check_env(env, warn=True)
+    # get the current directory
+    current_dir = os.getcwd()
+    # directories
+    log_dir = os.path.join(current_dir, 'work_dir', 'random_connected_graph')
+    tensorboard_log_dir = os.path.join(log_dir, 'tf_logs/')
+    filename = f'random_connected_graph_{round(time.time())}'
+    media_dir = os.path.join(log_dir, 'media')
+    model_name = os.path.join(log_dir, filename)
 
+    check_env(env, warn=True)
+    # setup the monitor to check the training
+    env = Monitor(env, model_name)
     env.reset()
 
-    ENABLE_PROFILER = False
-    CREATE_TENSORBOARD = True
-    RENDER_FINAL_AGENT = True
-    DURING_TRAIN_EVAL = True
-    out_dir = '/home/robin/work_dir/rlcode/cyber/YAWNING-TITAN/examples/gnp_graph'
-    tensorboard_log_dir = os.path.join(out_dir, 'logs/ppo-tensorboard/')
-    if CREATE_TENSORBOARD:
-        agent = PPO(PPOMlp,
-                    env,
-                    verbose=1,
-                    tensorboard_log=tensorboard_log_dir)
-    else:
-        agent = PPO(PPOMlp, env, verbose=1)
+    agent = PPO(PPOMlp, env, verbose=1, tensorboard_log=tensorboard_log_dir)
 
     eval_callback = EvalCallback(Monitor(env),
-                                 eval_freq=1000,
+                                 eval_freq=100,
                                  deterministic=False,
                                  render=True)
 
-    if ENABLE_PROFILER:
-        import cProfile
-        import pstats
+    agent.learn(total_timesteps=100000,
+                n_eval_episodes=1,
+                callback=eval_callback)
 
-        profiler = cProfile.Profile()
-
-        profiler.enable()
-        if DURING_TRAIN_EVAL:
-            agent.learn(total_timesteps=5000,
-                        n_eval_episodes=1,
-                        callback=eval_callback)
-        else:
-            agent.learn(total_timesteps=5000)
-
-        profiler.disable()
-
-        stats = pstats.Stats(profiler)
-
-        stats.sort_stats('tottime')
-
-        stats.print_stats()
-    else:
-        if DURING_TRAIN_EVAL:
-            agent.learn(total_timesteps=5000,
-                        n_eval_episodes=1,
-                        callback=eval_callback)
-        else:
-            agent.learn(total_timesteps=5000)
-
-    if RENDER_FINAL_AGENT:
-        filename = f'ppo_18-node-env-v0_{round(time.time())}'
-
-        loop = ActionLoop(env, agent, filename, episode_count=100)
-        out_dir = os.path.join(out_dir, 'images')
-        loop.gif_action_loop(
-            save_gif=True,
-            render_network=True,
-            save_webm=True,
-            gif_output_directory=out_dir,
-            webm_output_directory=out_dir,
-        )
+    loop = ActionLoop(env, agent, filename, episode_count=10)
+    loop.gif_action_loop(
+        render_network=True,
+        save_gif=True,
+        save_webm=True,
+        gif_output_directory=media_dir,
+        webm_output_directory=media_dir,
+    )
 
 
 if __name__ == '__main__':

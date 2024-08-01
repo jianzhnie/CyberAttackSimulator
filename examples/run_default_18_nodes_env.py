@@ -4,7 +4,6 @@ import sys
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import (
     EvalCallback, StopTrainingOnNoModelImprovement)
-from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 
@@ -24,7 +23,7 @@ def main():
     # setup the monitor to check the training
     algo_name = 'ppo'
     # directories
-    log_dir = os.path.join(current_dir, 'work_dir', 'default_18_nodes')
+    log_dir = os.path.join(current_dir, 'work_dir', 'default_18_nodes2')
     model_dir = os.path.join(log_dir, algo_name)
     tf_log_dir = os.path.join(model_dir, 'tf_logs')
     model_name = os.path.join(model_dir, algo_name + '_model')
@@ -47,9 +46,6 @@ def main():
         collect_additional_per_ts_data=True,
         print_per_ts_data=False,
     )
-    # check the network
-    check_env(env, warn=True)
-
     # reset the environment
     env.reset()
 
@@ -60,17 +56,17 @@ def main():
     # define callback to stop the training
     stop_train_callback = StopTrainingOnNoModelImprovement(
         max_no_improvement_evals=5, min_evals=10, verbose=1)
+    print(stop_train_callback)
     eval_callback = EvalCallback(
         env,
-        callback_after_eval=stop_train_callback,
         n_eval_episodes=5,
         eval_freq=100,  # eval_freq
         log_path=model_dir,  # save the logs
         best_model_save_path=model_dir,  # save the model
         deterministic=False,
+        render=False,
         verbose=1,
     )
-    print(eval_callback)
     # instantiate the agent - here we can set the various hyper parameters as the
     # Learning rate - tested to  learning_rate = 0.01 and the gamma = 0.75
     agent = PPO(
@@ -83,6 +79,7 @@ def main():
     # Train the agent
     agent.learn(
         total_timesteps=timesteps,
+        callback=eval_callback,
         log_interval=10,
         eval_freq=100,
         progress_bar=True,

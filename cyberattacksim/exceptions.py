@@ -1,4 +1,4 @@
-"""Custom Yawning-Titan exceptions."""
+"""Custom CyberAttack exceptions."""
 
 
 class CyberAttackDBError(ValueError):

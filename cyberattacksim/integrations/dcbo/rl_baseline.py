@@ -6,7 +6,7 @@ saves training metrics to tensorboard.
 .. warning::
 
     This module is being deprecated in a future release. This release will see
-    the introduction of a Yawning-Titan runner module. This specific
+    the introduction of a CyberAttack runner module. This specific
     'Reinforcement Learning (RL) baseline agent' example will be available as a
     pre-defined configurable run.
 """

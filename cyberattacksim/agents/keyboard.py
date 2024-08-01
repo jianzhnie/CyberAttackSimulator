@@ -4,10 +4,10 @@ from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
 
 
 class KeyboardAgent:
-    """A means for a human player to play the YAWNING-TITAN simulation.
+    """A means for a human player to play the CyberAttack simulation.
 
     The keyboard agent provides a basic means for a human player to play the
-    YAWNING-TITAN simulation.
+    CyberAttack simulation.
 
     An example of using this class can be found within the `notebooks/Creating and
     playing as a Keyboard Agent.ipynb`
@@ -15,7 +15,7 @@ class KeyboardAgent:
 
     def __init__(self, env: GenericNetworkEnv):
         self.env = env
-        print('Welcome to the Yawning-Titan Keyboard Agent game!')
+        print('Welcome to the CyberAttack Keyboard Agent game!')
         print('')
         print('Playing With:')
         print(

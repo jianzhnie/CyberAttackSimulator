@@ -28,7 +28,7 @@ class DocMetaDataObject:
 
 @dataclass()
 class DocMetadata:
-    """A secure class to hold metadata related to a document in a Yawning-Titan
+    """A secure class to hold metadata related to a document in a CyberAttack
     TinyDB file.
 
     The ``uuid`` and ``created_at`` attributes are set upon instantiation if

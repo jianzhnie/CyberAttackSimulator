@@ -1,5 +1,5 @@
-"""The :mod:`~cyberattacksim.db.query` module provides a Yawning-Titan
-extension to :class:`tinydb.queries.Query`."""
+"""The :mod:`~cyberattacksim.db.query` module provides a CyberAttack extension
+to :class:`tinydb.queries.Query`."""
 
 from __future__ import annotations
 

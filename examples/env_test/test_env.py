@@ -11,7 +11,7 @@ from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
 from cyberattacksim.networks.network import Network
 from cyberattacksim.utils.env_utils import (get_network_from_nodes_edges,
-                                            read_edges_from_file)
+                                            read_nodes_edges_from_file)
 
 
 def creat_genetic_network(
@@ -33,7 +33,7 @@ def creat_genetic_network(
 
     file_path = os.path.join(data_dir, 'graph.edgelist')
     nx.write_edgelist(base_graph, file_path)
-    nodes, edges = read_edges_from_file(file_path)
+    nodes, edges = read_nodes_edges_from_file(file_path)
     network = get_network_from_nodes_edges(nodes, edges)
     return network
 
@@ -83,7 +83,7 @@ def creat_massive_network(
 
     file_path = os.path.join(data_dir, 'graph.edgelist')
     nx.write_edgelist(base_graph, file_path)
-    nodes, edges = read_edges_from_file(file_path)
+    nodes, edges = read_nodes_edges_from_file(file_path)
     network = get_network_from_nodes_edges(
         nodes,
         edges,

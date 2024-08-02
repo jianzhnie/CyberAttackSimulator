@@ -77,7 +77,7 @@ def main() -> None:
         verbose=1,
     )
     wandb_callback = WandbCallback(
-        model_save_path=f'models/{run.id}',
+        model_save_path=f'model_dir/{run.id}',
         model_save_freq=1000,
         verbose=2,
     )

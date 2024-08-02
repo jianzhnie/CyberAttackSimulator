@@ -1,3 +1,13 @@
 gym
+matplotlib
+moviepy
 networkx
 numpy
+pandas
+scipy
+seaborn
+stable_baselines3
+tabulate
+tensorboard
+tinydb
+torch

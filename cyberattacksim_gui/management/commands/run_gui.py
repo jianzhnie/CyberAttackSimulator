@@ -44,7 +44,7 @@ class DefaultServerDjango:
 
 
 @dataclass
-class YawningTitanServer:
+class CyberAttackServer:
     """The Yawning-Titan Server."""
 
     server: Union[str, Callable[[Any], None]]
@@ -146,7 +146,7 @@ class Command(BaseCommand):
     def run(self):
         """Run the GUI backend server and then runs the GUI in default
         browser."""
-        YawningTitanServer(  # noqa
+        CyberAttackServer(  # noqa
             server='django',
             server_kwargs={
                 'app': application,

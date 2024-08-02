@@ -1,10 +1,10 @@
 import json
 
-from cyberattacksimmmmmmmmmmm.networks import network_creator
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 from django.views import View
 
+from cyberattacksim.networks import network_creator
 from cyberattacksim_gui.forms.network_forms import (NetworkFormManager,
                                                     NetworkTemplateForm)
 from cyberattacksim_gui.views.utils.helpers import NetworkManager, get_toolbar

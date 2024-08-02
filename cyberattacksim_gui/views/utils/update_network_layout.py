@@ -1,8 +1,9 @@
 import json
 from io import StringIO
 
-from cyberattacksimmmmmmm.networks.network import Network, NetworkLayout
 from django.http import HttpRequest, JsonResponse
+
+from cyberattacksim.networks.network import Network, NetworkLayout
 
 
 def update_network_layout(request: HttpRequest) -> JsonResponse:

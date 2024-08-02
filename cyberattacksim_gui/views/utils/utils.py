@@ -1,9 +1,9 @@
 import json
 
-from cyberattacksimmmmmmmmm.db.doc_metadata import DocMetadata
 from django.http import HttpRequest, JsonResponse
 from django.urls import reverse
 
+from cyberattacksim.db.doc_metadata import DocMetadata
 from cyberattacksim.game_modes.game_mode import GameMode
 from cyberattacksim.networks.network import Network
 from cyberattacksim_gui.forms.game_mode_forms import GameModeFormManager

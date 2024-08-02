@@ -16,7 +16,7 @@ from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.game_modes.game_mode_db import GameModeDB, GameModeSchema
 from cyberattacksim.networks.network import Network, NetworkLayout
 from cyberattacksim.networks.network_db import NetworkDB, NetworkQuery
-from cyberattacksim_gui import YT_GUI_RUN_LOG, YT_GUI_STDOUT
+from cyberattacksim_gui import CAS_GUI_RUN_LOG, CAS_GUI_STDOUT
 from cyberattacksim_server.settings.base import DOCS_ROOT, STATIC_URL
 
 
@@ -54,17 +54,17 @@ class RunManager:
 
         `~cyberattacksimm.cyberattacksimmm_run.CyberAttackRun`.
         """
-        if YT_GUI_RUN_LOG.exists():
-            YT_GUI_RUN_LOG.unlink()
+        if CAS_GUI_RUN_LOG.exists():
+            CAS_GUI_RUN_LOG.unlink()
         logger = logging.getLogger('yt_run')
         logger.setLevel(logging.DEBUG)
 
         # create file handler which logs even debug messages
-        fh = logging.FileHandler(YT_GUI_RUN_LOG.as_posix())
+        fh = logging.FileHandler(CAS_GUI_RUN_LOG.as_posix())
         fh.setLevel(logging.DEBUG)
         logger.addHandler(fh)
 
-        with open(YT_GUI_STDOUT, 'w+') as sys.stdout:
+        with open(CAS_GUI_STDOUT, 'w+') as sys.stdout:
             run = CyberAttackRun(**kwargs, auto=False, logger=logger)
 
             run.setup()
@@ -103,8 +103,8 @@ class RunManager:
         """
         cls.counter += 1
         output = {
-            'stderr': cls.format_file(YT_GUI_RUN_LOG),
-            'stdout': cls.format_file(YT_GUI_STDOUT),
+            'stderr': cls.format_file(CAS_GUI_RUN_LOG),
+            'stdout': cls.format_file(CAS_GUI_STDOUT),
             'gif': cls.gif_path,
             'webm': cls.webm_path,
             'active': cls.process.is_alive() if cls.process else False,

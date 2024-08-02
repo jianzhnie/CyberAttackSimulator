@@ -1,10 +1,10 @@
 import traceback
 
-from cyberattacksimmmmmmmmmmm.game_modes.game_mode import GameMode
 from django.http import HttpRequest, JsonResponse
 from django.shortcuts import render
 from django.views import View
 
+from cyberattacksim.game_modes.game_mode import GameMode
 from cyberattacksim_gui.forms.game_mode_forms import GameModeSearchForm
 from cyberattacksim_gui.views.utils.helpers import GameModeManager, get_toolbar
 

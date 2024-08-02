@@ -160,9 +160,9 @@ cython_debug/
 #.idea/
 work_dirs/
 work_dir/
-log/
-logs/
 wandb/
 *.tar
 data/
 notebooks/
+cache/user_data/
+cache/platform/app_images/

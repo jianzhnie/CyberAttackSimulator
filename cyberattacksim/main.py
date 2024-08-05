@@ -12,9 +12,9 @@ app = typer.Typer()
 def gui():
     """Start the Yawning-Titan GUI."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE',
-                          'yawning_titan_server.settings.dev')
+                          'cyberattacksim_server.settings.dev')
     """Method that is fired on execution of the command in the terminal."""
-    from yawning_titan_gui.management.commands.run_gui import Command
+    from cyberattacksim_gui.management.commands.run_gui import Command
 
     command = Command()
     command.run()
@@ -23,7 +23,7 @@ def gui():
 @app.command()
 def build_dirs():
     """Build the Yawning-Titan app directories."""
-    from yawning_titan.utils import setup_app_dirs
+    from cyberattacksim.utils import setup_app_dirs
 
     setup_app_dirs.run()
 
@@ -35,7 +35,7 @@ def reset_db(rebuild: bool = False):
     :param rebuild: If True, completely rebuild the DB, removing all custom
         Networks and GameModes. Default value is False.
     """
-    from yawning_titan.utils import reset_network_and_game_mode_db_defaults
+    from cyberattacksim.utils import reset_network_and_game_mode_db_defaults
 
     reset_network_and_game_mode_db_defaults.run(rebuild)
 
@@ -46,7 +46,7 @@ def reset_notebooks(overwrite: bool = True):
 
     :param overwrite: If True, will overwrite existing default notebooks.
     """
-    from yawning_titan.utils import reset_default_notebooks
+    from cyberattacksim.utils import reset_default_notebooks
 
     reset_default_notebooks.run(overwrite)
 
@@ -61,13 +61,13 @@ def logs(last_n: int = 10):
 
     from platformdirs import PlatformDirs
 
-    yt_platform_dirs = PlatformDirs(appname='yawning_titan')
+    yt_platform_dirs = PlatformDirs(appname='cyberattacksim')
 
     if sys.platform == 'win32':
         log_dir = yt_platform_dirs.user_data_path / 'logs'
     else:
         log_dir = yt_platform_dirs.user_log_path
-    log_path = os.path.join(log_dir, 'yawning_titan.log')
+    log_path = os.path.join(log_dir, 'cyberattacksim.log')
 
     if os.path.isfile(log_path):
         with open(log_path) as file:
@@ -79,7 +79,7 @@ def logs(last_n: int = 10):
 @app.command()
 def notebooks():
     """Start Jupyter Lab in the users Yawning-Titan notebooks directory."""
-    from yawning_titan.notebooks.jupyter import start_jupyter_session
+    from cyberattacksim.notebooks.jupyter import start_jupyter_session
 
     start_jupyter_session()
 
@@ -95,9 +95,9 @@ def docs():
 @app.command()
 def version():
     """Get the installed Yawning-Titan version number."""
-    import yawning_titan
+    import cyberattacksim
 
-    print(yawning_titan.__version__)
+    print(cyberattacksim.__version__)
 
 
 @app.command()
@@ -105,9 +105,9 @@ def release_notes():
     """View the GitHub release notes of the installed Yawning-Titan version."""
     import webbrowser
 
-    import yawning_titan
+    import cyberattacksim
 
-    v = yawning_titan.__version__
+    v = cyberattacksim.__version__
     url = f'https://github.com/dstl/YAWNING-TITAN/releases/tag/v{v}'
 
     webbrowser.open(url, new=2)
@@ -116,7 +116,7 @@ def release_notes():
 @app.command()
 def clean_up():
     """Cleans up left over files from previous version installations."""
-    from yawning_titan.utils import old_installation_clean_up
+    from cyberattacksim.utils import old_installation_clean_up
 
     old_installation_clean_up.run()
 
@@ -129,11 +129,11 @@ def setup():
     """
     from logging import getLogger
 
-    import yawning_titan  # noqa - Gets the Yawning-Titan logger config
-    from yawning_titan.utils import (old_installation_clean_up,
-                                     reset_default_notebooks,
-                                     reset_network_and_game_mode_db_defaults,
-                                     setup_app_dirs)
+    import cyberattacksim  # noqa - Gets the Yawning-Titan logger config
+    from cyberattacksim.utils import (old_installation_clean_up,
+                                      reset_default_notebooks,
+                                      reset_network_and_game_mode_db_defaults,
+                                      setup_app_dirs)
 
     _LOGGER = getLogger(__name__)
 
@@ -159,14 +159,15 @@ def setup():
 def keyboard_agent():
     """Play Yawning-Titan using the Keyboard Agent."""
     from stable_baselines3.common.env_checker import check_env
-    from yawning_titan.agents.keyboard import KeyboardAgent
-    from yawning_titan.envs.generic.core.blue_interface import BlueInterface
-    from yawning_titan.envs.generic.core.network_interface import \
+
+    from cyberattacksim.agents.keyboard import KeyboardAgent
+    from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
+    from cyberattacksim.envs.generic.core.network_interface import \
         NetworkInterface
-    from yawning_titan.envs.generic.core.red_interface import RedInterface
-    from yawning_titan.envs.generic.generic_env import GenericNetworkEnv
-    from yawning_titan.game_modes.game_mode_db import default_game_mode
-    from yawning_titan.networks.network_db import default_18_node_network
+    from cyberattacksim.envs.generic.core.red_interface import RedInterface
+    from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
+    from cyberattacksim.game_modes.game_mode_db import default_game_mode
+    from cyberattacksim.networks.network_db import default_18_node_network
 
     network = default_18_node_network()
     game_mode = default_game_mode()

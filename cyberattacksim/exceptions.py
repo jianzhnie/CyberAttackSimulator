@@ -3,7 +3,7 @@
 
 class CyberAttackDBError(ValueError):
     """Raised during insert fails by
-    :class:`~yawning_titan.db.yawning_titan_db.CyberAttackB`.
+    :class:`~cyberattacksim.db.cyberattacksim_db.CyberAttackB`.
 
     Should be handled and dealt with without exiting.
     """
@@ -13,7 +13,7 @@ class CyberAttackDBError(ValueError):
 
 class CyberAttackDBCriticalError(ValueError):
     """Raised during update and remove fails by
-    :class:`~yawning_titan.db.yawning_titan_db.CyberAttackDB`.
+    :class:`~cyberattacksim.db.cyberattacksim_db.CyberAttackDB`.
 
     Would suggest the DB is corrupted. Should be handled to ensure a 'graceful'
     exit.

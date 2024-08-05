@@ -419,10 +419,10 @@ def get_toolbar(current_page_title: str = None):
                         'Feature request'
                     ],
                     [
-                        'https://github.com/robin/CyberAttackSimulator/graphs/contributors',
-                        'https://github.com/robin/CyberAttackSimulator/discussions',
-                        'https://github.com/robin/CyberAttackSimulator/issues/new?assignees=&labels=bug&template=bug_report.md&title=[BUG]',
-                        'https://github.com/robin/CyberAttackSimulator/issues/new?assignees=&labels=feature_request&template=feature_request.md&title=[REQUEST]',
+                        'https://github.com/jianzhnie/CyberAttackSimulator/graphs/contributors',
+                        'https://github.com/jianzhnie/CyberAttackSimulator/discussions',
+                        'https://github.com/jianzhnie/CyberAttackSimulator/issues/new?assignees=&labels=bug&template=bug_report.md&title=[BUG]',
+                        'https://github.com/jianzhnie/CyberAttackSimulator/issues/new?assignees=&labels=feature_request&template=feature_request.md&title=[REQUEST]',
                     ],
                 )
             ],

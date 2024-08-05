@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 import json
+import os
 import os.path
 import pathlib
 import shutil
+import sys
 from datetime import datetime
 from logging import Logger, getLogger
 from typing import Dict, Final, List, Optional, Union
@@ -17,6 +19,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 
+sys.path.append(os.getcwd())
 from cyberattacksim import AGENTS_DIR, PPO_TENSORBOARD_LOGS_DIR
 from cyberattacksim.agents.fixed_red import FixedRedAgent
 from cyberattacksim.agents.nsa_red import NSARed

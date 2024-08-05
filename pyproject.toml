@@ -80,10 +80,10 @@ tensorflow = [
 ]
 
 [project.scripts]
-yawning-titan = "yawning_titan.main:app"
+CyberAttackSim = "yawning_titan.main:app"
 
 [project.urls]
-"Homepage" = "https://github.com/dstl/YAWNING-TITAN"
-"Documentation" = "https://dstl.github.io/YAWNING-TITAN/"
-"Repository" = "https://github.com/dstl/YAWNING-TITAN"
-"Issue Tracker" = "https://github.com/dstl/YAWNING-TITAN/issues"
+"Homepage" = "https://github.com/robin/CyberAttackSim"
+"Documentation" = "https://robin.github.io/CyberAttackSim/"
+"Repository" = "https://github.com/robin/CyberAttackSim"
+"Issue Tracker" = "https://github.com/robin/CyberAttackSim/issues"

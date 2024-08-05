@@ -1,5 +1,6 @@
 """This code is an example for setting up the training of the various agents
-using the algorithms present and using the current version of YAWNING TITAN."""
+using the algorithms present and using the current version of
+CyberAttackSim."""
 
 import glob
 import os

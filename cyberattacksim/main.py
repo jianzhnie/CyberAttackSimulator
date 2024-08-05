@@ -41,17 +41,6 @@ def reset_db(rebuild: bool = False):
 
 
 @app.command()
-def reset_notebooks(overwrite: bool = True):
-    """Force a reset of the default notebooks in the users notebooks directory.
-
-    :param overwrite: If True, will overwrite existing default notebooks.
-    """
-    from cyberattacksim.utils import reset_default_notebooks
-
-    reset_default_notebooks.run(overwrite)
-
-
-@app.command()
 def logs(last_n: int = 10):
     """Print the CyberAttackSim log file.
 
@@ -61,12 +50,12 @@ def logs(last_n: int = 10):
 
     from platformdirs import PlatformDirs
 
-    yt_platform_dirs = PlatformDirs(appname='cyberattacksim')
+    cas_platform_dirs = PlatformDirs(appname='cyberattacksim')
 
     if sys.platform == 'win32':
-        log_dir = yt_platform_dirs.user_data_path / 'logs'
+        log_dir = cas_platform_dirs.user_data_path / 'logs'
     else:
-        log_dir = yt_platform_dirs.user_log_path
+        log_dir = cas_platform_dirs.user_log_path
     log_path = os.path.join(log_dir, 'cyberattacksim.log')
 
     if os.path.isfile(log_path):
@@ -77,19 +66,11 @@ def logs(last_n: int = 10):
 
 
 @app.command()
-def notebooks():
-    """Start Jupyter Lab in the users CyberAttackSim notebooks directory."""
-    from cyberattacksim.notebooks.jupyter import start_jupyter_session
-
-    start_jupyter_session()
-
-
-@app.command()
 def docs():
     """View the CyberAttackSim docs."""
     import webbrowser
 
-    webbrowser.open('https://dstl.github.io/CyberAttackSim/', new=2)
+    webbrowser.open('https://jianzhnie.github.io/CyberAttackSim/', new=2)
 
 
 @app.command()
@@ -109,17 +90,9 @@ def release_notes():
     import cyberattacksim
 
     v = cyberattacksim.__version__
-    url = f'https://github.com/dstl/CyberAttackSim/releases/tag/v{v}'
+    url = f'https://github.com/jianzhnie/CyberAttackSim/releases/tag/v{v}'
 
     webbrowser.open(url, new=2)
-
-
-@app.command()
-def clean_up():
-    """Cleans up left over files from previous version installations."""
-    from cyberattacksim.utils import old_installation_clean_up
-
-    old_installation_clean_up.run()
 
 
 @app.command()
@@ -131,9 +104,7 @@ def setup():
     from logging import getLogger
 
     import cyberattacksim  # noqa - Gets the CyberAttackSim logger config
-    from cyberattacksim.utils import (old_installation_clean_up,
-                                      reset_default_notebooks,
-                                      reset_network_and_game_mode_db_defaults,
+    from cyberattacksim.utils import (reset_network_and_game_mode_db_defaults,
                                       setup_app_dirs)
 
     _LOGGER = getLogger(__name__)
@@ -145,13 +116,6 @@ def setup():
 
     _LOGGER.info('Rebuilding the NetworkDB and GameModeDB...')
     reset_network_and_game_mode_db_defaults.run(rebuild=True)
-
-    _LOGGER.info('Rebuilding the default notebooks...')
-    reset_default_notebooks.run(overwrite_existing=True)
-
-    _LOGGER.info(
-        'Performing a clean-up of previous CyberAttackSim installations...')
-    old_installation_clean_up.run()
 
     _LOGGER.info('CyberAttackSim setup complete!')
 

@@ -164,7 +164,7 @@ This gives an output like:
 Example Network
 ***************
 
-Here we will create the corporate network that is used as a fixture in the Yawning-Titan tests (`tests.conftest.corporate_network`).
+Here we will create the corporate network that is used as a fixture in the CyberAttackSim tests (`tests.conftest.corporate_network`).
 
 Names are added to each of the nodes for when they're displayed in a network graph.
 

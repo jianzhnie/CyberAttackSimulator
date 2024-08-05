@@ -4,7 +4,7 @@ Using the Experiment Runner
 .. note::
     The experiment runner is currently not supported and does not work with the ``GenericEnv()``.
 
-YAWNING TITAN comes with a command line interface tool called `experiment_runner.py` which allows new users to begin experimenting with Reinforcement learning approaches in the environments
+CyberAttackSim comes with a command line interface tool called `experiment_runner.py` which allows new users to begin experimenting with Reinforcement learning approaches in the environments
 included. The experiment runner is a way to run some of specific environments such as the 4 node environment ::
 
     > python3 experiment_runner.py --help

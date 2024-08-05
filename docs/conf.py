@@ -19,8 +19,8 @@ sys.path.insert(0, os.path.abspath('../'))
 
 # -- Project information -----------------------------------------------------
 year = datetime.datetime.now().year
-project = 'YAWNING TITAN'
-copyright = f'Crown Copyright (C) Dstl 2021 - {year}'
+project = 'CyberAttackSim'
+copyright = f'Crown Copyright (C) robin 2021 - {year}'
 author = 'Defence Science and Technology Laboratory UK'
 
 # The short Major.Minor.Build version
@@ -155,7 +155,7 @@ latex_elements = {
 latex_documents = [(
     master_doc,
     'YAWNINGTITAN.tex',
-    'YAWNING TITAN Documentation',
+    'CyberAttackSim Documentation',
     'Josh Collyer, Alex Andrew, Liam Quantrill',
     'manual',
 )]
@@ -164,7 +164,7 @@ latex_documents = [(
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'yawningtitan', 'YAWNING TITAN Documentation',
+man_pages = [(master_doc, 'yawningtitan', 'CyberAttackSim Documentation',
               [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -175,7 +175,7 @@ man_pages = [(master_doc, 'yawningtitan', 'YAWNING TITAN Documentation',
 texinfo_documents = [(
     master_doc,
     'YAWNINGTITAN',
-    'YAWNING TITAN Documentation',
+    'CyberAttackSim Documentation',
     author,
     'YAWNINGTITAN',
     'One line description of project.',

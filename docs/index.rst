@@ -1,4 +1,4 @@
-Welcome to the Yawning-Titan docs!
+Welcome to the CyberAttackSim docs!
 ==================================
 
 .. toctree::
@@ -13,11 +13,11 @@ Welcome to the Yawning-Titan docs!
    source/agent_training
    source/experiments
    GameMode UML <source/game_mode_config_explained>
-   Yawning-Titan CLI <source/yt_cli>
+   CyberAttackSim CLI <source/yt_cli>
    source/yt_gui
-   Yawning-Titan API <source/_autosummary/yawning_titan>
-   Yawning-Titan Tests <source/_autosummary/tests>
-   Contribute to Yawning-Titan <source/contributing>
+   CyberAttackSim API <source/_autosummary/yawning_titan>
+   CyberAttackSim Tests <source/_autosummary/tests>
+   Contribute to CyberAttackSim <source/contributing>
    source/glossary
    source/license
    source/dependencies
@@ -26,30 +26,30 @@ Welcome to the Yawning-Titan docs!
    :caption: Project Links:
    :hidden:
 
-   Code <https://github.com/dstl/Yawning-Titan>
-   Issues <https://github.com/dstl/Yawning-Titan/issues>
-   Pull Requests <https://github.com/dstl/Yawning-Titan/pulls>
-   Discussions <https://github.com/dstl/Yawning-Titan/discussions>
+   Code <https://github.com/robin/CyberAttackSim>
+   Issues <https://github.com/robin/CyberAttackSim/issues>
+   Pull Requests <https://github.com/robin/CyberAttackSim/pulls>
+   Discussions <https://github.com/robin/CyberAttackSim/discussions>
 
 
-What is Yawning-Titan?
+What is CyberAttackSim?
 ----------------------
 
-Yawning-Titan is a collection of abstract, graph based cyber-security simulation environments that supports the training
-of intelligent agents for autonomous cyber operations based on OpenAI Gym. Yawning-Titan focuses on providing a fast
+CyberAttackSim is a collection of abstract, graph based cyber-security simulation environments that supports the training
+of intelligent agents for autonomous cyber operations based on OpenAI Gym. CyberAttackSim focuses on providing a fast
 simulation to support the development of defensive autonomous agents who face off against probabilistic red agents.
 
-Yawning-Titan contains a small number of specific, self contained OpenAI Gym environments for autonomous cyber defence
+CyberAttackSim contains a small number of specific, self contained OpenAI Gym environments for autonomous cyber defence
 research, which are great for learning and debugging, as well as a flexible, highly configurable generic environment
 which can be used to represent a range of scenarios of increasing complexity and scale. The generic environment only
 needs a network topology and a settings file in order to create an OpenAI Gym compliant environment which also enables
 open research and enhanced reproducibility.
 
 
-How can Yawning-Titan be used?
+How can CyberAttackSim be used?
 ------------------------------
 
-Yawning-Titan can be used either through the CLI app or vie the GUI. The idea of this is to make Yawning-Titan as
+CyberAttackSim can be used either through the CLI app or vie the GUI. The idea of this is to make CyberAttackSim as
 accessible as possible to all users out of the box whilst not compromising the ability for users to make in-depth
 modifications to the source code.
 
@@ -57,7 +57,7 @@ modifications to the source code.
 Design Principles
 -----------------
 
-Yawning-Titan has been designed with the following key principles in mind:
+CyberAttackSim has been designed with the following key principles in mind:
  - Simplicity over complexity
  - Minimal Hardware Requirements
  - Operating System agnostic
@@ -66,9 +66,9 @@ Yawning-Titan has been designed with the following key principles in mind:
  - Flexible environment and game rule configuration
 
 
-What is Yawning-Titan built with
+What is CyberAttackSim built with
 --------------------------------
-Yawning-Titan is built on the shoulders of giants and heavily relies on the following libraries:
+CyberAttackSim is built on the shoulders of giants and heavily relies on the following libraries:
 
  * `OpenAI's Gym <https://gym.openai.com/>`_ is used as the basis for all of the environments
  * `Networkx <https://github.com/networkx/networkx>`_ is used as the underlying data structure used for all environments
@@ -79,14 +79,14 @@ Yawning-Titan is built on the shoulders of giants and heavily relies on the foll
  * `Cytoscape JS <https://github.com/cytoscape/cytoscape.js/>`_ is used to provide a lightweight and intuitive network editor
 
 
-Yawning-Titan Quick start
+CyberAttackSim Quick start
 -------------------------
 
 .. code:: bash
 
-    pip install <Yawning-Titan .whl file>
-    yawning-titan setup
-    yawning-titan gui
+    pip install <CyberAttackSim.whl file>
+    CyberAttackSim setup
+    CyberAttackSim gui
 
 
 Where next?
@@ -99,7 +99,7 @@ Cite This Work
 --------------
 
 
-If you would like to include a citation for Yawning-Titan in your work, please cite the paper published at the ICML 2022 ML4Cyber Workshop.
+If you would like to include a citation for CyberAttackSim in your work, please cite the paper published at the ICML 2022 ML4Cyber Workshop.
 
 .. code:: bibtex
 

@@ -59,7 +59,7 @@ Import a trained Agent
 From Exported YawningTitanRun
 *****************************
 
-If you have a .zip file that was generated using the YawningtitanRun class, it can be imported into your Yawning-Titan
+If you have a .zip file that was generated using the YawningtitanRun class, it can be imported into your CyberAttackSim
 environment by using the :func:`~yawning_titan.yawning_titan_run.YawningTitanRun.import_from_export` function:
 
 .. code:: python
@@ -98,7 +98,7 @@ To view the tensorboard metrics in Tensorboard, run:
 
 .. note:: Using Tensorboard
 
-    To make full use of tensorboard, install Yawning-Titan with the tensorflow extra.
+    To make full use of tensorboard, install CyberAttackSim with the tensorflow extra.
 
 
 .. warning:: Future Development

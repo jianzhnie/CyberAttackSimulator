@@ -1,7 +1,7 @@
-Enhancing Yawning Titan
+Enhancing CyberAttackSim
 ========================
 
-Yawning Titan has been built to allow easy addition and modification
+CyberAttackSim has been built to allow easy addition and modification
 of large sections. It is very easy to add:
 
  * Reward functions

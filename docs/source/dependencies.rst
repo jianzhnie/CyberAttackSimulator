@@ -5,7 +5,7 @@ Dependencies
 ===========
 
 ***************
-Yawning-Titan
+CyberAttackSim
 ***************
 
 .. include:: yt-dependencies.rst

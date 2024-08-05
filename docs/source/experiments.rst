@@ -63,7 +63,7 @@ If using the experiment_runner.py then after training some summary stats will be
 
 Rendering
 **********
-Most of the environments in YAWNING TITAN support rendering and have a render method. This
+Most of the environments in CyberAttackSim support rendering and have a render method. This
 method will create a matplotlib graph showing the current state of the environment.
 Here are some images showing how the rendering looks:
 

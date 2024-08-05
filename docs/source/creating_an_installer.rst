@@ -6,7 +6,7 @@ To create a .spec file to use with pyinstaller run the command:
 
 pyinstaller manage.py
 
-If the .spec file is being built from scratch it is good practice to add a .ico file to the exe arguments as well as amending all references to name to match the CyberAttackSim project name. also switching off console prevents a console window from opening when the yawning_titan.exe file is ran.
+If the .spec file is being built from scratch it is good practice to add a .ico file to the exe arguments as well as amending all references to name to match the CyberAttackSim project name. also switching off console prevents a console window from opening when the cyberattacksim.exe file is ran.
 
 exe = EXE(
   ...,
@@ -30,7 +30,7 @@ To create our installer we'll be using a tool called InstallForge. InstallForge
 
 General
 
-run InstallForge  an open the general tab. Enter the basic information for the yawning_titan instance.
+run InstallForge  an open the general tab. Enter the basic information for the cyberattacksim instance.
 
 You can also select the target platforms for the installer, from various versions of Windows that are available. For desktop applications you currently probably only want to target Windows 7, 8 and 10.
 
@@ -38,9 +38,9 @@ Setup
 
 Click on the left sidebar to open the "Files" page under "Setup". Here you can specify the files to be bundled in the installer.
 
-Use "Add Files…" and select all the files in the dist/yawning_titan folder produced by PyInstaller. The file browser that pops up allows multiple file selections, so you can add them all in a single go, however you need to add folders separately. Click "Add Folder…" and add any folders under dist/yawning_titan
+Use "Add Files…" and select all the files in the dist/cyberattacksim folder produced by PyInstaller. The file browser that pops up allows multiple file selections, so you can add them all in a single go, however you need to add folders separately. Click "Add Folder…" and add any folders under dist/cyberattacksim
 
-Once you're finished scroll through the list to the bottom and ensure that the folders are listed to be included. You want all files and folders under dist/yawning_titan to be present. But the folder dist/yawning_titan itself should not be listed.
+Once you're finished scroll through the list to the bottom and ensure that the folders are listed to be included. You want all files and folders under dist/cyberattacksim to be present. But the folder dist/cyberattacksim itself should not be listed.
 
 Navigate to the "Uninstall" tab, and attach an unistaller by ticking the box. This will also make the application appear in "Add or Remove Programs".
 
@@ -48,7 +48,7 @@ System
 
 Under "System" select "Shortcuts" to open the shortcut editor. Here you can specify shortcuts for both the Start Menu and Desktop if you like.
 
-Click "Add…" to add new shortcuts for your application. Choose between Start menu and Desktop shortcuts, and fill in the name and target file. This is the path your application EXE will end up at once installed. Since <installpath>\ is already specified, now add the name yawning_titan to the app exe.
+Click "Add…" to add new shortcuts for your application. Choose between Start menu and Desktop shortcuts, and fill in the name and target file. This is the path your application EXE will end up at once installed. Since <installpath>\ is already specified, now add the name cyberattacksim to the app exe.
 
 Build
 

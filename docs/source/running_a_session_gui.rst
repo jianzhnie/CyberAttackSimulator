@@ -11,10 +11,10 @@ To get started, Navigate to the run session (play icon) page from the sidebar or
   :width: 800
   :alt: run session
 
-Running a YawningTitanRun session
+Running a CyberAttackRun session
 #################################
 
-The run session page is comprised of 6 sections that represent most configurable elements of the :class: `~yawning_titan.yawning_titan_run.YawningTitanRun`.
+The run session page is comprised of 6 sections that represent most configurable elements of the :class: `~cyberattacksim.cyberattacksim_run.CyberAttackRun`.
 To launch a run instance navigate to the *Run session* button on the bottom right of the window
 
 Network selection
@@ -35,7 +35,7 @@ The next section is a live display of the metrics output by each loop of the cur
 
 Log display
 ***********
-The next section is a live display of the logs produced by :class: `~yawning_titan.yawning_titan_run.YawningTitanRun`
+The next section is a live display of the logs produced by :class: `~cyberattacksim.cyberattacksim_run.CyberAttackRun`
 related to the Individual stages of the run session
 
 Preview output

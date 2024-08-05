@@ -73,7 +73,7 @@ Here are some images showing how the rendering looks:
 Creating an ActionLoop with the environment and agent will run the agent through a game rendering each step. A tutorial on how
 to do this can be found at:
 
-    ``~/yawning_titan/notebooks/sb3/End to End Generic Env Example - Env Creation, Agent Train and Agent Rendering.ipynb``
+    ``~/cyberattacksim/notebooks/sb3/End to End Generic Env Example - Env Creation, Agent Train and Agent Rendering.ipynb``
 
 Once the rendering is complete the entire episode will be saved as a gif so that you can watch it again at any time.
 

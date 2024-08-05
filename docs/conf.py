@@ -24,7 +24,7 @@ copyright = f'Crown Copyright (C) robin 2021 - {year}'
 author = 'Defence Science and Technology Laboratory UK'
 
 # The short Major.Minor.Build version
-with open('../src/yawning_titan/VERSION', 'r') as file:
+with open('../src/cyberattacksim/VERSION', 'r') as file:
     version = file.readline()
 # The full version, including alpha/beta/rc tags
 release = version

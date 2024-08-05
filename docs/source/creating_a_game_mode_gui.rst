@@ -54,5 +54,5 @@ with the input elements disabled and on the management page with an *eye icon* i
 
 Validation
 **********
-When value of game mode elements are updated the validation checks speicified in the :class: `~yawning_titan.game_modes.game_mode.GameMode` are executed.
+When value of game mode elements are updated the validation checks speicified in the :class: `~cyberattacksim.game_modes.game_mode.GameMode` are executed.
 The errors (if any) are then displayed as bullet points under the heading of the group or element to which they apply.

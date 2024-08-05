@@ -8,15 +8,15 @@ To get started, import Network and Node.
 
 .. code:: python
 
-    from yawning_titan.networks.node import Node
-    from yawning_titan.networks.network import Network
+    from cyberattacksim.networks.node import Node
+    from cyberattacksim.networks.network import Network
 
 Network Instantiation
 *********************
 
-To create a Network, first, we must instantiate an instance of :class:`~yawning_titan.networks.network.Network`.
+To create a Network, first, we must instantiate an instance of :class:`~cyberattacksim.networks.network.Network`.
 
-While a :class:`~yawning_titan.networks.network.Network` can be instantiated right out of the box by calling ``Network()``,
+While a :class:`~cyberattacksim.networks.network.Network` can be instantiated right out of the box by calling ``Network()``,
 there are some configurable parameters that you can set (we'll get onto these further down).
 
 .. code:: python
@@ -26,9 +26,9 @@ network = Network()
 Node Instantiation
 ******************
 
-Next, we instantiate some :class:`~yawning_titan.networks.node.Node`'s.
+Next, we instantiate some :class:`~cyberattacksim.networks.node.Node`'s.
 
-Again, while a :class:`~yawning_titan.networks.node.Node` can be instantiated right out of the box by calling ``Node()``,
+Again, while a :class:`~cyberattacksim.networks.node.Node` can be instantiated right out of the box by calling ``Node()``,
 there are some configurable parameters that you can set (we'll get onto these further down).
 
 .. code:: python
@@ -43,10 +43,10 @@ there are some configurable parameters that you can set (we'll get onto these fu
 Add Nodes to a Network
 **********************
 
-Currently we only have an instance of :class:`~yawning_titan.networks.network.Network` and some instances of
-:class:`~yawning_titan.networks.node.Node`.
+Currently we only have an instance of :class:`~cyberattacksim.networks.network.Network` and some instances of
+:class:`~cyberattacksim.networks.node.Node`.
 
-To add a :class:`~yawning_titan.networks.node.Node` to a :class:`~yawning_titan.networks.network.Network`, we need to
+To add a :class:`~cyberattacksim.networks.node.Node` to a :class:`~cyberattacksim.networks.network.Network`, we need to
 call ``.add_node()``.
 
 .. code:: python
@@ -61,7 +61,7 @@ call ``.add_node()``.
 Adding Edges Between Nodes
 **************************
 
-With our :class:`~yawning_titan.networks.node.Node`'s added to the :class:`~yawning_titan.networks.network.Network`,
+With our :class:`~cyberattacksim.networks.node.Node`'s added to the :class:`~cyberattacksim.networks.network.Network`,
 we can begin joining them by calling ``.add_edge()``.
 
 .. code:: python
@@ -72,22 +72,22 @@ we can begin joining them by calling ``.add_edge()``.
     network.add_edge(node_2, node_5)
     network.add_edge(node_2, node_6)
 
-And that's it, our basic :class:`~yawning_titan.networks.network.Network` has been created.
+And that's it, our basic :class:`~cyberattacksim.networks.network.Network` has been created.
 
 Setting Entry Nodes
 *******************
 
-Entry nodes can be set manually at the :class:`~yawning_titan.networks.node.Node`:
+Entry nodes can be set manually at the :class:`~cyberattacksim.networks.node.Node`:
 
 .. code:: python
 
     node_1.entry_node = True
 
-Or by configuring the :class:`~yawning_titan.networks.network.Network` to set them at random:
+Or by configuring the :class:`~cyberattacksim.networks.network.Network` to set them at random:
 
 .. code:: python
 
-    from yawning_titan.networks.network import RandomEntryNodePreference
+    from cyberattacksim.networks.network import RandomEntryNodePreference
 
     network.set_random_entry_nodes = True
     network.num_of_random_entry_nodes = 1
@@ -97,17 +97,17 @@ Or by configuring the :class:`~yawning_titan.networks.network.Network` to set th
 Setting EntHigh Value Nodes
 ***************************
 
-High value nodes can be set manually at the :class:`~yawning_titan.networks.node.Node`:
+High value nodes can be set manually at the :class:`~cyberattacksim.networks.node.Node`:
 
 .. code:: python
 
     node_1.high_value_node = True
 
-Or by configuring the :class:`~yawning_titan.networks.network.Network` to set them at random:
+Or by configuring the :class:`~cyberattacksim.networks.network.Network` to set them at random:
 
 .. code:: python
 
-    from yawning_titan.networks.network import RandomHighValueNodePreference
+    from cyberattacksim.networks.network import RandomHighValueNodePreference
 
     network.set_random_high_value_nodes = True
     network.num_of_random_high_value_nodes = 1
@@ -117,13 +117,13 @@ Or by configuring the :class:`~yawning_titan.networks.network.Network` to set th
 Setting Node Vulnerability
 **************************
 
-A nodes vulnerability can be set manually at the :class:`~yawning_titan.networks.node.Node`:
+A nodes vulnerability can be set manually at the :class:`~cyberattacksim.networks.node.Node`:
 
 .. code:: python
 
     node_1.vulnerability = 0.5
 
-Or by configuring the :class:`~yawning_titan.networks.network.Network` to set them at random:
+Or by configuring the :class:`~cyberattacksim.networks.network.Network` to set them at random:
 
 .. code:: python
 
@@ -142,7 +142,7 @@ To reset all entry nodes, high value nodes, and vulnerabilities at once:
 View a Networks Node Details
 ****************************
 
-To view a table of the :class:`~yawning_titan.networks.node.Node`'s in a :class:`~yawning_titan.networks.network.Network`:
+To view a table of the :class:`~cyberattacksim.networks.node.Node`'s in a :class:`~cyberattacksim.networks.network.Network`:
 
 .. code:: python
 

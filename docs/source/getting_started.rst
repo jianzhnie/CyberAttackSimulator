@@ -34,22 +34,22 @@ for user files. To initialise this environment, run:
     .. code-tab:: bash
         :caption: Bash
 
-        mkdir ~/yawning_titan
-        cd ~/yawning_titan
+        mkdir ~/cyberattacksim
+        cd ~/cyberattacksim
         python3 -m venv .venv
         source .venv/bin/activate
-        pip install <path to downloaded yawningtitan .whl file>
+        pip install <path to downloaded CyberAttack .whl file>
         CyberAttackSim setup
 
     .. code-tab:: powershell
         :caption: Powershell
 
-        mkdir ~\yawning_titan
-        cd ~\yawning_titan
+        mkdir ~\cyberattacksim
+        cd ~\cyberattacksim
         python3 -m venv .venv
         attrib +h .venv /s /d # Hides the .venv directory
         .\.venv\Scripts\activate
-        pip install <path to downloaded yawningtitan .whl file>
+        pip install <path to downloaded CyberAttack .whl file>
         CyberAttackSim setup
 
 
@@ -74,18 +74,18 @@ Alternatively, you can work with CyberAttackSim from Jupyter Labs.
 Running CyberAttackSim
 *********************
 
-From a notebook in Jupyter Lab, import :class:`~yawning_titan.yawning_titan_run.YawningTitanRun` and instantiate it.
-This will run the :class:`~yawning_titan.yawning_titan_run.YawningTitanRun` using all default parameters. With
+From a notebook in Jupyter Lab, import :class:`~cyberattacksim.cyberattacksim_run.CyberAttackRun` and instantiate it.
+This will run the :class:`~cyberattacksim.cyberattacksim_run.CyberAttackRun` using all default parameters. With
 ``auto=True``, this will perform the ``.setup()``, ``.train()``, and ``.evaluate()``.
 
 .. code:: python
 
-    from yawning_titan.yawning_titan_run import YawningTitanRun
+    from cyberattacksim.cyberattacksim_run import CyberAttackRun
 
-    yt_run = YawningTitanRun()
+    yt_run = CyberAttackRun()
 
-The :class:`~yawning_titan.yawning_titan_run.YawningTitanRun` class is fully configurable. Check out the
-:class:`~yawning_titan.yawning_titan_run.YawningTitanRun` docs for further customisation.
+The :class:`~cyberattacksim.cyberattacksim_run.CyberAttackRun` class is fully configurable. Check out the
+:class:`~cyberattacksim.cyberattacksim_run.CyberAttackRun` docs for further customisation.
 
 
 

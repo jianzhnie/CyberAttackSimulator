@@ -2,22 +2,22 @@
 Agent Training
 **************
 
-YawningTitanRun class
+CyberAttackRun class
 #####################
 
-The easiest way to train an agent is to use the :class:`~yawning_titan.yawning_titan_run.YawningTitanRun` class.
+The easiest way to train an agent is to use the :class:`~cyberattacksim.cyberattacksim_run.CyberAttackRun` class.
 
 .. code:: python
 
-    from yawning_titan.yawning_titan_run import YawningTitanRun
+    from cyberattacksim.cyberattacksim_run import CyberAttackRun
 
-    yt_run = YawningTitanRun()
+    yt_run = CyberAttackRun()
 
 Configurable Param:
 
-- network - An instance of :class:`~yawning_titan.networks.network.Network`.
+- network - An instance of :class:`~cyberattacksim.networks.network.Network`.
 
-- game_mode - An instance of :class:`~yawning_titan.game_modes.game_mode.GameMode`.
+- game_mode - An instance of :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
 
 - red_agent_class - The agent/action set class used for the red agent.
 
@@ -47,7 +47,7 @@ Configurable Param:
 
 - logger - An optional custom logger to override the use of the default module logger.
 
-- output_dir - An optional output path for eval output and saved agent zip file. If none is provided, a path is generated using the yawning_titan.AGENTS_DIR, today’s date, and the uuid of the instance of YawningTitanRun.
+- output_dir - An optional output path for eval output and saved agent zip file. If none is provided, a path is generated using the cyberattacksim.AGENTS_DIR, today’s date, and the uuid of the instance of CyberAttackRun.
 
 - auto - If True, setup(), train(), and evaluate() are called automatically.
 
@@ -56,17 +56,17 @@ Import a trained Agent
 ######################
 
 
-From Exported YawningTitanRun
+From Exported CyberAttackRun
 *****************************
 
-If you have a .zip file that was generated using the YawningtitanRun class, it can be imported into your CyberAttackSim
-environment by using the :func:`~yawning_titan.yawning_titan_run.YawningTitanRun.import_from_export` function:
+If you have a .zip file that was generated using the CyberAttackRun class, it can be imported into your CyberAttackSim
+environment by using the :func:`~cyberattacksim.cyberattacksim_run.CyberAttackRun.import_from_export` function:
 
 .. code:: python
 
-    from yawning_titan.yawning_titan_run import YawningTitanRun
+    from cyberattacksim.cyberattacksim_run import CyberAttackRun
 
-    yt_run = YawningTitanRun.import_from_export(
+    yt_run = CyberAttackRun.import_from_export(
         exported_zip_file_path=<path to your .zip file>
     )
 
@@ -82,19 +82,19 @@ From Externally Trained SB3 PPO
 Training Evaluation
 ###################
 
-When an agent is trained and saved using the :class:`~yawning_titan.yawning_titan_run.YawningTitanRun` class,
+When an agent is trained and saved using the :class:`~cyberattacksim.cyberattacksim_run.CyberAttackRun` class,
 two things happen:
 
-1. Subdirectory is created at ``~/yawning_titan/agents/trained/<YYYY-MM-DD>/<UUID>/`` where the saved ``PPO.zip`` is stored
+1. Subdirectory is created at ``~/cyberattacksim/agents/trained/<YYYY-MM-DD>/<UUID>/`` where the saved ``PPO.zip`` is stored
 along with the ``UUID`` file, the ``args.json`` file, and a ``monitor.zip`` file.
 
-2. Tensorboard logs are captured at ``~/yawning_titan/agents/logs/PPO_<n>/``
+2. Tensorboard logs are captured at ``~/cyberattacksim/agents/logs/PPO_<n>/``
 
 To view the tensorboard metrics in Tensorboard, run:
 
 .. code:: bash
 
-    tensorboard ~/yawning_titan/agents/logs/
+    tensorboard ~/cyberattacksim/agents/logs/
 
 .. note:: Using Tensorboard
 

@@ -12,5 +12,5 @@
    :template: custom-module-template.rst
    :recursive:
 
-   yawning_titan
+   cyberattacksim
    tests

@@ -15,7 +15,7 @@ Reward Functions
 
 To create a new reward function navigate to:
 
-    yawning_titan/envs/generic/core/reward_functions.py
+    cyberattacksim/envs/generic/core/reward_functions.py
 
 Here you will find all of the current reward functions. To add a new
 reward function yo just have to add a new function with the following
@@ -44,7 +44,7 @@ Red Actions
 
 To create a new red action navigate to:
 
-    yawning_titan/envs/generic/core/red_action_set.py
+    cyberattacksim/envs/generic/core/red_action_set.py
 
 There you can see all of the current actions and create your own.
 To create your own action it must follow the following form::
@@ -93,7 +93,7 @@ of blue actions:
 
 First navigate to the action set location:
 
-    yawning_titan/envs/generic/core/blue_action_set.py
+    cyberattacksim/envs/generic/core/blue_action_set.py
 
 Adding a general action
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -138,9 +138,9 @@ Adding a new Red Agent
 
 First step is to look at the red_interface and advanced_red_interface:
 
-    yawning_titan/envs/generic/core/red_interface.py
+    cyberattacksim/envs/generic/core/red_interface.py
 
-    yawning_titan/envs/generic/core/advanced_red_interface.py
+    cyberattacksim/envs/generic/core/advanced_red_interface.py
 
 Then to create a new interface you want a class with the following:
 

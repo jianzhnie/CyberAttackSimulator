@@ -10,7 +10,7 @@ app = typer.Typer()
 
 @app.command()
 def gui():
-    """Start the Yawning-Titan GUI."""
+    """Start the CyberAttackSim GUI."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE',
                           'cyberattacksim_server.settings.dev')
     """Method that is fired on execution of the command in the terminal."""
@@ -22,7 +22,7 @@ def gui():
 
 @app.command()
 def build_dirs():
-    """Build the Yawning-Titan app directories."""
+    """Build the CyberAttackSim app directories."""
     from cyberattacksim.utils import setup_app_dirs
 
     setup_app_dirs.run()
@@ -53,7 +53,7 @@ def reset_notebooks(overwrite: bool = True):
 
 @app.command()
 def logs(last_n: int = 10):
-    """Print the Yawning-Titan log file.
+    """Print the CyberAttackSim log file.
 
     :param last_n: The number of lines to print. Default value is 10.
     """
@@ -78,7 +78,7 @@ def logs(last_n: int = 10):
 
 @app.command()
 def notebooks():
-    """Start Jupyter Lab in the users Yawning-Titan notebooks directory."""
+    """Start Jupyter Lab in the users CyberAttackSim notebooks directory."""
     from cyberattacksim.notebooks.jupyter import start_jupyter_session
 
     start_jupyter_session()
@@ -86,15 +86,15 @@ def notebooks():
 
 @app.command()
 def docs():
-    """View the Yawning-Titan docs."""
+    """View the CyberAttackSim docs."""
     import webbrowser
 
-    webbrowser.open('https://dstl.github.io/YAWNING-TITAN/', new=2)
+    webbrowser.open('https://dstl.github.io/CyberAttackSim/', new=2)
 
 
 @app.command()
 def version():
-    """Get the installed Yawning-Titan version number."""
+    """Get the installed CyberAttackSim version number."""
     import cyberattacksim
 
     print(cyberattacksim.__version__)
@@ -102,13 +102,14 @@ def version():
 
 @app.command()
 def release_notes():
-    """View the GitHub release notes of the installed Yawning-Titan version."""
+    """View the GitHub release notes of the installed CyberAttackSim
+    version."""
     import webbrowser
 
     import cyberattacksim
 
     v = cyberattacksim.__version__
-    url = f'https://github.com/dstl/YAWNING-TITAN/releases/tag/v{v}'
+    url = f'https://github.com/dstl/CyberAttackSim/releases/tag/v{v}'
 
     webbrowser.open(url, new=2)
 
@@ -123,13 +124,13 @@ def clean_up():
 
 @app.command()
 def setup():
-    """Perform the Yawning-Titan first-time setup.
+    """Perform the CyberAttackSim first-time setup.
 
     WARNING: All user-data will be lost.
     """
     from logging import getLogger
 
-    import cyberattacksim  # noqa - Gets the Yawning-Titan logger config
+    import cyberattacksim  # noqa - Gets the CyberAttackSim logger config
     from cyberattacksim.utils import (old_installation_clean_up,
                                       reset_default_notebooks,
                                       reset_network_and_game_mode_db_defaults,
@@ -137,9 +138,9 @@ def setup():
 
     _LOGGER = getLogger(__name__)
 
-    _LOGGER.info('Performing the Yawning-Titan first-time setup...')
+    _LOGGER.info('Performing the CyberAttackSim first-time setup...')
 
-    _LOGGER.info('Building the Yawning-Titan app directories...')
+    _LOGGER.info('Building the CyberAttackSim app directories...')
     setup_app_dirs.run()
 
     _LOGGER.info('Rebuilding the NetworkDB and GameModeDB...')
@@ -149,15 +150,15 @@ def setup():
     reset_default_notebooks.run(overwrite_existing=True)
 
     _LOGGER.info(
-        'Performing a clean-up of previous Yawning-Titan installations...')
+        'Performing a clean-up of previous CyberAttackSim installations...')
     old_installation_clean_up.run()
 
-    _LOGGER.info('Yawning-Titan setup complete!')
+    _LOGGER.info('CyberAttackSim setup complete!')
 
 
 @app.command()
 def keyboard_agent():
-    """Play Yawning-Titan using the Keyboard Agent."""
+    """Play CyberAttackSim using the Keyboard Agent."""
     from stable_baselines3.common.env_checker import check_env
 
     from cyberattacksim.agents.keyboard import KeyboardAgent

@@ -30,7 +30,7 @@ class FeatherGraphEmbedObservation(ObservationWrapper):
             The max_num_nodes is for defining the maximum number of nodes you want
             the agent to support within its observation space. This is in
             order to support the training of agents which can work across a number of
-            YAWNING TITAN environments with variable node counts.
+            CyberAttackSim environments with variable node counts.
 
             For example, if set to 100 (like the default), the agent could be trained in
             an environment with 10 nodes, 50 nodes or 100 nodes.

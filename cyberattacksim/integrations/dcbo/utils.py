@@ -17,12 +17,12 @@ _LOGGER = getLogger(__name__)
 
 
 def create_env(use_same_net: bool = False) -> GenericNetworkEnv:
-    """Create a YAWNING TITAN environment.
+    """Create a CyberAttackSim environment.
 
     :param use_same_net: If true uses a saved network, otherwise creates a new
         network.
 
-    :returns: A YAWNING TITAN OpenAI Gym environment.
+    :returns: A CyberAttackSim OpenAI Gym environment.
     """
     game_mode = dcbo_game_mode()
 

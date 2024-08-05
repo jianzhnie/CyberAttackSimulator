@@ -24,9 +24,9 @@ class ConfigForm(django_forms.Form):
     - Represent boolean inputs as styled checkboxes
     - Represent elements that are mutually exclusive as dropdowns
 
-    :param section: The string name of a config section in the CyberAttackSim config
+    :param section: The string name of a config section in the CyberAttackSim Titan config
     :param ConfigClass: An instance of :class: `~cyberattacksim.config.core.ConfigGroup` representing a
-        section of the CyberAttackSim config
+        section of the CyberAttackSim Titan config
     """
 
     def __init__(

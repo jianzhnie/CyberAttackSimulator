@@ -358,7 +358,7 @@ class GameModeDB:
 
 
 def default_game_mode() -> GameMode:
-    """The default Yawning Titan game mode.
+    """The default CyberAttackSim game mode.
 
     :return: An instance of :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
     """

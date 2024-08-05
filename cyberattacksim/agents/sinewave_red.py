@@ -24,8 +24,8 @@ def calculate_number_moves(attack_strength):
 
 
 class SineWaveRedAgent(RedInterface):
-    """An agent which is based on the RedInterface provided by the YAWNING
-    TITAN generic environment.
+    """An agent which is based on the RedInterface provided by the
+    CyberAttackSim generic environment.
 
     This agent is an example of how the generic RedInterface can be extended to include custom red
     team behaviour - in this case, action selection.

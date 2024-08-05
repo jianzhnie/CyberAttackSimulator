@@ -9,7 +9,7 @@ from cyberattacksim_gui.views.utils.helpers import (GameModeManager,
 
 
 class RunView(View):
-    """Django page template for Yawning Titan Run class."""
+    """Django page template for CyberAttackSim Run class."""
 
     def get(self, request: HttpRequest, *args, **kwargs):
         """Handle page get requests.

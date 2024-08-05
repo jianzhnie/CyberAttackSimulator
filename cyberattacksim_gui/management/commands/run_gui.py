@@ -45,7 +45,7 @@ class DefaultServerDjango:
 
 @dataclass
 class CyberAttackServer:
-    """The Yawning-Titan Server."""
+    """The CyberAttackSim Server."""
 
     server: Union[str, Callable[[Any], None]]
     server_kwargs: dict = None
@@ -127,14 +127,14 @@ class CyberAttackServer:
 
 
 class Command(BaseCommand):
-    """Command to run the yawning titan gui in a window.
+    """Command to run the CyberAttackSim gui in a window.
 
     :Examples:
 
-    >>> yawning-titan gui
+    >>> CyberAttackSim gui
     """
 
-    help = 'Run yawning titan gui in window.'
+    help = 'Run CyberAttackSim gui in window.'
 
     def __init__(self,
                  stdout=None,

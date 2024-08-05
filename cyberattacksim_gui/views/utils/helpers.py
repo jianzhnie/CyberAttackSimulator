@@ -10,7 +10,7 @@ from typing import Any, Dict, List
 
 from django.urls import reverse
 
-from cyberattacksim import _CAS_ROOT_DIR, IMAGES_DIR, NOTEBOOKS_DIR, VIDEOS_DIR
+from cyberattacksim import _CAS_HOME_DIR, IMAGES_DIR, NOTEBOOKS_DIR, VIDEOS_DIR
 from cyberattacksim.cyberattacksim_run import CyberAttackRun
 from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.game_modes.game_mode_db import GameModeDB, GameModeSchema
@@ -165,7 +165,7 @@ class RunManager:
 
 
 class NetworkManager:
-    """Handle all interfacing with Yawning Titan networks in :attribute:
+    """Handle all interfacing with CyberAttackSim networks in :attribute:
 
     `network_db` and their info for the GUI session.
     """
@@ -454,7 +454,7 @@ def open_jupyter_notebook():
     print('OPENING NOTEBOOKS')
     # look into a project dir for a config
     os.environ.setdefault('JUPYTER_CONFIG_PATH',
-                          (_CAS_ROOT_DIR / 'notebooks').as_posix())
+                          (_CAS_HOME_DIR / 'notebooks').as_posix())
     # subprocess.call("jupyter trust Create a Network.ipynb",env=os.environ.copy()) # TODO: Delete
     # see if the required session is active
     b = subprocess.check_output('jupyter-lab list'.split(),

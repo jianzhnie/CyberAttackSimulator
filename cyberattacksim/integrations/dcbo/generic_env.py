@@ -25,7 +25,7 @@ from cyberattacksim.envs.generic.helpers.graph2plot import CustomEnvGraph
 
 
 class GenericNetworkEnv(gym.Env):
-    """Class to create a generic CyberAttackSim gym environment."""
+    """Class to create a generic Cyber Attack Simulatorgym environment."""
 
     def __init__(
         self,

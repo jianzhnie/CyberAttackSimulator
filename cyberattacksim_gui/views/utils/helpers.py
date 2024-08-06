@@ -56,7 +56,7 @@ class RunManager:
         """
         if CAS_GUI_RUN_LOG.exists():
             CAS_GUI_RUN_LOG.unlink()
-        logger = logging.getLogger('yt_run')
+        logger = logging.getLogger('cas_run')
         logger.setLevel(logging.DEBUG)
 
         # create file handler which logs even debug messages
@@ -81,7 +81,7 @@ class RunManager:
                 loop = ActionLoop(
                     env=run.env,
                     agent=run.agent,
-                    filename='YT',
+                    filename='CAS',
                     episode_count=kwargs.get('num_episodes',
                                              run.total_timesteps),
                 )
@@ -375,12 +375,12 @@ def get_toolbar(current_page_title: str = None):
             'cypressRefToolbar': 'toolbar-home',
             'cypressRefMenu': 'menu-home',
         },
-        'doc': {
-            'icon': 'bi-file-earmark',
-            'title': 'Documentation',
-            'cypressRefToolbar': 'toolbar-documentation',
-            'cypressRefMenu': 'menu-documentation',
-        },
+        # 'doc': {
+        #     'icon': 'bi-file-earmark',
+        #     'title': 'Documentation',
+        #     'cypressRefToolbar': 'toolbar-documentation',
+        #     'cypressRefMenu': 'menu-documentation',
+        # },
         # Not comfortable with this yet. Causing issues in test and
         # currently only works on Windows. Will release in later version.
         # "jupyter": {

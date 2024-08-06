@@ -166,3 +166,4 @@ data/
 notebooks/
 cache/user_data/
 cache/platform/app_images/
+docs/source/_autosummary/

@@ -42,7 +42,6 @@ dependencies = [
     "tabulate==0.8.9",
     "tensorboard==2.12.3",
     "tinydb==4.7.0",
-    "torch==1.13.1",
     "typer[all]==0.7.0",
     "typing-extensions==4.4.0",
     "waitress==2.1.2"

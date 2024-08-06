@@ -15,16 +15,19 @@ import datetime
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../'))
+sys.path.insert(0, os.path.abspath('..'))
 
 # -- Project information -----------------------------------------------------
 year = datetime.datetime.now().year
 project = 'CyberAttackSim'
 copyright = f'Crown Copyright (C) robin 2021 - {year}'
-author = 'Defence Science and Technology Laboratory UK'
+author = 'Robin'
 
 # The short Major.Minor.Build version
-with open('../cyberattacksim/VERSION', 'r') as file:
+# Read version from file
+version_file = os.path.join(os.path.dirname(__file__), '../cyberattacksim',
+                            'VERSION')
+with open(version_file, 'r') as file:
     version = file.readline()
 # The full version, including alpha/beta/rc tags
 release = version
@@ -156,7 +159,7 @@ latex_documents = [(
     master_doc,
     'CyberAttackSim.tex',
     'CyberAttackSim Documentation',
-    'Josh Collyer, Alex Andrew, Liam Quantrill',
+    'CyberAttackSim Contributors',
     'manual',
 )]
 

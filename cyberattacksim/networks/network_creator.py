@@ -178,7 +178,7 @@ def get_18_node_network_mesh() -> Network:
         '16': [4, 1],
         '17': [5, 1],
     }
-    return matrix, positions
+    return get_network_from_matrix_and_positions(matrix, positions)
 
 
 def dcbo_base_network() -> Network:

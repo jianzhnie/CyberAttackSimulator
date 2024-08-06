@@ -7,6 +7,8 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
+
+这段代码是Django项目的配置文件，包含了项目的各种设置。
 """
 
 from pathlib import Path
@@ -23,11 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = 'django-insecure-cu!)4gec_vj=vhj&jba(b$vd6#$i#v^tr%z%#4idf9c17a#7g9'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-DOCS_ROOT = BASE_DIR / 'cyberattacksim_gui' / 'static' / 'docs'
+DOCS_ROOT = BASE_DIR / 'docs'
 
 # Application definition
+# 应用和中间件
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -49,11 +52,13 @@ MIDDLEWARE = [
 
 # Allows the GUI to be used across the local network, not
 # just on the local machine
+# 跨域和主机设置
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
+# ROOT_URLCONF指定了根URL配置模块。
 ROOT_URLCONF = 'cyberattacksim_server.urls'
-
+# TEMPLATES定义了模板引擎的配置，包括模板目录和上下文处理器
 TEMPLATES = [
     {
         'BACKEND':
@@ -75,19 +80,22 @@ TEMPLATES = [
     },
 ]
 
+# WSGI应用
 WSGI_APPLICATION = 'cyberattacksim_server.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+# 数据库
 DATABASES = {'default': {}}
 
 # Update the databases dynamically or only when 'Save'
+# 启用动态更新。
 DYNAMIC_UPDATES = True
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
-
+# AUTH_PASSWORD_VALIDATORS定义了密码验证器。
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME':
@@ -110,10 +118,13 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# 将语言代码设置为中文
+LANGUAGE_CODE = 'zh-hans'  # LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'Europe/London'
+# 将时区设置为中国北京时区
+TIME_ZONE = 'Asia/Shanghai'  # TIME_ZONE = 'Europe/London'
 
+# USE_I18N和USE_TZ启用了国际化和时区支持。
 USE_I18N = True
 
 USE_TZ = True
@@ -121,6 +132,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
+# STATIC_URL和STATICFILES_DIRS配置了静态文件路径。
 STATIC_URL = '_static/'
 
 STATICFILES_DIRS = (
@@ -133,6 +145,7 @@ STATICFILES_DIRS = (
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
-
+# DEFAULT_AUTO_FIELD设置了默认的主键字段类型。
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# X_FRAME_OPTIONS设置了X-Frame-Options响应头，防止点击劫持。
 X_FRAME_OPTIONS = 'SAMEORIGIN'

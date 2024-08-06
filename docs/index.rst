@@ -26,10 +26,10 @@ Welcome to the CyberAttackSim docs!
    :caption: Project Links:
    :hidden:
 
-   Code <https://github.com/robin/CyberAttackSim>
-   Issues <https://github.com/robin/CyberAttackSim/issues>
-   Pull Requests <https://github.com/robin/CyberAttackSim/pulls>
-   Discussions <https://github.com/robin/CyberAttackSim/discussions>
+   Code <https://github.com/jianzhnie/CyberAttackSimulatorulator>
+   Issues <https://github.com/jianzhnie/CyberAttackSimulator/issues>
+   Pull Requests <https://github.com/jianzhnie/CyberAttackSimulator/pulls>
+   Discussions <https://github.com/jianzhnie/CyberAttackSimulator/discussions>
 
 
 What is CyberAttackSim?
@@ -92,22 +92,4 @@ CyberAttackSim Quick start
 Where next?
 ------------
 
-The best place to start is diving into the :ref:`getting-started`, or just straight into the :ref:`yt-gui`.
-
-
-Cite This Work
---------------
-
-
-If you would like to include a citation for CyberAttackSim in your work, please cite the paper published at the ICML 2022 ML4Cyber Workshop.
-
-.. code:: bibtex
-
-    @inproceedings{inproceedings,
-     author = {Andrew, Alex and Spillard, Sam and Collyer, Joshua and Dhir, Neil},
-     year = {2022},
-     month = {07},
-     title = {Developing Optimal Causal Cyber-Defence Agents via Cyber Security Simulation},
-     maintitle = {International Confernece on Machine Learning (ICML)},
-     booktitle = {Workshop on Machine Learning for Cybersecurity (ML4Cyber)}
-    }
+The best place to start is diving into the :ref:`getting-started`, or just straight into the :ref:`cas-gui`.

@@ -24,7 +24,7 @@ copyright = f'Crown Copyright (C) robin 2021 - {year}'
 author = 'Defence Science and Technology Laboratory UK'
 
 # The short Major.Minor.Build version
-with open('../src/cyberattacksim/VERSION', 'r') as file:
+with open('../cyberattacksim/VERSION', 'r') as file:
     version = file.readline()
 # The full version, including alpha/beta/rc tags
 release = version
@@ -130,7 +130,7 @@ html_static_path = ['_static']
 # -- Options for HTMLHelp output ---------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'YAWNINGTITANdoc'
+htmlhelp_basename = 'CyberAttackSimdoc'
 
 # -- Options for LaTeX output ------------------------------------------------
 
@@ -154,7 +154,7 @@ latex_elements = {
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [(
     master_doc,
-    'YAWNINGTITAN.tex',
+    'CyberAttackSim.tex',
     'CyberAttackSim Documentation',
     'Josh Collyer, Alex Andrew, Liam Quantrill',
     'manual',
@@ -164,7 +164,7 @@ latex_documents = [(
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
-man_pages = [(master_doc, 'yawningtitan', 'CyberAttackSim Documentation',
+man_pages = [(master_doc, 'CyberAttackSim', 'CyberAttackSim Documentation',
               [author], 1)]
 
 # -- Options for Texinfo output ----------------------------------------------
@@ -174,10 +174,10 @@ man_pages = [(master_doc, 'yawningtitan', 'CyberAttackSim Documentation',
 #  dir menu entry, description, category)
 texinfo_documents = [(
     master_doc,
-    'YAWNINGTITAN',
+    'CyberAttackSim',
     'CyberAttackSim Documentation',
     author,
-    'YAWNINGTITAN',
+    'CyberAttackSim',
     'One line description of project.',
     'Miscellaneous',
 )]

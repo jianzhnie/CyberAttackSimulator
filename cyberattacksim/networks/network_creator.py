@@ -430,7 +430,7 @@ def create_corporate_network():
     # Instantiate the Network
     network = Network(
         set_random_entry_nodes=True,
-        num_of_random_entry_nodes=3,
+        num_of_random_entry_nodes=1,
         set_random_high_value_nodes=True,
         num_of_random_high_value_nodes=2,
         set_random_vulnerabilities=True,
@@ -439,18 +439,30 @@ def create_corporate_network():
     # Instantiate the Node's and add them to the Network
     # router node
     router_1 = Node('Router 1')
+    router_1.node_position = [8.03036464e-05, -1.40039261e-03]
     switch_1 = Node('Switch 1')
+    switch_1.node_position = [-0.43362915, -0.53633174]
     switch_2 = Node('Switch 2')
+    switch_2.node_position = [0.4316877, 0.53779606]
+
     # pc nodes
     pc_1 = Node('PC 1')
+    pc_1.node_position = [-0.54008253, -0.99827739]
     pc_2 = Node('PC 2')
+    pc_2.node_position = [-0.85728927, -0.75133892]
     pc_3 = Node('PC 3')
+    pc_3.node_position = [-0.14813971, -0.87135543]
     pc_4 = Node('PC 4')
+    pc_4.node_position = [0.54069794, 1.0]
     pc_5 = Node('PC 5')
+    pc_5.node_position = [0.14995727, 0.87264331]
     pc_6 = Node('PC 6')
+    pc_6.node_position = [0.82391051, 0.33854032]
     # server node
     server_1 = Node('Server 1')
+    server_1.node_position = [-0.82384849, -0.3396955]
     server_2 = Node('Server 2')
+    server_2.node_position = [0.85665543, 0.74941969]
 
     # Add the Node's to the Network
     network.add_node(switch_1)
@@ -479,4 +491,5 @@ def create_corporate_network():
 
     # Reset the entry nodes, high value nodes, and vulnerability scores by calling .setup()
     network.reset()
+
     return network

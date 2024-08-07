@@ -120,6 +120,11 @@ class DocMetadata:
     def author(self, author: str):
         self._author = author
 
+    @locked.setter
+    def locked(self, locked: bool) -> None:
+        """Whether the doc is locked for editing or not."""
+        self._locked = locked
+
     # endregion
 
     def update(
@@ -127,6 +132,7 @@ class DocMetadata:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = True,
     ):
         """Updated the name, description, and author.
 
@@ -140,6 +146,8 @@ class DocMetadata:
             self.description = description
         if author:
             self.author = author
+        if locked:
+            self.locked = locked
 
     def to_dict(self, include_none: bool = False) -> Dict[str, str]:
         """Serialize the

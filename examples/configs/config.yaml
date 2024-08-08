@@ -1,0 +1,41 @@
+dqn:
+  default_18_node_network:
+    algo_name: dqn
+    learning_rate: 0.01
+    max_timesteps: 20000
+    buffer_size: 10000
+    batch_size: 64
+    logger: tensorboard
+
+a2c:
+  default_18_node_network:
+    algo_name: ppo
+    max_timesteps: 50000
+    actor_lr: 1.0e-3
+    critic_lr: 1.0e-2
+    buffer_size: 128
+    rollout_steps: 128
+    batch_size: 32
+    logger: wandb
+
+ppo:
+  default_18_node_network:
+    algo_name: ppo
+    max_timesteps: 50000
+    actor_lr: 1.0e-3
+    critic_lr: 1.0e-2
+    buffer_size: 128
+    rollout_steps: 128
+    batch_size: 32
+    logger: wandb
+
+
+  random_:
+    algo_name: ppo_penalty
+    max_timesteps: 300000
+    actor_lr: 1.0e-3
+    critic_lr: 1.0e-2
+    buffer_size: 128
+    rollout_steps: 128
+    batch_size: 32
+    logger: wandb

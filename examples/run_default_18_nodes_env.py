@@ -1,65 +1,91 @@
+import argparse
 import os
 import sys
 
+import tyro
 import wandb
-from stable_baselines3 import PPO
+from stable_baselines3 import A2C, DQN, PPO
+from stable_baselines3.a2c import MlpPolicy as A2CMlp
 from stable_baselines3.common.callbacks import (
     EvalCallback, StopTrainingOnNoModelImprovement)
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.dqn import MlpPolicy as DQNMlp
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 from wandb.integration.sb3 import WandbCallback
 
 sys.path.append(os.getcwd())
 from cyberattacksim.envs.generic.core.action_loops import ActionLoop
-from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
-from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
-from cyberattacksim.envs.generic.core.red_interface import RedInterface
-from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
-from cyberattacksim.game_modes.game_mode_db import default_game_mode
-from cyberattacksim.networks.network_db import default_18_node_network
+from cyberattacksim.utils.env_utils import create_env
+from cyberattacksim.utils.file_utils import (load_yaml_config,
+                                             update_dataclass_from_dict)
+from cyberattacksim.utils.rl_args import (A2CArguments, DQNArguments,
+                                          PPOArguments, RLArguments)
 
 
-def main() -> None:
-    # get the current directory
-    current_dir = os.getcwd()
-    # setup the monitor to check the training
-    algo_name = 'ppo'
+def main(args: RLArguments) -> None:
+    # Initialize ArgumentParser
+    parser = argparse.ArgumentParser(description='Cyber Attack Sim')
+    parser.add_argument(
+        '--algo_name',
+        type=str,
+        choices=[
+            'dqn',
+            'a2c',
+            'ppo',
+        ],
+        default='dqn',
+        help="Name of the algorithm. Defaults to 'dqn'",
+    )
+    parser.add_argument(
+        '--env_id',
+        type=str,
+        default='default_18_node_network',
+        help="The environment name. Defaults to 'CartPole-v0'",
+    )
     # directories
-    log_dir = os.path.join(current_dir, 'work_dir', 'default_18_nodes')
-    model_dir = os.path.join(log_dir, algo_name)
+    curr_path = os.getcwd()
+    # Load YAML configuration
+    config_file = os.path.join(curr_path, 'examples/configs/config.yaml')
+    config = load_yaml_config(config_file)
+    # Parse arguments
+    run_args = parser.parse_args()
+    if run_args.algo_name == 'dqn':
+        algo_args: DQNArguments = tyro.cli(DQNArguments)
+    elif run_args.algo_name == 'A2C':
+        algo_args = tyro.cli(A2CArguments)
+    elif run_args.algo_name == 'ppo':
+        algo_args: PPOArguments = tyro.cli(PPOArguments)
+    else:
+        raise NotImplementedError
+
+    # Extract Algo-specific settings
+    if run_args.algo_name in config:
+        algo_config = config.get(run_args.algo_name)
+        env_config = algo_config.get(run_args.env_id)
+    else:
+        env_config = {}
+        print(
+            'No configuration found for {}, {} in {}. Using default settings.'.
+            format(run_args.algo_name, run_args.env_id, config_file))
+
+    # Update parser with YAML configuration
+    args = update_dataclass_from_dict(algo_args, env_config)
+
+    # set file path
+    log_dir = os.path.join(args.work_dir, args.env_id)
+    model_dir = os.path.join(log_dir, args.algo_name)
     tf_log_dir = os.path.join(model_dir, 'tf_logs')
-    model_name = os.path.join(model_dir, algo_name + '_model')
-    media_dir = os.path.join(log_dir, algo_name, 'media')
+    model_name = os.path.join(model_dir, args.algo_name + '_model')
+    media_dir = os.path.join(log_dir, args.algo_name, 'media')
     if not os.path.exists(log_dir):
         os.makedirs(log_dir)
 
-    run = wandb.init(
-        dir=log_dir,
-        project='CyberAttackSimulator',
-        name='default_18_nodes',
-        sync_tensorboard=True,
-        tags=['CyberAttackSimulator'],
-    )
-    network = default_18_node_network()
-    game_mode = default_game_mode()
-    network_interface = NetworkInterface(game_mode=game_mode, network=network)
-    red = RedInterface(network_interface)
-    blue = BlueInterface(network_interface)
-    env = GenericNetworkEnv(
-        red,
-        blue,
-        network_interface,
-        print_metrics=True,
-        show_metrics_every=50,
-        collect_additional_per_ts_data=True,
-        print_per_ts_data=False,
-    )
-    # reset the environment
-    env.reset()
-
-    timesteps = 1000000
-    env.reset()
+    run = wandb.init(dir=log_dir,
+                     project=args.project,
+                     name=args.env_id,
+                     sync_tensorboard=True)
+    env = create_env(env_id=args.env_id)
     # setup the monitor to check the training
     env = Monitor(env, model_name)
     # define callback to stop the trainingX
@@ -77,26 +103,59 @@ def main() -> None:
         verbose=1,
     )
     wandb_callback = WandbCallback(
-        model_save_path=f'model_dir/{run.id}',
+        model_save_path=model_dir,
         model_save_freq=1000,
         verbose=2,
     )
+    run_args = parser.parse_args()
+    if run_args.algo_name == 'dqn':
+        agent = DQN(
+            policy=DQNMlp,
+            env=env,
+            learning_rate=args.learning_rate,
+            buffer_size=args.buffer_size,
+            learning_starts=args.learning_starts,
+            batch_size=args.batch_size,
+            train_freq=args.train_freq,
+            target_update_interval=args.target_update_interval,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+        )
 
-    # instantiate the agent - here we can set the various hyper parameters as the
-    # Learning rate - tested to  learning_rate = 0.01 and the gamma = 0.75
-    agent = PPO(
-        PPOMlp,
-        env,
-        verbose=1,
-        normalize_advantage=True,
-        tensorboard_log=tf_log_dir,
-    )
+    elif run_args.algo_name == 'A2C':
+        agent = A2C(
+            policy=A2CMlp,
+            env=env,
+            learning_rate=args.learning_rate,
+            n_steps=args.n_steps,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            normalize_advantage=args.normalize_advantage,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+        )
+    elif run_args.algo_name == 'ppo':
+        agent = PPO(
+            policy=PPOMlp,
+            env=env,
+            learning_rate=args.learning_rate,
+            n_steps=2048,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            clip_range=args.clip_range,
+            normalize_advantage=True,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+        )
+
     # Train the agent
     agent.learn(
-        total_timesteps=timesteps,
+        total_timesteps=args.total_timesteps,
         callback=[eval_callback, wandb_callback],
-        log_interval=10,
-        eval_freq=100,
+        log_interval=args.log_interval,
+        eval_freq=args.eval_freq,
         progress_bar=True,
     )
     evaluate_policy(agent, env, n_eval_episodes=10)
@@ -115,4 +174,5 @@ def main() -> None:
 
 
 if __name__ == '__main__':
-    main()
+    args: DQNArguments = tyro.cli(DQNArguments)
+    main(args)

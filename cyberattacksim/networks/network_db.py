@@ -220,7 +220,7 @@ class NetworkDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
-        locked: Optional[bool] = True,
+        locked: Optional[bool] = False,
     ) -> Network:
         """Insert a :class:`~cyberattacksim.networks.network.Network` into the
         DB as ``.json``.
@@ -301,6 +301,7 @@ class NetworkDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> Network:
         """Update a :class:`~cyberattacksim.networks.network.Network`. in the
         db.
@@ -312,7 +313,7 @@ class NetworkDB:
         :return: The updated :class:`~cyberattacksim.networks.network.Network`.
         """
         # Update the configs metadata
-        network.doc_metadata.update(name, description, author)
+        network.doc_metadata.update(name, description, author, locked)
         # Perform the update and retrieve the returned doc
         doc = self._db.update(
             network.to_dict(json_serializable=True),
@@ -334,7 +335,7 @@ class NetworkDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
-        locked: Optional[bool] = True,
+        locked: Optional[bool] = False,
     ) -> Network:
         """Upsert a :class:`~cyberattacksim.networks.network.Network`. in the
         db.

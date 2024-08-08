@@ -74,6 +74,7 @@ class CyberAttackDB:
         name: Optional[str],
         description: Optional[str],
         author: Optional[str],
+        locked: Optional[bool] = False,
     ) -> Mapping:
         """Add a name, description, author to a doc's metadata.
 
@@ -90,6 +91,8 @@ class CyberAttackDB:
                 doc['_doc_metadata']['description'] = description
             if author:
                 doc['_doc_metadata']['author'] = author
+            if locked:
+                doc['_doc_metadata']['locked'] = locked
         return doc
 
     @classmethod
@@ -200,6 +203,7 @@ class CyberAttackDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> Document:
         """An extension of :func:`tinydb.table.Table.insert`.
 
@@ -232,7 +236,7 @@ class CyberAttackDB:
                 except CyberAttackDBCriticalError as e:
                     _LOGGER.critical(msg, exc_info=True)
                     raise e
-        self._update_doc_metadata(doc, name, description, author)
+        self._update_doc_metadata(doc, name, description, author, locked)
         if doc['_doc_metadata']['locked']:
             uuid = doc['_doc_metadata']['uuid']
             _LOGGER.info(
@@ -248,6 +252,7 @@ class CyberAttackDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> Document:
         """An extension of :func:`tinydb.table.Table.update`.
 
@@ -272,7 +277,7 @@ class CyberAttackDB:
                 raise CyberAttackDBError(msg)
             except CyberAttackDBError as e:
                 raise e
-        self._update_doc_metadata(doc, name, description, author)
+        self._update_doc_metadata(doc, name, description, author, locked)
         self._update_doc_updated_at_datetime(doc)
         self.db.update(doc, cond=DocMetadataSchema.UUID == uuid)
         return self.get(uuid)
@@ -284,6 +289,7 @@ class CyberAttackDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> Document:
         """A manual upsert method in place of
         :func:`tinydb.table.Table.upsert`.
@@ -305,10 +311,10 @@ class CyberAttackDB:
         existing_doc = self.get(uuid)
         if existing_doc:
             # Attempt to update
-            return self.update(doc, uuid, name, description, author)
+            return self.update(doc, uuid, name, description, author, locked)
         else:
             # Insert
-            return self.insert(doc, name, description, author)
+            return self.insert(doc, name, description, author, locked)
 
     def remove_by_cond(self, cond: QueryInstance) -> List[str]:
         """Remove documents that match a query.

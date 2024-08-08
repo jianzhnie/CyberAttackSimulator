@@ -132,7 +132,7 @@ class DocMetadata:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
-        locked: Optional[bool] = True,
+        locked: Optional[bool] = False,
     ):
         """Updated the name, description, and author.
 

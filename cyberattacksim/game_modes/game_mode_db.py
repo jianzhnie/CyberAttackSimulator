@@ -116,6 +116,7 @@ class GameModeDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> GameMode:
         """Insert a :class:`~cyberattacksim.game_modes.game_mode.GameMode` into
         the DB as ``.json``.
@@ -129,7 +130,7 @@ class GameModeDB:
         :param author: The config author.
         :return: The inserted :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
         """
-        game_mode.doc_metadata.update(name, description, author)
+        game_mode.doc_metadata.update(name, description, author, locked)
         self._db.insert(
             game_mode.to_dict(json_serializable=True,
                               include_none=True,
@@ -200,6 +201,7 @@ class GameModeDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> GameMode:
         """Update a :class:`~cyberattacksim.game_modes.game_mode.GameMode`. in
         the db.
@@ -211,7 +213,7 @@ class GameModeDB:
         :return: The updated :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
         """
         # Update the configs metadata
-        game_mode.doc_metadata.update(name, description, author)
+        game_mode.doc_metadata.update(name, description, author, locked)
         # Perform the update and retrieve the returned doc
         doc = self._db.update(
             game_mode.to_dict(json_serializable=True),
@@ -233,6 +235,7 @@ class GameModeDB:
         name: Optional[str] = None,
         description: Optional[str] = None,
         author: Optional[str] = None,
+        locked: Optional[bool] = False,
     ) -> GameMode:
         """Upsert a :class:`~cyberattacksim.game_modes.game_mode.GameMode`. in
         the db.
@@ -243,7 +246,7 @@ class GameModeDB:
         :param author: The config author.
         :return: The upserted :class:`~cyberattacksim.game_modes.game_mode.GameMode`.
         """
-        game_mode.doc_metadata.update(name, description, author)
+        game_mode.doc_metadata.update(name, description, author, locked)
         doc = self._db.upsert(
             game_mode.to_dict(json_serializable=True),
             game_mode.doc_metadata.uuid,

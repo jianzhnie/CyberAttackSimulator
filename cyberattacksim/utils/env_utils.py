@@ -2,9 +2,73 @@ import random
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
+from stable_baselines3.common.env_checker import check_env
 
+from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
+from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
+from cyberattacksim.envs.generic.core.red_interface import RedInterface
+from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
+from cyberattacksim.game_modes.game_mode_db import (dcbo_game_mode,
+                                                    default_game_mode)
+from cyberattacksim.networks import network_creator
 from cyberattacksim.networks.network import Network
+from cyberattacksim.networks.network_db import (dcbo_base_network,
+                                                default_18_node_network)
 from cyberattacksim.networks.node import Node
+
+
+def create_env(
+    env_id: str,
+    node_size: int = 18,
+) -> GenericNetworkEnv:
+    """Create a CyberAttackSim environment.
+
+    :param use_same_net: If true uses a saved network, otherwise creates a new
+        network.
+
+    :returns: A CyberAttackSim OpenAI Gym environment.
+    """
+    if env_id == 'default_18_node_network':
+        network = default_18_node_network()
+        game_mode = default_game_mode()
+
+    elif env_id == 'dcbo_base_network':
+        network = dcbo_base_network()
+        game_mode = dcbo_game_mode()
+
+    elif env_id == 'random_connected_network':
+        network = network_creator.gnp_random_connected_graph(
+            n_nodes=node_size, probability_of_edge=0.02)
+        network.set_random_entry_nodes = True
+        network.num_of_random_entry_nodes = 3
+        network.reset_random_entry_nodes()
+        network.set_random_high_value_nodes = True
+        network.num_of_random_high_value_nodes = 3
+        network.reset_random_high_value_nodes()
+        network.set_random_vulnerabilities = True
+        network.reset_random_vulnerabilities()
+
+        game_mode = default_game_mode()
+
+    else:
+        raise NotImplementedError
+
+    network_interface = NetworkInterface(game_mode=game_mode, network=network)
+    red = RedInterface(network_interface)
+    blue = BlueInterface(network_interface)
+    env = GenericNetworkEnv(
+        red_agent=red,
+        blue_agent=blue,
+        network_interface=network_interface,
+        print_metrics=True,
+        show_metrics_every=50,
+        collect_additional_per_ts_data=True,
+        print_per_ts_data=False,
+    )
+
+    check_env(env, warn=True)
+    env.reset()
+    return env
 
 
 def get_network_from_edges_and_positions(

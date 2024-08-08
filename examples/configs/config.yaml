@@ -1,41 +1,40 @@
 dqn:
   default_18_node_network:
     algo_name: dqn
-    learning_rate: 0.01
-    max_timesteps: 20000
-    buffer_size: 10000
+    max_timesteps: 1000000
+    learning_rate: 0.0001
+    buffer_size: 100000
+    soft_update_tau: 1.0
+    warmup_learn_steps: 1000
     batch_size: 64
-    logger: tensorboard
+    train_frequency: 5
+    gradient_steps: 1
+    target_update_frequency: 1000
 
 a2c:
   default_18_node_network:
-    algo_name: ppo
-    max_timesteps: 50000
-    actor_lr: 1.0e-3
-    critic_lr: 1.0e-2
-    buffer_size: 128
-    rollout_steps: 128
-    batch_size: 32
-    logger: wandb
+    algo_name: a2c
+    max_timesteps: 1000000
+    learning_rate: 0.0001
+    rollout_steps: 256
+    gamma: 0.99
+    gae_lambda: 0.95
+    ent_coef: 0
+    vf_coef: 0.5
+    max_grad_norm: 0.5
+    normalize_advantage: Ture
 
 ppo:
   default_18_node_network:
     algo_name: ppo
-    max_timesteps: 50000
-    actor_lr: 1.0e-3
-    critic_lr: 1.0e-2
-    buffer_size: 128
-    rollout_steps: 128
-    batch_size: 32
-    logger: wandb
-
-
-  random_:
-    algo_name: ppo_penalty
-    max_timesteps: 300000
-    actor_lr: 1.0e-3
-    critic_lr: 1.0e-2
-    buffer_size: 128
-    rollout_steps: 128
-    batch_size: 32
-    logger: wandb
+    max_timesteps: 1000000
+    learning_rate: 0.0001
+    rollout_steps: 256
+    batch_size: 64
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0
+    vf_coef: 0.5
+    max_grad_norm: 0.5
+    normalize_advantage: Ture

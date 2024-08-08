@@ -19,8 +19,8 @@ from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import create_env
 from cyberattacksim.utils.file_utils import (load_yaml_config,
                                              update_dataclass_from_dict)
-from cyberattacksim.utils.rl_args import (A2CArguments, DQNArguments,
-                                          PPOArguments, RLArguments)
+from examples.configs.rl_args import (A2CArguments, DQNArguments, PPOArguments,
+                                      RLArguments)
 
 
 def main(args: RLArguments) -> None:
@@ -52,7 +52,7 @@ def main(args: RLArguments) -> None:
     run_args = parser.parse_args()
     if run_args.algo_name == 'dqn':
         algo_args: DQNArguments = tyro.cli(DQNArguments)
-    elif run_args.algo_name == 'A2C':
+    elif run_args.algo_name == 'a2c':
         algo_args = tyro.cli(A2CArguments)
     elif run_args.algo_name == 'ppo':
         algo_args: PPOArguments = tyro.cli(PPOArguments)
@@ -70,18 +70,18 @@ def main(args: RLArguments) -> None:
             format(run_args.algo_name, run_args.env_id, config_file))
 
     # Update parser with YAML configuration
-    args = update_dataclass_from_dict(algo_args, env_config)
+    args: PPOArguments = update_dataclass_from_dict(algo_args, env_config)
 
     # set file path
-    log_dir = os.path.join(args.work_dir, args.env_id)
-    model_dir = os.path.join(log_dir, args.algo_name)
+    work_dir = os.path.join(args.work_dir, args.env_id)
+    model_dir = os.path.join(work_dir, args.algo_name)
     tf_log_dir = os.path.join(model_dir, 'tf_logs')
     model_name = os.path.join(model_dir, args.algo_name + '_model')
-    media_dir = os.path.join(log_dir, args.algo_name, 'media')
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
+    media_dir = os.path.join(work_dir, args.algo_name, 'media')
+    if not os.path.exists(work_dir):
+        os.makedirs(work_dir)
 
-    run = wandb.init(dir=log_dir,
+    run = wandb.init(dir=work_dir,
                      project=args.project,
                      name=args.env_id,
                      sync_tensorboard=True)
@@ -107,58 +107,66 @@ def main(args: RLArguments) -> None:
         model_save_freq=1000,
         verbose=2,
     )
-    run_args = parser.parse_args()
-    if run_args.algo_name == 'dqn':
+    if args.algo_name == 'dqn':
         agent = DQN(
             policy=DQNMlp,
             env=env,
             learning_rate=args.learning_rate,
             buffer_size=args.buffer_size,
-            learning_starts=args.learning_starts,
+            tau=args.soft_update_tau,
+            learning_starts=args.warmup_learn_steps,
             batch_size=args.batch_size,
-            train_freq=args.train_freq,
-            target_update_interval=args.target_update_interval,
+            train_freq=args.train_frequency,
+            gradient_steps=args.gradient_steps,
+            target_update_interval=args.target_update_frequency,
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
 
-    elif run_args.algo_name == 'A2C':
+    elif args.algo_name == 'A2C':
         agent = A2C(
             policy=A2CMlp,
             env=env,
             learning_rate=args.learning_rate,
-            n_steps=args.n_steps,
+            n_steps=args.rollout_steps,
             gamma=args.gamma,
             gae_lambda=args.gae_lambda,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
             normalize_advantage=args.normalize_advantage,
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
-    elif run_args.algo_name == 'ppo':
+    elif args.algo_name == 'ppo':
         agent = PPO(
             policy=PPOMlp,
             env=env,
             learning_rate=args.learning_rate,
-            n_steps=2048,
+            n_steps=args.rollout_steps,
             batch_size=args.batch_size,
             n_epochs=args.n_epochs,
             gamma=args.gamma,
             gae_lambda=args.gae_lambda,
             clip_range=args.clip_range,
-            normalize_advantage=True,
+            normalize_advantage=args.normalize_advantage,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
 
     # Train the agent
     agent.learn(
-        total_timesteps=args.total_timesteps,
+        total_timesteps=args.max_timesteps,
         callback=[eval_callback, wandb_callback],
-        log_interval=args.log_interval,
-        eval_freq=args.eval_freq,
+        log_interval=args.train_log_interval,
+        eval_freq=args.test_log_interval,
+        n_eval_episodes=args.eval_episodes,
         progress_bar=True,
     )
-    evaluate_policy(agent, env, n_eval_episodes=10)
+    evaluate_policy(agent, env, n_eval_episodes=args.eval_episodes)
     # save the trained-converged model
     agent.save(model_name)
     run.finish()

@@ -2,7 +2,7 @@ dqn:
   default_18_node_network:
     algo_name: dqn
     max_timesteps: 1000000
-    learning_rate: 0.0001
+    learning_rate: 0.001
     buffer_size: 100000
     soft_update_tau: 1.0
     warmup_learn_steps: 1000
@@ -15,7 +15,7 @@ a2c:
   default_18_node_network:
     algo_name: a2c
     max_timesteps: 1000000
-    learning_rate: 0.0001
+    learning_rate: 0.001
     rollout_steps: 256
     gamma: 0.99
     gae_lambda: 0.95
@@ -28,7 +28,7 @@ ppo:
   default_18_node_network:
     algo_name: ppo
     max_timesteps: 1000000
-    learning_rate: 0.0001
+    learning_rate: 0.001
     rollout_steps: 256
     batch_size: 64
     gamma: 0.99

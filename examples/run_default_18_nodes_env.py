@@ -19,11 +19,10 @@ from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import create_env
 from cyberattacksim.utils.file_utils import (load_yaml_config,
                                              update_dataclass_from_dict)
-from examples.configs.rl_args import (A2CArguments, DQNArguments, PPOArguments,
-                                      RLArguments)
+from examples.configs.rl_args import A2CArguments, DQNArguments, PPOArguments
 
 
-def main(args: RLArguments) -> None:
+def main() -> None:
     # Initialize ArgumentParser
     parser = argparse.ArgumentParser(description='Cyber Attack Sim')
     parser.add_argument(
@@ -53,7 +52,7 @@ def main(args: RLArguments) -> None:
     if run_args.algo_name == 'dqn':
         algo_args: DQNArguments = tyro.cli(DQNArguments)
     elif run_args.algo_name == 'a2c':
-        algo_args = tyro.cli(A2CArguments)
+        algo_args: A2CArguments = tyro.cli(A2CArguments)
     elif run_args.algo_name == 'ppo':
         algo_args: PPOArguments = tyro.cli(PPOArguments)
     else:
@@ -182,5 +181,4 @@ def main(args: RLArguments) -> None:
 
 
 if __name__ == '__main__':
-    args: DQNArguments = tyro.cli(DQNArguments)
-    main(args)
+    main()

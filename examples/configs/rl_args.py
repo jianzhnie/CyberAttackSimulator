@@ -8,7 +8,7 @@ class RLArguments:
     # Common settings
     project: str = field(
         default='cyberattacksim',
-        metadata={'help': "Name of the project. Defaults to 'rltoolkit'"},
+        metadata={'help': 'Name of the project. Defaults to cyberattacksim'},
     )
     algo_name: str = field(
         default='dqn',
@@ -74,11 +74,11 @@ class RLArguments:
         },
     )
     train_log_interval: int = field(
-        default=5,
+        default=10,
         metadata={'help': 'Logging interval during training. Defaults to 10'},
     )
     test_log_interval: int = field(
-        default=10,
+        default=100,
         metadata={
             'help': 'Logging interval during evaluation. Defaults to 20'
         },
@@ -93,20 +93,6 @@ class DQNArguments(RLArguments):
         default=1e-3,
         metadata={
             'help': 'Learning rate used by the optimizer. Defaults to 1e-4'
-        },
-    )
-    eps_greedy_start: float = field(
-        default=1.0,
-        metadata={
-            'help':
-            'Initial value of epsilon for epsilon-greedy exploration. Defaults to 1.0'
-        },
-    )
-    eps_greedy_end: float = field(
-        default=0.1,
-        metadata={
-            'help':
-            'Final value of epsilon for epsilon-greedy exploration. Defaults to 0.1'
         },
     )
     max_grad_norm: float = field(
@@ -148,6 +134,7 @@ class DQNArguments(RLArguments):
 
 @dataclass
 class A2CArguments(RLArguments):
+    """Actor-Critic specific settings."""
     learning_rate: float = field(
         default=1e-3,
         metadata={
@@ -212,7 +199,9 @@ class PPOArguments(RLArguments):
     )
     n_epochs: int = field(
         default=10,
-        metadata={'help: Number of epoch when optimizing the surrogate loss'},
+        metadata={
+            'help': 'Number of epoch when optimizing the surrogate loss'
+        },
     )
     gae_lambda: float = field(
         default=0.95,

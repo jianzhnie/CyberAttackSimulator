@@ -1,40 +1,40 @@
 dqn:
   default_18_node_network:
     algo_name: dqn
-    max_timesteps: 1000000
-    learning_rate: 0.001
+    max_timesteps: 10000000
+    learning_rate: 0.01
     buffer_size: 100000
     soft_update_tau: 1.0
     warmup_learn_steps: 1000
-    batch_size: 64
-    train_frequency: 5
+    batch_size: 256
+    train_frequency: 100
     gradient_steps: 1
-    target_update_frequency: 1000
+    target_update_frequency: 10000
 
 a2c:
   default_18_node_network:
     algo_name: a2c
-    max_timesteps: 1000000
-    learning_rate: 0.001
-    rollout_steps: 256
+    max_timesteps: 10000000
+    learning_rate: 0.01
+    rollout_steps: 8
     gamma: 0.99
     gae_lambda: 0.95
-    ent_coef: 0
+    ent_coef: 0.01
     vf_coef: 0.5
     max_grad_norm: 0.5
-    normalize_advantage: Ture
+    normalize_advantage: False
 
 ppo:
   default_18_node_network:
     algo_name: ppo
-    max_timesteps: 1000000
-    learning_rate: 0.001
-    rollout_steps: 256
+    max_timesteps: 10000000
+    learning_rate: 0.01
+    rollout_steps: 8
     batch_size: 64
     gamma: 0.99
     gae_lambda: 0.95
     clip_range: 0.2
-    ent_coef: 0
+    ent_coef: 0.01
     vf_coef: 0.5
     max_grad_norm: 0.5
-    normalize_advantage: Ture
+    normalize_advantage: False

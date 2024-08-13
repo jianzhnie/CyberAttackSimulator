@@ -1,7 +1,16 @@
+"""The game_modes module.
+
+The game_modes config class is responsible for creating, saving, deleting, and
+retrieving game modes, both default and custom.
+"""
 from __future__ import annotations
 
+import os
+import pathlib
+from pathlib import Path
 from typing import Optional
 
+from cyberattacksim.config import _LIB_CONFIG_ROOT_PATH
 from cyberattacksim.config.core import ConfigGroup
 from cyberattacksim.db.doc_metadata import DocMetadata, DocMetaDataObject
 from cyberattacksim.game_modes.components.blue_agent import Blue
@@ -110,3 +119,140 @@ class GameMode(ConfigGroup, DocMetaDataObject):
                 include_none=True)
 
         return config_dict
+
+
+def default_game_mode_path() -> Path:
+    """Return the path.
+
+    Returns: The path to the default_game_mode.yaml as an instance of
+        pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'default_game_mode.yaml',
+        ))
+
+
+def default_game_mode_tests_path() -> Path:
+    """Return the path.
+
+    Returns: The path to the default_game_mode.yaml as an instance of
+        pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'default_game_mode_tests.yaml',
+        ))
+
+
+def default_game_mode_tests_rnd_path(random_value: int) -> Path:
+    """Return the path.
+
+    Returns: The path to the default_game_mode.yaml as an instance of
+        pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'default_game_mode_tests_rnd_' + str(random_value) + '.yaml',
+        ))
+
+
+def default_game_mode_low_red_skills_rnd_path(random_value: int) -> Path:
+    """Return the path.
+
+    Returns: The path to the default_game_mode.yaml as an instance of
+        pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'default_game_mode_red_skill015_rnd_' + str(random_value) +
+            '.yaml',
+        ))
+
+
+def default_game_mode_high_red_skills_rnd_path(random_value: int) -> Path:
+    """Return the path.
+
+    Returns: The path to the default_game_mode.yaml as an instance of
+        pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'default_game_mode_red_skill075_rnd_' + str(random_value) +
+            '.yaml',
+        ))
+
+
+def default_game_mode_low_actions_path() -> Path:
+    """Return the path.
+
+    Returns: The path to the default_game_mode.yaml as an instance of
+        pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'default_game_mode_low_actions.yaml',
+        ))
+
+
+def low_skill_red_with_random_infection_perfect_detection_path() -> Path:
+    """Return the path.
+
+    Returns: The path to the
+        low_skill_red_with_random_infection_perfect_detection.yaml as an instance
+        of pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'low_skill_red_with_random_infection_perfect_detection.yaml',
+        ))
+
+
+def dcbo_game_mode_path() -> Path:
+    """Return the path.
+
+    Returns: The path to the dcbo_config.yaml as an instance of pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'dcbo_config.yaml',
+        ))
+
+
+def multiple_high_value_targets_game_mode_path() -> Path:
+    """Return the path.
+
+    Returns: The path to the multiple_high_value_targets.yaml as an instance
+        of pathlib.Path.
+    """
+    return pathlib.Path(
+        os.path.join(
+            _LIB_CONFIG_ROOT_PATH,
+            '_package_data',
+            'game_modes',
+            'multiple_high_value_targets.yaml',
+        ))

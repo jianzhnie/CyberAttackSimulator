@@ -69,7 +69,7 @@ def main() -> None:
             format(run_args.algo_name, run_args.env_id, config_file))
 
     # Update parser with YAML configuration
-    args: PPOArguments = update_dataclass_from_dict(algo_args, env_config)
+    args: A2CArguments = update_dataclass_from_dict(algo_args, env_config)
 
     # set file path
     work_dir = os.path.join(args.work_dir, args.env_id)
@@ -122,7 +122,7 @@ def main() -> None:
             verbose=1,
         )
 
-    elif args.algo_name == 'A2C':
+    elif args.algo_name == 'a2c':
         agent = A2C(
             policy=A2CMlp,
             env=env,

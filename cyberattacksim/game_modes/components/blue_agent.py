@@ -11,10 +11,17 @@ from cyberattacksim.config.item_types.float_item import (FloatItem,
 from cyberattacksim.config.item_types.int_item import IntItem, IntProperties
 from cyberattacksim.exceptions import ConfigGroupValidationError
 
-
 # --- Tier 1 groups ---
+# 两个类 MakeNodeSafeGroup 和 DeceptiveNodeGroup 都是 ConfigGroup 的子类，
+# 用于配置与蓝方（"Blue"）相关的网络安全模拟选项。这些类封装了一组配置项，
+# 并且提供了一个验证方法 validate，用于确保配置的有效性。
+
+
 class MakeNodeSafeGroup(ConfigGroup):
-    """Group of values that collectively."""
+    """Group of values that collectively.
+
+    这个类定义了蓝方在网络中修复节点时的配置选项。
+    """
 
     def __init__(
         self,
@@ -23,7 +30,14 @@ class MakeNodeSafeGroup(ConfigGroup):
         increases_vulnerability: Optional[bool] = False,
         gives_random_vulnerability: Optional[bool] = False,
         vulnerability_change: Optional[Union[float, int]] = None,
-    ):
+    ) -> None:
+        """
+        use: 一个布尔值，指示蓝方是否可以修复节点，但不恢复到初始状态。
+        increases_vulnerability: 一个布尔值，指示修复节点时是否会增加节点的脆弱性。
+        gives_random_vulnerability: 一个布尔值，指示修复节点时是否会随机设置节点的脆弱性。
+        vulnerability_change: 一个浮点值，表示修复节点时节点的脆弱性变化量。
+        """
+
         self.use: BoolItem = BoolItem(
             value=use,
             doc=
@@ -75,7 +89,10 @@ class MakeNodeSafeGroup(ConfigGroup):
 
 
 class DeceptiveNodeGroup(ConfigGroup):
-    """The options related to the blue agents use of deceptive nodes."""
+    """The options related to the blue agents use of deceptive nodes.
+
+    这个类定义了蓝方使用欺骗节点（deceptive nodes）时的配置选项。
+    """
 
     def __init__(
         self,
@@ -83,7 +100,12 @@ class DeceptiveNodeGroup(ConfigGroup):
         use: Optional[bool] = False,
         max_number: Optional[int] = 1,
         new_node_on_relocate: Optional[bool] = False,
-    ):
+    ) -> None:
+        """
+        use: 一个布尔值，指示蓝方是否可以放置欺骗节点。
+        max_number: 一个整数，表示蓝方可以放置的最大欺骗节点数。
+        new_node_on_relocate: 一个布尔值，指示当重新安置一个欺骗节点时，是否重新生成节点的属性。
+        """
         self.use: BoolItem = BoolItem(
             value=use,
             doc=
@@ -128,8 +150,15 @@ class DeceptiveNodeGroup(ConfigGroup):
 
 
 # --- Tier 2 groups ---
+# 这是三组用于网络安全模拟中“蓝方”代理行为和检测机制的配置类。
+# 每个类都继承自 ConfigGroup，并提供了一些与“蓝方”代理行为相关的配置选项。
+
+
 class BlueActionSetGroup(AnyUsedGroup):
-    """The options related to the actions that the blue agent can perform."""
+    """The options related to the actions that the blue agent can perform.
+
+    该类定义了蓝方代理可以执行的一系列操作，如降低节点脆弱性、隔离节点、重新连接节点等。
+    """
 
     def __init__(
         self,
@@ -142,7 +171,17 @@ class BlueActionSetGroup(AnyUsedGroup):
         do_nothing: Optional[bool] = False,
         make_node_safe: Optional[MakeNodeSafeGroup] = None,
         deceptive_nodes: Optional[DeceptiveNodeGroup] = None,
-    ):
+    ) -> None:
+        """
+        - reduce_vulnerability: 布尔值，表示蓝方是否可以降低节点的脆弱性。
+        - restore_node: 布尔值，表示蓝方是否可以将节点恢复到初始状态。
+        - scan: 布尔值，表示蓝方是否可以扫描节点以检测红方入侵。
+        - isolate_node: 布尔值，表示蓝方是否可以隔离节点。
+        - reconnect_node: 布尔值，表示蓝方是否可以重新连接节点。
+        - do_nothing: 布尔值，表示蓝方是否可以选择在某一轮中不执行任何操作。
+        - make_node_safe: MakeNodeSafeGroup 实例，定义蓝方修复节点的行为。
+        - deceptive_nodes: DeceptiveNodeGroup 实例，定义蓝方使用欺骗节点的行为。
+        """
         self.reduce_vulnerability: BoolItem = BoolItem(
             value=reduce_vulnerability,
             doc='Blue picks a node and reduces the vulnerability score.',
@@ -196,7 +235,9 @@ class BlueActionSetGroup(AnyUsedGroup):
 
     def validate(self) -> ConfigGroupValidation:
         """Extend the parent validation with additional rules specific to this
-        :class: `~cyberattacksim.config.core.ConfigGroup`."""
+        :class: `~cyberattacksim.config.core.ConfigGroup`.
+        验证确保当蓝方能够隔离或重新连接节点时，这两个操作的可用性是一致的。
+        """
         super().validate()
 
         pair = [self.isolate_node.value, self.reconnect_node.value]
@@ -212,7 +253,10 @@ class BlueActionSetGroup(AnyUsedGroup):
 
 class BlueIntrusionDiscoveryGroup(ConfigGroup):
     """The options related to the ability for the blue agent to discover the
-    red agents intrusions into the network."""
+    red agents intrusions into the network.
+
+    该类定义了蓝方发现红方入侵的概率。
+    """
 
     def __init__(
         self,
@@ -221,7 +265,8 @@ class BlueIntrusionDiscoveryGroup(ConfigGroup):
         immediate_deceptive_node: Optional[Union[int, float]] = None,
         on_scan_standard_node: Optional[Union[int, float]] = None,
         on_scan_deceptive_node: Optional[Union[int, float]] = None,
-    ):
+    ) -> None:
+        # immediate: NodeChanceGroup 实例，定义红方一旦入侵节点，蓝方立即发现入侵的概率。
         self.immediate = NodeChanceGroup(
             standard_node=immediate_standard_node,
             deceptive_node=immediate_deceptive_node,
@@ -234,6 +279,7 @@ class BlueIntrusionDiscoveryGroup(ConfigGroup):
             'chance_to_immediately_discover_intrusion_deceptive_node')
         self.immediate.deceptive_node.doc = 'Chance for blue to discover a deceptive node that red has compromised the instant it is compromised.'
 
+        # on_scan: NodeChanceGroup 实例，定义蓝方扫描节点时发现入侵的概率。
         self.on_scan = NodeChanceGroup(standard_node=on_scan_standard_node,
                                        deceptive_node=on_scan_deceptive_node)
 
@@ -263,7 +309,10 @@ class BlueIntrusionDiscoveryGroup(ConfigGroup):
 
 class BlueAttackDiscoveryGroup(ConfigGroup):
     """The options related to the blue agents ability to discover the attacks
-    the red agent makes to nodes within the network."""
+    the red agent makes to nodes within the network.
+
+    该类定义了蓝方发现红方攻击的概率。
+    """
 
     def __init__(
         self,
@@ -271,7 +320,9 @@ class BlueAttackDiscoveryGroup(ConfigGroup):
         failed_attacks: Optional[UseChancesGroup] = None,
         succeeded_attacks_known_compromise: Optional[UseChancesGroup] = None,
         succeeded_attacks_unknown_compromise: Optional[UseChancesGroup] = None,
-    ):
+    ) -> None:
+        # - failed_attacks: UseChancesGroup
+        # 实例，定义蓝方发现红方攻击失败的概率。
         self.failed_attacks: UseChancesGroup = (
             failed_attacks if failed_attacks else UseChancesGroup(
                 doc=
@@ -285,6 +336,8 @@ class BlueAttackDiscoveryGroup(ConfigGroup):
         self.failed_attacks.chance.deceptive_node.alias = (
             'chance_to_discover_failed_attack_deceptive_node')
 
+        # - succeeded_attacks_known_compromise: UseChancesGroup
+        # 实例，定义蓝方在已知节点被攻陷的情况下，发现红方成功攻击的概率。
         self.succeeded_attacks_known_compromise: UseChancesGroup = (
             succeeded_attacks_known_compromise
             if succeeded_attacks_known_compromise else UseChancesGroup(
@@ -301,6 +354,8 @@ class BlueAttackDiscoveryGroup(ConfigGroup):
         self.succeeded_attacks_known_compromise.chance.deceptive_node.alias = (
             'chance_to_discover_succeeded_attack_deceptive_node')
 
+        # succeeded_attacks_unknown_compromise: UseChancesGroup
+        # 实例，定义蓝方在未知节点被攻陷的情况下，发现红方成功攻击的概率。
         self.succeeded_attacks_unknown_compromise: UseChancesGroup = (
             succeeded_attacks_unknown_compromise
             if succeeded_attacks_unknown_compromise else UseChancesGroup(
@@ -325,7 +380,14 @@ class BlueAttackDiscoveryGroup(ConfigGroup):
 
 
 class Blue(ConfigGroup):
-    """All options relating to the behavior of the blue agent."""
+    """All options relating to the behavior of the blue agent. Blue
+    类用于配置蓝方代理在网络安全模拟中的行为及其相关选项。 这个类将蓝方的行动集、入侵检测概率和攻击发现配置组合在一起，
+    并添加了特定的验证逻辑，以确保这些配置的一致性和合理性。
+
+    - action_set：蓝方代理可执行的操作集合，由 BlueActionSetGroup 定义。
+    - intrusion_discovery_chance：蓝方发现红方入侵的概率，由 BlueIntrusionDiscoveryGroup 定义。
+    - attack_discovery：蓝方发现红方攻击的概率，由 BlueAttackDiscoveryGroup 定义。
+    """
 
     def __init__(
         self,
@@ -333,7 +395,15 @@ class Blue(ConfigGroup):
         intrusion_discovery_chance: Optional[
             BlueIntrusionDiscoveryGroup] = None,
         attack_discovery: Optional[BlueAttackDiscoveryGroup] = None,
-    ):
+    ) -> None:
+        """
+        - action_set：BlueActionSetGroup 的实例，包含蓝方的行动集。 \
+            如果未提供，则使用默认的 BlueActionSetGroup 实例。
+        - intrusion_discovery_chance：BlueIntrusionDiscoveryGroup 的实例，包含蓝方入侵发现概率的配置。 \
+            如果未提供，则使用默认的 BlueIntrusionDiscoveryGroup 实例。
+        - attack_discovery：BlueAttackDiscoveryGroup 的实例，包含蓝方攻击发现概率的配置。 \
+            如果未提供，则使用默认的 BlueAttackDiscoveryGroup 实例。
+        """
         doc = 'The configuration of the blue agent'
         self.action_set: BlueActionSetGroup = (
             action_set if action_set else BlueActionSetGroup(

@@ -16,7 +16,12 @@ class Miscellaneous(ConfigGroup):
         self,
         random_seed: Optional[int] = None,
         output_timestep_data_to_json: Optional[bool] = False,
-    ):
+    ) -> None:
+        """
+        Args:
+            random_seed: int 类型（可选），用于设置随机数生成器的种子，使得游戏输出可以是确定性的。这对于测试和调试非常有用。
+            output_timestep_data_to_json: bool 类型（可选），用于设置是否将每一步的状态数据输出到 JSON 文件中。包括节点之间的连接、节点状态以及蓝方在该回合中看到的攻击。
+        """
         doc = 'Additional options'
         self.random_seed = IntItem(
             value=random_seed,

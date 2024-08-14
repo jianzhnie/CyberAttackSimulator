@@ -14,10 +14,16 @@ from cyberattacksim.config.item_types.int_item import IntItem, IntProperties
 from cyberattacksim.config.item_types.str_item import StrItem, StrProperties
 from cyberattacksim.exceptions import ConfigGroupValidationError
 
-
 # -- Tier 0 groups ---
+# 这段代码定义了四个类，它们用于配置和验证红方（攻击者）的行为和特性。
+# 每个类都是从一个基类 ConfigGroup 继承而来，并定义了红方的不同配置选项。以下是每个类的详细解释：
+
+
 class ZeroDayGroup(ConfigGroup):
-    """Group of values that collectively describe the red zero day action."""
+    """Group of values that collectively describe the red zero day action.
+
+    这个类描述了红方使用零日攻击（zero day attack）的相关配置。
+    """
 
     def __init__(
         self,
@@ -25,7 +31,12 @@ class ZeroDayGroup(ConfigGroup):
         use: Optional[bool] = False,
         start_amount: Optional[int] = 0,
         days_required: Optional[int] = 0,
-    ):
+    ) -> None:
+        """
+        - use: 一个布尔值，表示红方是否使用零日攻击。如果为 True，红方会选择一个安全的节点（已感染节点的连接节点）并将其攻陷，成功率为100%，但只能在每隔 n 个时间步长执行一次。
+        - start_amount: 一个整数，表示红方在游戏开始时拥有的零日攻击的数量。
+        - days_required: 一个整数，表示红方在获得一次新的零日攻击前需要经过的“进度”时间。
+        """
         self.use: BoolItem = BoolItem(
             value=use,
             doc=
@@ -57,14 +68,22 @@ class ZeroDayGroup(ConfigGroup):
 
 
 class AttackSourceGroup(ConfigGroup):
-    """The ConfigGroup to represent to the source of the red agents attacks."""
+    """The ConfigGroup to represent to the source of the red agents attacks.
+
+    这个类用于配置红方发起攻击的来源节点。
+    """
 
     def __init__(
         self,
         doc: Optional[str] = None,
         only_main_red_node: Optional[bool] = False,
         any_red_node: Optional[bool] = False,
-    ):
+    ) -> None:
+        """
+        Args:
+            only_main_red_node: 一个布尔值，表示红方是否只能从它的主节点发起攻击。
+            any_red_node: 一个布尔值，表示红方是否可以从它控制的任何节点发起攻击。
+        """
         self.only_main_red_node = BoolItem(
             value=only_main_red_node,
             doc='Red agent can only attack from its main node on that turn.',
@@ -97,14 +116,22 @@ class AttackSourceGroup(ConfigGroup):
 
 class NaturalSpreadChanceGroup(ConfigGroup):
     """The ConfigGroup to represent the chances of reads natural spreading to
-    different node types."""
+    different node types.
+
+    这个类定义了红方自然传播的概率。
+    """
 
     def __init__(
         self,
         doc: Optional[str] = None,
         to_connected_node: Optional[Union[int, float]] = 0,
         to_unconnected_node: Optional[Union[int, float]] = 0,
-    ):
+    ) -> None:
+        """
+        Args:
+            to_connected_node: 一个浮点数，表示如果一个节点连接到已感染的节点，它在每个时间步长中被感染的概率。
+            to_unconnected_node: 一个浮点数，表示如果一个节点没有连接到已感染的节点，它在每个时间步长中随机被感染的概率。
+        """
         self.doc = doc
         self.to_connected_node = FloatItem(
             value=to_connected_node,
@@ -139,7 +166,10 @@ class NaturalSpreadChanceGroup(ConfigGroup):
 
 class TargetNodeGroup(ConfigGroup):
     """The Config group to represent the information relevant to the red agents
-    target node."""
+    target node.
+
+    这个类描述了红方攻击的目标节点的相关信息。
+    """
 
     def __init__(
         self,
@@ -147,7 +177,13 @@ class TargetNodeGroup(ConfigGroup):
         use: Optional[bool] = False,
         target: Optional[str] = None,
         always_choose_shortest_distance: Optional[bool] = False,
-    ):
+    ) -> None:
+        """
+        Args:
+            use: 一个布尔值，表示红方是否要瞄准特定的目标节点。
+            target: 一个字符串，表示红方瞄准的目标节点的名称。
+            always_choose_shortest_distance: 一个布尔值，表示红方是否总是选择到目标节点的最短路径进行攻击，或者是根据距离的倒数权重来选择攻击路径。
+        """
         self.use: BoolItem = BoolItem(
             value=use,
             doc='Red targets a specific node.',
@@ -182,6 +218,8 @@ class TargetNodeGroup(ConfigGroup):
 
 
 # --- Tier 1 groups ---
+# 这段代码定义了多个配置类，用于表示红方（攻击者）的各种行为和能力。
+# 每个类封装了特定的配置组，并提供了初始化和验证机制，以确保配置的合理性。
 
 
 class RedActionSetGroup(AnyUsedGroup):
@@ -204,6 +242,13 @@ class RedActionSetGroup(AnyUsedGroup):
         :param spread: The likelihood of the action.
         :param random_infect: The chance of the action.
         :param doc: An optional descriptor.
+
+        - spread: 表示红方尝试传播到每个已感染节点连接的节点及其发生概率的配置组。
+        - random_infect: 表示红方尝试随机感染每个安全节点及其发生概率的配置组。
+        - move: 表示红方移动到另一个节点及其发生概率的配置组。
+        - basic_attack: 表示红方选择一个连接到已感染节点的单一节点并尝试攻击和占领该节点及其发生概率的配置组。
+        - do_nothing: 表示红方在特定回合内不执行任何攻击及其发生概率的配置组。
+        - zero_day: 表示零日攻击相关的配置组。
         """
         self.spread: ActionLikelihoodChanceGroup = (
             spread if spread else ActionLikelihoodChanceGroup(
@@ -264,7 +309,10 @@ class RedActionSetGroup(AnyUsedGroup):
 
 class RedAgentAttackGroup(ConfigGroup):
     """The ConfigGroup to represent the information related to the red agents
-    attacks."""
+    attacks.
+
+    这个类表示与红方攻击相关的信息。
+    """
 
     def __init__(
         self,
@@ -274,7 +322,15 @@ class RedAgentAttackGroup(ConfigGroup):
         always_succeeds: Optional[bool] = False,
         skill: Optional[UseValueGroup] = None,
         attack_from: Optional[AttackSourceGroup] = None,
-    ):
+    ) -> None:
+        """
+
+        Args:
+            ignores_defences: 布尔值，表示红方是否忽略节点的防御。
+            always_succeeds: 布尔值，表示红方的攻击是否总是成功。
+            skill: 表示红方在攻击节点时使用的技能修正值的配置组。
+            attack_from: 表示红方发起攻击的来源节点的配置组。
+        """
         self.ignores_defences = BoolItem(
             value=ignores_defences,
             doc='The red agent ignores the defences of nodes.',
@@ -304,14 +360,22 @@ class RedAgentAttackGroup(ConfigGroup):
 
 class RedNaturalSpreadingGroup(ConfigGroup):
     """The ConfigGroup to represent the information related to the red agents
-    natural spreading ability."""
+    natural spreading ability.
+
+    这个类表示与红方自然传播能力相关的信息。
+    """
 
     def __init__(
         self,
         doc: Optional[str] = None,
         capable: Optional[bool] = False,
         chance: Optional[NaturalSpreadChanceGroup] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            - capable: 布尔值，表示红方的感染是否能够自然传播到周围的节点。
+            - chance: 表示红方自然传播到不同类型节点的概率的配置组。
+        """
         self.capable = BoolItem(
             value=capable,
             doc=
@@ -345,7 +409,10 @@ class RedNaturalSpreadingGroup(ConfigGroup):
 
 class RedTargetMechanismGroup(AnyUsedGroup):
     """The ConfigGroup to represent all possible target mechanism the red agent
-    can use."""
+    can use.
+
+    这个类表示红方可以使用的所有目标选择机制
+    """
 
     def __init__(
         self,
@@ -356,7 +423,16 @@ class RedTargetMechanismGroup(AnyUsedGroup):
         prioritise_vulnerable_nodes: Optional[bool] = False,
         prioritise_resilient_nodes: Optional[bool] = False,
         target_specific_node: Optional[TargetNodeGroup] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            - random: 布尔值，表示红方是否随机选择目标节点。
+            - prioritise_connected_nodes: 布尔值，表示红方是否优先选择连接最多的节点作为攻击目标。
+            - prioritise_unconnected_nodes: 布尔值，表示红方是否优先选择连接最少的节点作为攻击目标。
+            - prioritise_vulnerable_nodes: 布尔值，表示红方是否优先选择最脆弱的节点作为攻击目标。
+            - prioritise_resilient_nodes: 布尔值，表示红方是否优先选择最坚固的节点作为攻击目标。
+            - target_specific_node: 表示红方特定目标节点的配置信息。
+        """
         self.random = BoolItem(
             doc='Red randomly chooses nodes to target',
             value=random,
@@ -404,7 +480,10 @@ class RedTargetMechanismGroup(AnyUsedGroup):
 
 class Red(ConfigGroup):
     """The ConfigGroup to represent all items necessary to configure the Red
-    agent."""
+    agent.
+
+    Red 类是一个配置组，代表了红方（攻击者）在网络攻击模拟中的所有必要配置。 这个类将多个相关的配置组组合在一起，并提供了验证逻辑以确保配置的正确性。
+    """
 
     def __init__(
         self,
@@ -413,7 +492,14 @@ class Red(ConfigGroup):
         action_set: Optional[RedActionSetGroup] = None,
         natural_spreading: Optional[RedNaturalSpreadingGroup] = None,
         target_mechanism: Optional[RedTargetMechanismGroup] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            agent_attack: RedAgentAttackGroup 实例，表示与红方攻击相关的所有配置。
+            action_set: RedActionSetGroup 实例，表示红方可以执行的所有动作的配置。
+            natural_spreading: RedNaturalSpreadingGroup 实例，表示红方自然传播能力的配置。
+            target_mechanism: RedTargetMechanismGroup 实例，表示红方目标选择机制的配置。
+        """
         doc = 'The configuration of the red agent'
         self.agent_attack = (
             agent_attack if agent_attack else RedAgentAttackGroup(

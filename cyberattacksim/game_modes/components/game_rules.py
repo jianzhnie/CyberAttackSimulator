@@ -14,7 +14,10 @@ from cyberattacksim.exceptions import ConfigGroupValidationError
 
 class NetworkCompatibilityGroup(ConfigGroup):
     """A set of optional restrictions that collectively constrain the types of
-    network a game mode can be used upon."""
+    network a game mode can be used upon.
+
+    说明：这个类定义了一组可选的限制条件，用于约束游戏模式可以使用的网络类型。
+    """
 
     def __init__(
         self,
@@ -22,7 +25,13 @@ class NetworkCompatibilityGroup(ConfigGroup):
         node_count: Optional[RestrictRangeGroup] = None,
         entry_node_count: Optional[RestrictRangeGroup] = None,
         high_value_node_count: Optional[RestrictRangeGroup] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            - node_count: RestrictRangeGroup 实例，限制网络节点数量的范围。
+            - entry_node_count: RestrictRangeGroup 实例，限制入口节点数量的范围。
+            - high_value_node_count: RestrictRangeGroup 实例，限制高价值节点数量的范围。
+        """
         self.node_count = (node_count if node_count else RestrictRangeGroup(
             doc=
             'Restrict the game mode to only work with network works within a range of node counts'
@@ -46,7 +55,10 @@ class NetworkCompatibilityGroup(ConfigGroup):
 
 class BlueLossConditionGroup(AnyUsedGroup):
     """The state of the network that must be reached for the red agent to win
-    the game."""
+    the game.
+
+    说明：该类定义了在网络达到某些条件时蓝方（防御方）输掉游戏的状态。这些条件是红方（攻击方）获胜的关键条件。
+    """
 
     def __init__(
         self,
@@ -55,7 +67,14 @@ class BlueLossConditionGroup(AnyUsedGroup):
         high_value_node_lost: Optional[bool] = False,
         target_node_lost: Optional[bool] = False,
         n_percent_nodes_lost: Optional[UseValueGroup] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            - all_nodes_lost: bool 类型，若为 True，表示所有节点丢失时蓝方输掉游戏。
+            - high_value_node_lost: bool 类型，若为 True，表示丢失一个特殊的高价值节点时蓝方输掉游戏。
+            - target_node_lost: bool 类型，若为 True，表示目标节点丢失时蓝方输掉游戏。
+            - n_percent_nodes_lost: UseValueGroup 类型，定义了蓝方输掉游戏所需丢失的节点百分比。如果不提供，使用默认的 UseValueGroup 实例。
+        """
         self.all_nodes_lost: BoolItem = BoolItem(
             value=all_nodes_lost,
             doc='The blue agent loses if all the nodes become compromised',
@@ -93,7 +112,10 @@ class BlueLossConditionGroup(AnyUsedGroup):
 
 
 class GameRules(ConfigGroup):
-    """The overall rules of the game mode."""
+    """The overall rules of the game mode.
+
+    说明：该类定义了游戏模式的整体规则，包括游戏的宽限期、最大步骤数、蓝方输掉条件和网络兼容性。
+    """
 
     def __init__(
         self,
@@ -101,7 +123,15 @@ class GameRules(ConfigGroup):
         max_steps: Optional[int] = 0,
         blue_loss_condition: Optional[BlueLossConditionGroup] = None,
         network_compatibility: Optional[NetworkCompatibilityGroup] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            self.grace_period_length: 使用 IntItem 管理游戏宽限期的长度，包括相关的文档和别名。
+            self.max_steps: 使用 IntItem 管理游戏的最大步骤数，包括相关的文档和别名。
+            self.blue_loss_condition: 使用 BlueLossConditionGroup 管理蓝方输掉游戏的条件，如果没有提供，则使用默认的 BlueLossConditionGroup 实例。
+            self.network_compatibility: 使用 NetworkCompatibilityGroup 管理网络兼容性，如果没有提供，则使用默认的 NetworkCompatibilityGroup 实例。
+
+        """
         doc = 'The rules of the overall game mode'
         self.grace_period_length = IntItem(
             value=grace_period_length,

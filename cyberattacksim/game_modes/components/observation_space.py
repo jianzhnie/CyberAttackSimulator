@@ -10,7 +10,10 @@ from cyberattacksim.config.item_types.bool_item import BoolItem, BoolProperties
 
 class ObservationSpace(AnyTrueGroup):
     """The characteristics of the network and the red agent that the blue agent
-    can observe."""
+    can observe.
+
+    说明：该类定义了蓝方能够观察到的网络和红方特征。它包含了关于网络节点、攻击情况和红方能力的观察设置。
+    """
 
     def __init__(
         self,
@@ -23,7 +26,19 @@ class ObservationSpace(AnyTrueGroup):
         attacked_nodes: Optional[bool] = False,
         special_nodes: Optional[bool] = False,
         red_agent_skill: Optional[bool] = False,
-    ):
+    ) -> None:
+        """
+        参数：
+            compromised_status: bool 类型（可选），指示蓝方是否能看到所有节点的被攻陷状态。
+            vulnerabilities: bool 类型（可选），指示蓝方是否能看到所有节点的漏洞分数。
+            node_connections: bool 类型（可选），指示蓝方是否能看到节点间的连接关系。
+            average_vulnerability: bool 类型（可选），指示蓝方是否能看到所有节点的平均漏洞。
+            graph_connectivity: bool 类型（可选），指示蓝方是否能看到图的连通性评分。
+            attacking_nodes: bool 类型（可选），指示蓝方是否能看到最近攻击过安全节点的所有节点。
+            attacked_nodes: bool 类型（可选），指示蓝方是否能看到最近被攻击的所有节点。
+            special_nodes: bool 类型（可选），指示蓝方是否能看到所有特殊节点（如入口节点、高价值节点）。
+            red_agent_skill: bool 类型（可选），指示蓝方是否能看到红方的技能等级。
+        """
         doc = 'The characteristics of the network and the red agent that the blue agent can observe'
         self.compromised_status = BoolItem(
             value=compromised_status,

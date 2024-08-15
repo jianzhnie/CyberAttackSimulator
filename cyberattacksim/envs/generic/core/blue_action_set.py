@@ -11,6 +11,8 @@ from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
 from cyberattacksim.networks.node import Node
 
 
+# 这段代码定义了一个名为 BlueActionSet 的类，它为蓝方代理（Blue Agents）提供了一系列可以执行的动作，以防御和保护网络中的节点。
+# 这些动作包括减少节点漏洞、恢复节点状态、扫描网络节点、隔离节点等。
 class BlueActionSet:
     """A class representing a Blue Agents action set."""
 
@@ -25,6 +27,8 @@ class BlueActionSet:
 
     def reduce_node_vulnerability(self, node: Node) -> Tuple[str, Node]:
         """Reduce the vulnerability of the target node.
+        这个方法减少目标节点的漏洞值，但不会低于配置文件中指定的下限。 它返回一个元组，包含动作名称 "reduce_vulnerability"
+        和被操作的节点对象。
 
         Will not reduce the vulnerability past the lower bound setting in the
         configuration file:
@@ -48,7 +52,8 @@ class BlueActionSet:
 
     def restore_node(self, node: Node) -> Tuple[str, Node]:
         """Restore a node to its starting state: safe and with its starting
-        vulnerability.
+        vulnerability. 这个方法将节点恢复到初始状态，使其变得安全并重置漏洞值。 返回的元组包含动作名称 "restore_node"
+        和被操作的节点对象。
 
         Args:
             node: the node to restore
@@ -64,6 +69,9 @@ class BlueActionSet:
 
     def make_safe_node(self, node: Node) -> Tuple[str, Node]:
         """Make a target node safe.
+
+        这个方法将目标节点设为安全状态，并根据配置文件中的设置，可能会影响节点的漏洞值。
+        返回的元组包含动作名称 "make_safe_node" 和被操作的节点对象。
 
         Can also affect the vulnerability of the node. There are settings that can change how this
         action works in the configuration file:
@@ -101,6 +109,9 @@ class BlueActionSet:
         """Scan all of the nodes within the environment and attempt to get
         their states.
 
+        这个方法扫描环境中的所有节点，尝试获取它们的状态。
+        返回的元组包含动作名称 "scan"，但由于此动作影响所有节点，因此没有特定的目标节点（返回值为 None）。
+
         The blue agents ability to see intrusions is based on the values in the config file:
             - BLUE: chance_to_discover_intrusion_on_scan
             - BLUE: chance_to_discover_intrusion_on_scan_deceptive_node
@@ -117,6 +128,9 @@ class BlueActionSet:
     def isolate_node(self, node: Node) -> Tuple[str, Node]:
         """Isolate a node by disabling all of its connections to other nodes.
 
+        这个方法通过禁用节点与其他节点的所有连接来隔离该节点。
+        返回的元组包含动作名称 "isolate" 和被操作的节点对象
+
         Args:
             node: the node to disable
 
@@ -130,6 +144,7 @@ class BlueActionSet:
 
     def reconnect_node(self, node: Node) -> Tuple[str, Node]:
         """Enable all of the connections to and from a node.
+        这个方法启用节点与其他节点之间的所有连接。 返回的元组包含动作名称 "connect" 和被操作的节点对象。
 
         Args:
             node: the node to enable to connections to
@@ -143,7 +158,8 @@ class BlueActionSet:
         return 'connect', node
 
     def do_nothing(self) -> Tuple[str, Node]:
-        """Do Nothing.
+        """Do Nothing. 这个方法表示蓝方代理在当前回合不采取任何行动。 返回的元组包含动作名称
+        "do_nothing"，并且没有特定的目标节点（返回值为 None）。
 
         Returns:
             The name of the action ("do_nothing")
@@ -153,6 +169,9 @@ class BlueActionSet:
 
     def add_deceptive_node(self, edge: int) -> Tuple[str, Union[List, None]]:
         """Add a deceptive node into the environment.
+        这个方法在环境中添加一个欺骗节点，欺骗节点与普通节点相同，但默认情况下具有 100% 的攻击检测率。 返回的元组包含动作名称
+        "add_deceptive_node" 或
+        "do_nothing"（取决于动作是否有效），以及放置欺骗节点的节点对（如果没有执行动作，则返回 None）。
 
         Deceptive nodes are the same as standard nodes except they have a 100% chance (by default)
         to be able to detect attacks from the red agent. A deceptive node is added on an edge between two nodes.

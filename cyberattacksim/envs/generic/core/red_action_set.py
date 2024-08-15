@@ -13,9 +13,18 @@ from typing import Dict, List, Set, Tuple, Union
 from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
 from cyberattacksim.networks.node import Node
 
+# RedActionSet类为红队代理提供了一套复杂的动作和攻击策略，能够在网络环境中模拟各种网络攻击行为。
+# 这些行为通过与NetworkInterface交互，改变环境状态，从而模拟出不同的攻击场景。
+# 这在网络安全研究中非常有用，用于测试和评估网络防御措施的有效性。
+
 
 class RedActionSet:
-    """A class representing a Red Agents action set."""
+    """这段代码定义了一个红队（Red Team）模拟的行为类，用于模拟网络攻击者在网络环境中的各种操作。
+    代码通过RedActionSet类实现了多种攻击和行动策略，允许红队代理在网络环境中执行不同类型的攻击。
+    包括初始化、重置状态、选择目标节点、选择行动以及执行各种类型的攻击。
+
+    A class representing a Red Agents action set.
+    """
 
     action_set = []
     action_probabilities = []
@@ -30,10 +39,16 @@ class RedActionSet:
         """Initialise the red agent.
 
         Args:
+            network_interface: 用于与网络环境交互的接口对象。
+            action_set: 红队代理可执行的动作列表。
+            action_probabilities: 每个动作被选择的概率列表。
+
             network_interface: Object from the NetworkInterface class
             action_set: The possible actions that the red agent can take (list)
             action_probabilities: The likelihood of those actions being chosen (list)
         """
+
+        #  初始化红队代理的技能、零日攻击的相关信息，以及调用reset()方法重置红队的状态。
         self.network_interface = network_interface
         self.skill = self.network_interface.game_mode.red.agent_attack.skill.value.value
         self.zero_day_amount = (self.network_interface.game_mode.red.
@@ -47,6 +62,7 @@ class RedActionSet:
         self.reset()
 
     def reset(self):
+        # 重置红队代理在一个新回合开始时的状态，例如零日攻击的数量。
         """Reset red agent episode dependent variables to initial value."""
         self.zero_day_amount = (self.network_interface.game_mode.red.
                                 action_set.zero_day.start_amount.value)
@@ -55,6 +71,9 @@ class RedActionSet:
     def choose_target_node(
             self) -> Union[Tuple[Node, Node], Tuple[bool, bool]]:
         """Choose a target node.
+
+        - 该方法根据红队代理的配置从网络中选择一个目标节点进行攻击。
+        - 节点选择可以根据多种策略，如随机选择、优先攻击连接节点、优先攻击脆弱节点等。
 
         Returns:
             The target node (False if no possible nodes to attack)
@@ -158,7 +177,7 @@ class RedActionSet:
         return target, attacking_node
 
     def choose_action(self) -> int:
-        """Choose an action to perform.
+        """Choose an action to perform. 通过random.choices方法基于动作概率选择一个动作。
 
         Returns:
             The chosen action to perform
@@ -170,7 +189,10 @@ class RedActionSet:
         return action
 
     def increment_day(self):
-        """Increment the day for zero day attack generation."""
+        """Increment the day for zero day attack generation.
+
+        increment_day方法：用于模拟零日攻击的天数递增，当达到一定天数时，零日攻击的数量增加。
+        """
         # If the number of days equals the days required for a zero day then the number of available zero days is
         # increased
         if self.zero_day_current_day == self.zero_day_required:
@@ -181,14 +203,14 @@ class RedActionSet:
 
     def get_amount_zero_day(self) -> int:
         """Get the amount of zero day attacks that the red agent has stored up.
-
+        get_amount_zero_day方法：获取当前零日攻击的数量。
         Returns:
             Integer number - amount of zero day attacks
         """
         return self.zero_day_amount
 
     def random_move(self) -> Dict[str, List[Union[bool, str, None]]]:
-        """Select a random connected compromised node to move to.
+        """Select a random connected compromised node to move to. 在网络中随机移动红队代理。
 
         Returns:
             A dictionary containing:
@@ -236,7 +258,7 @@ class RedActionSet:
         }
 
     def do_nothing(self) -> Dict[str, List[Union[bool, str, None]]]:
-        """No-op.
+        """No-op. 红队代理不执行任何操作（No-op）。
 
         Returns:
             The name of the action
@@ -253,6 +275,7 @@ class RedActionSet:
 
     def zero_day_attack(self) -> Dict[str, List[Union[bool, str, None]]]:
         """Execute a zero-day attack if available.
+        如果红队代理有足够的零日攻击资源，则执行一次攻击并可能移动红队代理的位置。
 
         Returns:
             The name of the action taken
@@ -295,7 +318,7 @@ class RedActionSet:
             }
 
     def basic_attack(self) -> Dict[str, List[Union[bool, str, None]]]:
-        """Execute a basic attack.
+        """Execute a basic attack. 该方法使用红队代理的技能和配置来攻击目标节点。
 
         The red agent will attempt to compromise a target node using the predefined attack method.
 
@@ -347,6 +370,8 @@ class RedActionSet:
 
     def natural_spread(self) -> Dict[str, List[Union[bool, str, None]]]:
         """Naturally spread throughout the network.
+
+        红队代理尝试通过已感染的节点自然扩散到连接的安全节点。
 
         Nodes that are connected to compromised nodes can have a different chance to become compromised.
         The settings for how likely nodes are to become compromised are in the config file.
@@ -446,6 +471,8 @@ class RedActionSet:
     def spread(self) -> Dict[str, List[Union[bool, str, None]]]:
         """Execute a spread attack.
 
+        红队代理尝试从已感染的节点扩散到所有连接的安全节点。
+
         The red agent will try and spread from every infected node to every connected safe node.
         The chance to spread between two nodes is independent of any other spreading.
 
@@ -514,7 +541,7 @@ class RedActionSet:
         }
 
     def intrude(self) -> Dict[str, List[Union[bool, str, None]]]:
-        """Execute an attack on all nodes simultaneously.
+        """Execute an attack on all nodes simultaneously. 红队代理尝试同时攻击网络中的所有安全节点。
 
         The red agent will try to infect every safe node at once (regardless of connectivity).
         The chance for the red agent to compromise a node is independent to each of the other nodes

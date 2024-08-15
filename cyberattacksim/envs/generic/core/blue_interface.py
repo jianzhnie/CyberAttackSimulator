@@ -4,6 +4,10 @@ from cyberattacksim.envs.generic.core.blue_action_set import BlueActionSet
 from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
 from cyberattacksim.networks.node import Node
 
+# 这个代码定义了 BlueInterface 类，它继承自 BlueActionSet，为蓝方代理提供了一个接口，使其能够在网络环境中执行各种动作。
+# 这些动作被分为三大类：标准动作、欺骗动作和全局动作。
+# BlueInterface 通过 perform_action 方法来执行这些动作，并根据输入的动作编号决定具体执行哪个动作。
+
 
 class BlueInterface(BlueActionSet):
     """The interface used by the Blue Agents to act within the environment."""
@@ -15,6 +19,11 @@ class BlueInterface(BlueActionSet):
             network_interface: Object from the NetworkInterface class
         """
         super().__init__(network_interface)
+
+        # action_dict 保存了标准动作，每个动作都与一个编号关联。
+        # deceptive_actions 记录了欺骗动作的数量，这个数量与网络中边的数量相关。
+        # global_action_dict 保存了全局动作，同样与编号关联。
+        # number_of_actions 和 number_global_action 分别记录了标准动作和全局动作的数量。
 
         # standard actions (apply to a single node)
         self.action_dict = {}
@@ -60,6 +69,19 @@ class BlueInterface(BlueActionSet):
 
     def perform_action(self, action: int) -> Tuple[str, Node]:
         """Perform an action within the environment.
+
+        perform_action 方法根据传入的 action 编号来执行相应的动作。
+
+        - 如果编号超出动作范围，则执行 do_nothing。
+        - 如果编号在欺骗动作范围内，则执行对应的欺骗动作。
+        - 如果编号对应全局动作，则执行全局动作。
+        - 否则，执行标准动作，标准动作会应用到特定的节点上。
+
+        执行流程:
+        - 检查 action 是否超出动作范围，如果超出，则执行 do_nothing。
+        - 检查 action 是否属于欺骗动作，如果是，则执行相应的欺骗动作。
+        - 检查 action 是否属于全局动作，如果是，则执行相应的全局动作。
+        - 如果都不是，则将 action 映射到一个标准动作，并将该动作应用于特定的节点上。
 
         Takes in an action number and then maps this to the correct action to perform. There are 3 different item_types of
         actions:
@@ -131,6 +153,9 @@ class BlueInterface(BlueActionSet):
 
     def get_number_of_actions(self) -> int:
         """Get the number of actions that this blue agent can perform.
+
+        这个方法返回蓝方代理可以执行的总动作数量，包括标准动作、欺骗动作和全局动作。
+        总数是标准动作数量乘以节点数量，再加上全局动作数量和欺骗动作数量。
 
         There are three item_types of actions:
             - global actions (apply to all nodes) - need 1 action space

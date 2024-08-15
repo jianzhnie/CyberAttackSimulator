@@ -10,21 +10,31 @@ from cyberattacksim.exceptions import ConfigGroupValidationError
 
 # TODO: make a factory class for actionX group
 
+# ActionLikelihoodGroup 和 ActionLikelihoodChanceGroup 类用于管理操作的可能性和机会的配置。
+# 前者主要关注操作的可能性，而后者在此基础上增加了操作的机会。
+
 
 class ActionLikelihoodGroup(ConfigGroup):
-    """Group to represent an action, likelihood common config group."""
+    """Group to represent an action, likelihood common config group.
+
+    说明：该类表示一个操作及其可能性配置的组。
+    """
 
     def __init__(
         self,
         doc: Optional[str] = None,
         use: bool = False,
         likelihood: Optional[Union[float, int]] = None,
-    ):
+    ) -> None:
         """The `ActionLikelihoodGroup` constructor.
 
         :param use: Whether to use the action or not.
         :param likelihood: The likelihood of the action.
         :param doc: An optional descriptor.
+
+        - use: bool 类型，指定是否使用该操作。
+        - likelihood: float 或 int 类型（可选），指定操作的可能性。
+        - doc: str 类型（可选），描述该配置组的文档字符串。
         """
         self.use: BoolItem = BoolItem(
             value=use,
@@ -67,7 +77,10 @@ class ActionLikelihoodGroup(ConfigGroup):
 
 class ActionLikelihoodChanceGroup(ActionLikelihoodGroup):
     """Group to represent an action, likelihood, and chance common config
-    group."""
+    group.
+
+    说明：该类表示一个操作、可能性和机会的配置组。
+    """
 
     def __init__(
         self,
@@ -82,6 +95,11 @@ class ActionLikelihoodChanceGroup(ActionLikelihoodGroup):
         :param likelihood: The likelihood of the action.
         :param chance: The chance of the action.
         :param doc: An optional descriptor.
+
+        - use: bool 类型，指定是否使用该操作。
+        - likelihood: float 或 int 类型（可选），指定操作的可能性。
+        - chance: float 或 int 类型（可选），指定操作的机会。
+        - doc: str 类型（可选），描述该配置组的文档字符串。
         """
         self.use = None
         self.likelihood = None
@@ -124,7 +142,10 @@ class ActionLikelihoodChanceGroup(ActionLikelihoodGroup):
 
 class UseValueGroup(ConfigGroup):
     """Group of values that collectively describe whether an item is used and
-    if so what value to use with."""
+    if so what value to use with.
+
+    说明：该类表示一个值组，用于描述某个项是否被使用以及如果使用则使用什么值。
+    """
 
     def __init__(self,
                  doc: Optional[str] = None,
@@ -135,6 +156,10 @@ class UseValueGroup(ConfigGroup):
         :param use: Whether to use the action or not.
         :param value: The value of the item.
         :param doc: An optional descriptor.
+
+        use: bool 类型，指定是否使用该项。
+        value: float 类型（可选），指定该项的值。
+        doc: str 类型（可选），描述该配置组的文档字符串。
         """
         self.use: BoolItem = BoolItem(
             value=use,
@@ -156,14 +181,23 @@ class UseValueGroup(ConfigGroup):
 
 
 class NodeChanceGroup(AnyNonZeroGroup):
-    """Group to indicate chances of success for different node types."""
+    """Group to indicate chances of success for different node types.
+
+    说明：该类表示不同节点类型成功的机会。
+    """
 
     def __init__(
         self,
         doc: Optional[str] = None,
         standard_node: Optional[Union[int, float]] = 0.5,
         deceptive_node: Optional[Union[int, float]] = 0.5,
-    ):
+    ) -> None:
+        """
+        Args:
+            standard_node: float 或 int 类型（可选），标准节点的成功机会。
+            deceptive_node: float 或 int 类型（可选），欺骗节点的成功机会。
+            doc: str 类型（可选），描述该配置组的文档字符串。
+        """
         self.standard_node = FloatItem(
             value=standard_node,
             doc='The chance of the action succeeding for a standard node',
@@ -193,14 +227,24 @@ class NodeChanceGroup(AnyNonZeroGroup):
 
 class UseChancesGroup(ConfigGroup):
     """Group to indicate whether an element is used and its associated chance
-    of success for different node types."""
+    of success for different node types.
+
+    说明：该类表示一个元素是否被使用及其在不同节点类型下的成功机会。
+    """
 
     def __init__(
         self,
         doc: Optional[str] = None,
         use: Optional[bool] = False,
         chance: NodeChanceGroup = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            use: bool 类型（可选），指定是否使用该元素。
+            chance: NodeChanceGroup 类型（可选），指定成功的机会。
+            doc: str 类型（可选），描述该配置组的文档字符串。
+
+        """
         self.use: BoolItem = BoolItem(
             doc='Whether the element is used',
             value=use,
@@ -227,7 +271,9 @@ class UseChancesGroup(ConfigGroup):
 
 
 class RestrictRangeGroup(ConfigGroup):
-    """:class:`~cyberattacksim.config.base.core.ConfigGroup` to restrict the range of a given attribute to within :attribute: `min` and :attribute: `max`."""
+    """:class:`~cyberattacksim.config.base.core.ConfigGroup` to restrict the range of a given attribute to within :attribute: `min` and :attribute: `max`.
+    说明：该类用于限制给定属性的范围在 min 和 max 之间。
+    """
 
     def __init__(
         self,
@@ -235,7 +281,14 @@ class RestrictRangeGroup(ConfigGroup):
         restrict: Optional[bool] = False,
         min: Optional[int] = None,
         max: Optional[int] = None,
-    ):
+    ) -> None:
+        """
+        Args:
+            restrict: bool 类型（可选），指定是否限制属性。
+            min: int 类型（可选），属性的最小值。
+            max: int 类型（可选），属性的最大值。
+            doc: str 类型（可选），描述该配置组的文档字符串。
+        """
         self.restrict = BoolItem(
             value=restrict,
             doc='Whether to restrict this attribute.',

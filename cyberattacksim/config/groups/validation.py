@@ -10,7 +10,10 @@ from cyberattacksim.exceptions import ConfigGroupValidationError
 
 class AnyNonZeroGroup(ConfigGroup):
     """Inherit from this group if any value should be greater 0 in order to be
-    valid."""
+    valid.
+
+    说明：如果组中的任意值应大于 0 则继承此类。
+    """
 
     def validate(self) -> ConfigGroupValidation:
         """Extend the parent validation with additional rules specific to this
@@ -28,7 +31,10 @@ class AnyNonZeroGroup(ConfigGroup):
 
 
 class AnyTrueGroup(ConfigGroup):
-    """Inherit from this group if any value should be True."""
+    """Inherit from this group if any value should be True.
+
+    说明：如果组中的任意值应为 True 则继承此类。
+    """
 
     def validate(self) -> ConfigGroupValidation:
         """Extend the parent validation with additional rules specific to this
@@ -46,7 +52,10 @@ class AnyTrueGroup(ConfigGroup):
 
 class AnyUsedGroup(ConfigGroup):
     """Inherit from this group if any element should have a value of `True` or
-    should be a group with `use` as `True`."""
+    should be a group with `use` as `True`.
+
+    说明：如果组中的任意元素应具有值为 True 或应为 use 为 True 的组，则继承此类。
+    """
 
     def validate(self) -> ConfigGroupValidation:
         """Extend the parent validation with additional rules specific to this

@@ -31,6 +31,8 @@ class SineWaveRedAgent(RedInterface):
     team behaviour - in this case, action selection.
 
     The agent uses a sine wave to allow the red agent to attack more randomly and in waves rather than constantly.
+
+    这个类继承了 RedInterface，意味着它是一个自定义的红队代理，符合该模拟环境的接口要求。
     """
 
     def __init__(self, network_interface):
@@ -41,14 +43,43 @@ class SineWaveRedAgent(RedInterface):
         self.cosine_multiplier = round(random.uniform(2.75, 3.5), 4)
         super().__init__(network_interface)
 
+        # network_interface: 这是传递给父类的网络接口对象，用于与模拟环境进行交互。
+        # self.time: 初始化时间步长为 0，随着每次红队行动的调用而递增。
+        # self.sine_offset 和 self.cosine_offset: 随机生成的正弦和余弦偏移量，用于改变波形的相位。
+        # self.sine_multiplier 和 self.cosine_multiplier: 正弦和余弦的倍数，控制波形的周期和幅度。
+
     def perform_action(
             self) -> Dict[int, Dict[str, List[Union[bool, str, None]]]]:
         """Chooses and then performs an action. This is called for every one of
         the red agents turns.
 
+        功能: 选择并执行一个或多个行动，这是红队代理在每回合执行的核心方法。
+        返回值: 一个字典，键为行动编号，值为行动的详细信息（包括成功状态、目标、攻击节点等）。
+
+        行动选择与执行的逻辑
+
+        - 时间步进:
+        - 重置时间和偏移:
+            如果时间超过 50，时间和偏移量将被重置。
+        - 计算当前攻击强度:
+            通过正弦和余弦函数计算当前攻击的强度，并根据红队的技能值调整。如果强度低于红队技能值，则将强度提升至技能值。
+        - 计算行动次数:
+            根据当前的攻击强度计算本回合的攻击次数。
+        - 自然传播攻击:
+            如果配置允许，红队会执行一次自然传播攻击。
+        - 零日攻击:
+            尝试执行零日攻击（即未知漏洞的攻击），并检查是否成功。如果成功，记录该攻击。
+        - 选择其他攻击:
+            在零日攻击失败的情况下，代理会尝试其他类型的攻击，直到达到本回合的攻击次数限制或没有可攻击的目标。
+        - 随机移动:
+            如果没有可攻击的目标，红队将尝试随机移动到新的节点。
+        - 更新攻击信息:
+            将本回合所有攻击的结果（攻击节点、目标节点、成功与否）更新到网络接口。
+
         Returns:
             A tuple containing the name of the action, the success status, the target, the attacking node and any natural spreading attacks
         """
+
         current_turn_attack_info = {}
         action_counter = 0
 

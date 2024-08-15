@@ -89,4 +89,4 @@ def generate(
         return cas_runner.agent, None
 
 
-generate(total_timesteps=10000)
+generate(total_timesteps=1000000)

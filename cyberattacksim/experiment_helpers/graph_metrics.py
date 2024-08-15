@@ -13,9 +13,13 @@ from cyberattacksim.experiment_helpers.constants import \
     STANDARD_GRAPH_METRIC_HEADERS
 
 
+# 这段代码定义了一些函数，用于计算图的各种网络指标，并生成和打印相关的统计信息。
 def geometric_mean_overflow(input_list: List) -> float:
     """Calculate the geometric mean accounting for the potential of overflow
     through using logs.
+
+    计算输入列表的几何平均数，并处理可能出现的溢出问题。
+    当处理较大的数值时，直接计算几何平均可能导致溢出，通过对数的形式可以有效避免这个问题。
 
     Args:
         input_list: A list of values
@@ -32,6 +36,10 @@ def geometric_mean_overflow(input_list: List) -> float:
 
 def flatten_list(list_input: list) -> list:
     """Take a list of lists and flattens them into a single list.
+    将一个嵌套的列表（即列表的列表）展平成一个单一的列表。
+
+    工作原理:
+        使用列表推导式遍历嵌套列表中的每个子列表，并将其元素直接添加到结果列表中。
 
     Args:
         list_input: The input list of lists to be processed
@@ -44,7 +52,11 @@ def flatten_list(list_input: list) -> list:
 
 def get_assortativity_metrics(graph: nx.Graph):
     """Get assortativity metrics for an input graph using networkx's in-built
-    algorithms.
+    algorithms. 获取输入图的同配性度量，即节点连接的倾向性，常用于社交网络分析中。
+
+    工作原理:
+        使用 NetworkX 库提供的 nx.degree_assortativity_coefficient() 和 nx.degree_pearson_correlation_coefficient() 计算图的度同配性系数和皮尔逊系数。
+        返回一个包含两个系数的元组。
 
     Args:
         graph: A networkx graph
@@ -60,7 +72,12 @@ def get_assortativity_metrics(graph: nx.Graph):
 
 def get_func_summary_statistics(func: Callable) -> list:
     """Generate a list of summary statistics based on the output of a networkx
-    in-build algorithm.
+    in-build algorithm. 基于 NetworkX 内置算法的输出生成一组统计摘要。
+
+    工作原理:
+        检查 func 的输出是否为字典类型，如果是，则提取字典的值作为指标列表。
+        对这些指标计算算术平均数、几何平均数、调和平均数、标准差、方差和中位数。
+        返回这些统计值的列表。
 
     Args:
         func: A networkx algorithm function
@@ -98,7 +115,13 @@ def get_func_summary_statistics(func: Callable) -> list:
 
 
 def get_graph_metric_bundle(graph: nx.Graph) -> List[List]:
-    """Generate a graph metric bundle.
+    """Generate a graph metric bundle. 生成图的度量包，包含多个 NetworkX 算法的摘要统计信息。
+
+    工作原理:
+
+        首先，深拷贝图的边和节点，然后清空图并用深拷贝的数据重新更新图的结构。
+        使用一系列的 NetworkX 算法（如平均度连接性、接近中心性、度中心性、特征向量中心性和传递性中介中心性）计算图的相关指标。
+        调用 get_func_summary_statistics 生成这些指标的统计摘要，将结果保存在 metric_outputs 列表中。
 
     A graph metric bundle includes the summary statistics for a
     collection of networkx in-built algorithms.
@@ -150,6 +173,7 @@ def get_graph_metric_bundle(graph: nx.Graph) -> List[List]:
 
 def pprint_metric_table(metric_output: List[List], headers=None):
     """Pretty prints graph metrics to the terminal using the tabulate module.
+    使用 tabulate 模块将图的度量指标以表格形式打印到终端。
 
     Args:
         metric_output: A list of lists containing the values to be printed.

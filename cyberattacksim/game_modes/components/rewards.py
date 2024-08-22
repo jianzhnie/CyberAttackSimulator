@@ -6,7 +6,6 @@ from cyberattacksim.config.core import ConfigGroup
 from cyberattacksim.config.item_types.bool_item import BoolItem, BoolProperties
 from cyberattacksim.config.item_types.int_item import IntItem, IntProperties
 from cyberattacksim.config.item_types.str_item import StrItem, StrProperties
-from cyberattacksim.envs.generic.core import reward_functions
 
 # --- Tier 0 groups
 
@@ -25,8 +24,8 @@ class Rewards(ConfigGroup):
         reduce_negative_rewards_for_closer_fails: Optional[bool] = False,
         function: Optional[str] = 'standard_rewards',
     ) -> None:
+        from cyberattacksim.envs.generic.core import reward_functions
         """
-
         Args:
             for_loss: int 类型（可选），指定蓝色代理在失败时的奖励。
             for_reaching_max_steps: int 类型（可选），指定蓝色代理在达到最大步骤时的奖励。

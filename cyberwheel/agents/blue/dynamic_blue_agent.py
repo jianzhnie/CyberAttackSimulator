@@ -1,7 +1,7 @@
 import builtins
 import importlib
 from importlib.resources import files
-from typing import Dict, List
+from typing import Any, Dict, List, Tuple
 
 import yaml
 from gym import Space
@@ -12,7 +12,17 @@ from cyberwheel.network.network_base import Network
 from cyberwheel.reward.reward_base import RewardMap
 
 
-class _ActionConfigInfo:
+class ActionConfigInfo:
+    """Holds configuration information for a blue action.
+
+    Attributes:
+        name (str): The name of the action.
+        configs (List): List of configuration files for the action.
+        immediate_reward (float): The immediate reward for the action.
+        recurring_reward (float): The recurring reward for the action.
+        action_space_args (Dict): Arguments for the action space.
+        shared_data (List): List of shared data keys.
+    """
 
     def __init__(
         self,
@@ -31,36 +41,43 @@ class _ActionConfigInfo:
         self.action_space_args = action_space_args
 
     def __str__(self) -> str:
-        return f'config: {self.configs}, immediate_reward: {self.immediate_reward}, reccuring_reward: {self.recurring_reward}, action_type: {self.action_type}'
+        return (
+            f'config: {self.configs}, immediate_reward: {self.immediate_reward}, '
+            f'recurring_reward: {self.recurring_reward}, action_space_args: {self.action_space_args}'
+        )
 
 
 class DynamicBlueAgent(BlueAgent):
-    """The purpose of this blue agent is to prevent having to create new blue
-    agents everytime a new blue action is introduced. The idea is to have a
-    config file specify what blue actions this instance has and import them
-    dynamically.
+    """A dynamic blue agent that can load and execute blue actions based on a
+    configuration file.
 
-    Actions need to be very standardized. Each one will need to have the following associated with it:
-    - An action name: The name of the action performed. If you have two deploy actions, then the names would
-    be something like: decoy0 and decoy1. Used by the reward calculator to determine reward.
-    - A unique ID: Recurring rewards need an ID to identify them from other recurring actions. A UUID should
-    be sufficient for this. If an action has no recurring cost (i.e. 0) then the ID can be "".
-
-    This agent should also keep track of blue action config files. The config for decoys is an example.
+    Attributes:
+        config (str): Path to the configuration file.
+        network (Network): The network environment.
+        configs (Dict[str, Any]): Dictionary to store configuration contents.
+        action_space (ActionSpace): The action space for the agent.
+        actions (List[Tuple]): List of tuples containing action classes and their configuration info.
+        shared_data (Dict[str, Any]): Dictionary to store shared data between actions.
+        reward_map (RewardMap): The reward map for the agent.
     """
 
     def __init__(self, config: str, network: Network) -> None:
         super().__init__()
         self.config = config
         self.network = network
-        self.configs: Dict[str, any] = {}
+        self.configs: Dict[str, Any] = {}
         self.action_space: ActionSpace = None
+        self.actions: List[Tuple] = []
+        self.shared_data: Dict[str, Any] = {}
+        self.reward_map: RewardMap = {}
 
         self.from_yaml()
         self._init_blue_actions()
         self._init_reward_map()
 
     def from_yaml(self):
+        """Loads the configuration from a YAML file and initializes the action
+        space and actions."""
         with open(self.config, 'r') as r:
             contents = yaml.safe_load(r)
 
@@ -78,30 +95,22 @@ class DynamicBlueAgent(BlueAgent):
         action_space = contents['action_space']
         as_module = action_space['module']
         as_class = action_space['class']
-        if 'args' in action_space:
-            as_args = action_space['args']
-            if as_args is None:
-                as_args = {}
+        as_args = action_space.get('args', {})
         import_path = '.'.join([as_module_path, as_module])
         m = importlib.import_module(import_path)
         self.action_space = getattr(m, as_class)(self.network, **as_args)
 
         # Get information needed to later initialize blue actions.
-        actions = []
         for k, v in contents['actions'].items():
             module_name = v['module']
             class_name = v['class']
-            configs = {}
-            if isinstance(v['configs'], Dict):
-                configs = v['configs']
-            shared_data = []
-            if isinstance(v['shared_data'], List):
-                shared_data = v['shared_data']
+            configs = v.get('configs', {})
+            shared_data = v.get('shared_data', [])
 
             import_path = '.'.join([action_module_path, module_name])
             m = importlib.import_module(import_path)
             class_ = getattr(m, class_name)
-            action_info = _ActionConfigInfo(
+            action_info = ActionConfigInfo(
                 k,
                 configs,
                 v['reward']['immediate'],
@@ -109,12 +118,9 @@ class DynamicBlueAgent(BlueAgent):
                 v['action_space_args'],
                 shared_data,
             )
-            actions.append((class_, action_info))
-        self.actions = actions
+            self.actions.append((class_, action_info))
 
         # Set up data shared between actions
-        self.shared_data = {}
-        self.reset_map = {}
         if contents['shared_data'] is None:
             return
         for k, v in contents['shared_data'].items():
@@ -128,19 +134,15 @@ class DynamicBlueAgent(BlueAgent):
                     )
                 a = importlib.import_module(v['module'])
                 data_type = getattr(a, v['class'])
-
-                kwargs = {}
-                if 'args' in v and v['args'] is not None:
-                    kwargs = v['args']
-
+                kwargs = v.get('args', {})
                 self.shared_data[k] = data_type(**kwargs)
 
     def _init_blue_actions(self) -> None:
+        """Initializes the blue actions based on the configuration."""
         for action_class, action_info in self.actions:
             # Check configs and read them if they are new
             action_configs = {}
             for name, config in action_info.configs.items():
-                # Skip configs that have already been seen
                 if config not in self.configs:
                     conf_file = files(f'cyberwheel.resources.configs.{name}'
                                       ).joinpath(config)
@@ -151,9 +153,10 @@ class DynamicBlueAgent(BlueAgent):
                 else:
                     action_configs[name] = self.configs[config]
 
-            action_kwargs = {}
-            for sd in action_info.shared_data:
-                action_kwargs[sd] = self.shared_data[sd]
+            action_kwargs = {
+                sd: self.shared_data[sd]
+                for sd in action_info.shared_data
+            }
             action = action_class(self.network, action_configs,
                                   **action_kwargs)
 
@@ -162,7 +165,7 @@ class DynamicBlueAgent(BlueAgent):
         self.action_space.finalize()
 
     def _init_reward_map(self) -> None:
-        self.reward_map: RewardMap = {}
+        """Initializes the reward map based on the configuration."""
         for _, action_config_info in self.actions:
             if action_config_info.name in self.reward_map:
                 raise KeyError(
@@ -174,6 +177,14 @@ class DynamicBlueAgent(BlueAgent):
             )
 
     def act(self, action: int) -> BlueAgentResult:
+        """Executes an action and returns the result.
+
+        Args:
+            action (int): The action to execute.
+
+        Returns:
+            BlueAgentResult: The result of the action.
+        """
         asc_return = self.action_space.select_action(action)
         result = asc_return.action.execute(*asc_return.args,
                                            **asc_return.kwargs)
@@ -183,14 +194,30 @@ class DynamicBlueAgent(BlueAgent):
         return BlueAgentResult(asc_return.name, id, success, recurring)
 
     def get_reward_map(self) -> RewardMap:
+        """Retrieves the reward map associated with the blue agent.
+
+        Returns:
+            RewardMap: The reward map.
+        """
         return self.reward_map
 
-    def get_action_space_shape(self) -> tuple[int, ...]:
+    def get_action_space_shape(self) -> Tuple[int, ...]:
+        """Retrieves the shape of the action space.
+
+        Returns:
+            Tuple[int, ...]: The shape of the action space.
+        """
         return self.action_space.get_shape()
 
     def create_action_space(self) -> Space:
+        """Creates a gym.Space representation of the action space.
+
+        Returns:
+            Space: The action space.
+        """
         return self.action_space.create_action_space()
 
     def reset(self):
+        """Resets the shared data."""
         for v in self.shared_data.values():
             v.clear()

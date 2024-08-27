@@ -376,12 +376,12 @@ class Network:
         """
         color_map = {
             Host: {
-                "workstation": "green",
-                "server": "red",
-                "decoy": "blue",
+                'workstation': 'green',
+                'server': 'red',
+                'decoy': 'blue',
             },
-            Subnet: "cyan",
-            Router: "orange",
+            Subnet: 'cyan',
+            Router: 'orange',
         }
         colors = []
 
@@ -467,9 +467,9 @@ class Network:
     def _load_host_types(host_config):
         conf_dir = files('cyberwheel.resources.configs.host_definitions')
         conf_file = conf_dir.joinpath(host_config)
-        with open(conf_file, "+r") as f:
+        with open(conf_file, '+r') as f:
             type_config = yaml.safe_load(f)
-        types = type_config["host_types"]
+        types = type_config['host_types']
         return types
 
     @staticmethod
@@ -533,32 +533,30 @@ class Network:
             # Instantiate firewall rules, if defined
             fw_rules = [
                 FirewallRule(
-                    name=rule["name"],
-                    src=rule.get("src"),
-                    port=rule.get("port"),
-                    prpto=rule.get("proto"),
-                    desc=rule.get("desc"),
-                )
-                for rule in val.get("firewall_rules", [])
+                    name=rule['name'],
+                    src=rule.get('src'),
+                    port=rule.get('port'),
+                    prpto=rule.get('proto'),
+                    desc=rule.get('desc'),
+                ) for rule in val.get('firewall_rules', [])
             ] or [FirewallRule()]
             host_type = (network.create_host_type_from_yaml(
                 val.get('type'), types) if val.get('type') else None)
             services = [
                 Service(
-                    name=service["name"],
-                    port=service["port"],
-                    protocol=service.get("protocol"),
-                    version=service.get("version"),
-                    vulns=service.get("vulns"),
-                    description=service.get("descscription"),
-                    decoy=service.get("decoy"),
-                )
-                for service in val.get("services", {}).values()
+                    name=service['name'],
+                    port=service['port'],
+                    protocol=service.get('protocol'),
+                    version=service.get('version'),
+                    vulns=service.get('vulns'),
+                    description=service.get('descscription'),
+                    decoy=service.get('decoy'),
+                ) for service in val.get('services', {}).values()
             ]
             interfaces = hosts_config.get('interfaces', [])
             host = network.add_host_to_subnet(
                 name=h,
-                subnet=network.get_node_from_name(val["subnet"]),
+                subnet=network.get_node_from_name(val['subnet']),
                 host_type=host_type,
                 firewall_rules=fw_rules,
                 services=services,

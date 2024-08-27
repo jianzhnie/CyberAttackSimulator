@@ -376,12 +376,12 @@ class Network:
         """
         color_map = {
             Host: {
-                'workstation': 'green',
-                'server': 'red',
-                'decoy': 'blue'
+                "workstation": "green",
+                "server": "red",
+                "decoy": "blue",
             },
-            Subnet: 'cyan',
-            Router: 'orange',
+            Subnet: "cyan",
+            Router: "orange",
         }
         colors = []
 
@@ -399,6 +399,7 @@ class Network:
             else:
                 colors.append('black')
 
+        # clear
         plt.clf()
         nx.draw(
             self.graph,
@@ -429,7 +430,7 @@ class Network:
         :param host_config: Path to the host configuration YAML file.
         :return: Network instance.
         """
-        network_config, config_dir = cls._get_network_config(network_config)
+        network_config = cls._get_network_config(network_config)
         config = cls._load_yaml_file(network_config)
 
         # Create Network instance
@@ -437,6 +438,7 @@ class Network:
         # Load host types
         types = cls._load_host_types(host_config)
 
+        # add router to network graph
         cls._build_routers(network, config['routers'])
         cls._build_subnets(network, config['subnets'])
         cls._build_hosts(network, config['hosts'], types)
@@ -453,7 +455,7 @@ class Network:
             print(
                 f'Using default network config file ({network_config.absolute()})'
             )
-        return network_config, config_dir
+        return network_config
 
     @staticmethod
     def _load_yaml_file(filepath):
@@ -465,9 +467,10 @@ class Network:
     def _load_host_types(host_config):
         conf_dir = files('cyberwheel.resources.configs.host_definitions')
         conf_file = conf_dir.joinpath(host_config)
-        with open(conf_file) as f:
+        with open(conf_file, "+r") as f:
             type_config = yaml.safe_load(f)
-        return type_config['host_types']
+        types = type_config["host_types"]
+        return types
 
     @staticmethod
     def _build_routers(network: 'Network', routers_config: Any) -> None:
@@ -477,6 +480,7 @@ class Network:
             network (Network): _description_
             routers_config (Any): _description_
         """
+        # parse routers
         routers = tqdm(routers_config)
         routers.set_description('Building Routers')
         for r in routers:
@@ -525,41 +529,45 @@ class Network:
     def _build_hosts(network: 'Network', hosts_config: Any, types: Any):
         hosts = tqdm(hosts_config)
         hosts.set_description('Building Hosts')
-        for h, val in hosts_config.items():
+        for h, val in hosts.items():
             # Instantiate firewall rules, if defined
             fw_rules = [
                 FirewallRule(
-                    rule['name'],
-                    rule.get('src'),
-                    rule.get('port'),
-                    rule.get('proto'),
-                    rule.get('desc'),
-                ) for rule in val.get('firewall_rules', [])
+                    name=rule["name"],
+                    src=rule.get("src"),
+                    port=rule.get("port"),
+                    prpto=rule.get("proto"),
+                    desc=rule.get("desc"),
+                )
+                for rule in val.get("firewall_rules", [])
             ] or [FirewallRule()]
             host_type = (network.create_host_type_from_yaml(
                 val.get('type'), types) if val.get('type') else None)
             services = [
                 Service(
-                    service['name'],
-                    service['port'],
-                    service.get('protocol'),
-                    service.get('version'),
-                    service.get('vulns'),
-                    service.get('descscription'),
-                    service.get('decoy'),
-                ) for service in val.get('services', {}).values()
+                    name=service["name"],
+                    port=service["port"],
+                    protocol=service.get("protocol"),
+                    version=service.get("version"),
+                    vulns=service.get("vulns"),
+                    description=service.get("descscription"),
+                    decoy=service.get("decoy"),
+                )
+                for service in val.get("services", {}).values()
             ]
             interfaces = hosts_config.get('interfaces', [])
             host = network.add_host_to_subnet(
-                h,
-                network.get_node_from_name(val['subnet']),
-                host_type,
-                fw_rules,
-                services,
-                interfaces,
+                name=h,
+                subnet=network.get_node_from_name(val["subnet"]),
+                host_type=host_type,
+                firewall_rules=fw_rules,
+                services=services,
+                interfaces=interfaces,
             )
             if routes := val.get('routes'):
                 host.add_routes_from_dict(routes)
+        network.initialize_interfacing()
+        return network
 
     def get_node_from_name(
             self, node: str) -> Union[NetworkObject, Host, Subnet, Router]:
@@ -781,11 +789,13 @@ class Network:
             host.subnet.remove_connected_host(host)
 
     def create_decoy_host(self, *args, **kwargs) -> Host:
-        """Create a decoy host and add it to a subnet and the network graph.
+        """Create decoy host and add it to subnet and self.graph.
 
-        :param args: Positional arguments.
-        :param kwargs: Keyword arguments.
-        :return: Created decoy host.
+        :param str *name:
+        :param Subnet *subnet:
+        :param str *type:
+        :param list[Service] **services:
+        :param IPv4Address | IPv6Address **dns_server:
         """
         host = self.add_host_to_subnet(*args, decoy=True, **kwargs)
         self.decoys.append(host)

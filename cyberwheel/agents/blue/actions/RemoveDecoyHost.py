@@ -1,11 +1,14 @@
 from typing import Dict
 
-import SubnetAction, BlueActionReturn
+import BlueActionReturn
+import SubnetAction
+
 from cyberwheel.network.network_base import Network
 from cyberwheel.network.subnet import Subnet
 
 
 class RemoveDecoyHost(SubnetAction):
+
     def __init__(self, network: Network, configs: Dict[str, any]) -> None:
         super().__init__(network, configs)
 

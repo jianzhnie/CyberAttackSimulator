@@ -1,14 +1,17 @@
 from typing import List
+
 from gym import Space
-from gym.spaces import Discrete
 from gym.core import ActType
+from gym.spaces import Discrete
+
+from cyberwheel.agents.blue.blue_action import BlueAction
+from cyberwheel.network.network_base import Network
 
 from .action_space import ActionSpace, ASReturn
-from cyberwheel.network.network_base import Network
-from cyberwheel.agents.blue.blue_action import BlueAction
 
 
 class _ActionRangeChecker:
+
     def __init__(
         self,
         name: str,
@@ -28,6 +31,7 @@ class _ActionRangeChecker:
 
 
 class DiscreteActionSpace(ActionSpace):
+
     def __init__(self, network: Network) -> None:
         super().__init__(network)
         self._action_space_size: int = 0
@@ -54,7 +58,8 @@ class DiscreteActionSpace(ActionSpace):
                 index = (action - ac.lower_bound) % self.num_subnets
                 return ASReturn(name, ac.action, args=[self.subnets[index]])
             elif ac.type == "range":
-                index = (action - ac.lower_bound) % (ac.upper_bound - ac.lower_bound)
+                index = (action - ac.lower_bound) % (ac.upper_bound -
+                                                     ac.lower_bound)
                 return ASReturn(name, ac.action, args=[index])
             else:
                 raise TypeError(f"Unknown action type: {ac.type}.")
@@ -80,11 +85,11 @@ class DiscreteActionSpace(ActionSpace):
             )
         upper_bound = self._action_space_size
         self._action_checkers.append(
-            _ActionRangeChecker(name, action, action_type, lower_bound, upper_bound)
-        )
+            _ActionRangeChecker(name, action, action_type, lower_bound,
+                                upper_bound))
 
     def get_shape(self) -> tuple[int, ...]:
-        return (self._action_space_size,)
+        return (self._action_space_size, )
 
     def create_action_space(self) -> Space:
         return Discrete(self._action_space_size)

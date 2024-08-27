@@ -4,6 +4,7 @@ from cyberwheel.network.subnet import Subnet
 
 
 class IsolateData(CustomSharedData):
+
     def __init__(self, **kwargs):
         self.size: int = kwargs.get("size", 10)
         self.decoys = []

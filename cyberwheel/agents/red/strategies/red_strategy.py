@@ -1,12 +1,13 @@
 from abc import ABC, abstractmethod
-from cyberwheel.network.host import Host
 
+from cyberwheel.network.host import Host
 """
 Defines Base class for implementing Red Strategies.
 """
 
 
 class RedStrategy(ABC):
+
     @classmethod
     @abstractmethod
     def select_target(cls) -> Host | None:

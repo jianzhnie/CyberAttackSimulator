@@ -1,13 +1,10 @@
 import json
 from typing import Dict, List
 
-from cyberwheel.agents.blue.blue_action import (
-    SubnetAction,
-    generate_id,
-    BlueActionReturn,
-)
-from cyberwheel.network.network_base import Network
+from cyberwheel.agents.blue.blue_action import (BlueActionReturn, SubnetAction,
+                                                generate_id)
 from cyberwheel.network.host import HostType
+from cyberwheel.network.network_base import Network
 from cyberwheel.network.subnet import Subnet
 
 
@@ -18,7 +15,9 @@ def get_host_types() -> List[Dict[str, any]]:
 
 
 class DeployDecoyHost(SubnetAction):
-    def __init__(self, network: Network, configs: Dict[str, any], **kwargs) -> None:
+
+    def __init__(self, network: Network, configs: Dict[str, any],
+                 **kwargs) -> None:
         super().__init__(network, configs)
         self.define_configs()
         self.define_services()
@@ -27,9 +26,10 @@ class DeployDecoyHost(SubnetAction):
     def execute(self, subnet: Subnet, **kwargs) -> BlueActionReturn:
         name = generate_id()
         if "server" in self.type.lower():
-            host_type = HostType(
-                name="Server", services=self.services, decoy=True, cve_list=self.cves
-            )
+            host_type = HostType(name="Server",
+                                 services=self.services,
+                                 decoy=True,
+                                 cve_list=self.cves)
         else:
             host_type = HostType(
                 name="Workstation",
@@ -44,7 +44,9 @@ class DeployDecoyHost(SubnetAction):
 
 
 class IsolateDecoyHost(SubnetAction):
-    def __init__(self, network: Network, configs: Dict[str, any], **kwargs) -> None:
+
+    def __init__(self, network: Network, configs: Dict[str, any],
+                 **kwargs) -> None:
         super().__init__(network, configs)
         self.define_configs()
         self.define_services()
@@ -52,10 +54,10 @@ class IsolateDecoyHost(SubnetAction):
 
     def execute(self, subnet: Subnet, **kwargs) -> BlueActionReturn:
         name = generate_id()
-        host_type = HostType(
-            name=name, services=self.services, decoy=True, cve_list=self.cves
-        )
+        host_type = HostType(name=name,
+                             services=self.services,
+                             decoy=True,
+                             cve_list=self.cves)
         self.host = self.network.create_decoy_host(name, subnet, host_type)
         return BlueActionReturn(
-            name, self.isolate_data.append_decoy(self.host, subnet), 1
-        )
+            name, self.isolate_data.append_decoy(self.host, subnet), 1)

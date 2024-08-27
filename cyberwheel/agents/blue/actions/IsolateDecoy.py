@@ -1,12 +1,14 @@
 from typing import Dict
 
-from cyberwheel.agents.blue.blue_action import StandaloneAction
-from cyberwheel.agents.blue.blue_action import BlueActionReturn
+from cyberwheel.agents.blue.blue_action import (BlueActionReturn,
+                                                StandaloneAction)
 from cyberwheel.network.network_base import Network
 
 
 class IsolateDecoy(StandaloneAction):
-    def __init__(self, network: Network, configs: Dict[str, any], **kwargs) -> None:
+
+    def __init__(self, network: Network, configs: Dict[str, any],
+                 **kwargs) -> None:
         super().__init__(network, configs)
         self.isolate_data = kwargs.get("isolate_data")
 

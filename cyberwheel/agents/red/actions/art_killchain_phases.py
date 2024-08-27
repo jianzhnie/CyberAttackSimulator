@@ -1,8 +1,8 @@
-from cyberwheel.agents.red.red_base import ARTAction
-from cyberwheel.network.host import Host
+import random
 
 import cyberwheel.agents.red.art_techniques as art_techniques
-import random
+from cyberwheel.agents.red.red_base import ARTAction
+from cyberwheel.network.host import Host
 
 
 class ARTKillChainPhase(ARTAction):
@@ -237,8 +237,7 @@ class ARTKillChainPhase(ARTAction):
 
             processes = []
             valid_tests = [
-                at
-                for at in art_technique.atomic_tests
+                at for at in art_technique.atomic_tests
                 if host_os in at.supported_platforms
             ]
             chosen_test = random.choice(valid_tests)
@@ -302,7 +301,8 @@ class ARTPingSweep(ARTKillChainPhase):
         mitre_id = art_technique.mitre_id
         processes = []
         valid_tests = [
-            at for at in art_technique.atomic_tests if host_os in at.supported_platforms
+            at for at in art_technique.atomic_tests
+            if host_os in at.supported_platforms
         ]
         chosen_test = random.choice(valid_tests)
         # Get prereq command, prereq command (if dependency). then run executor command(s) and cleanup command.
@@ -327,9 +327,8 @@ class ARTPingSweep(ARTKillChainPhase):
 
         subnet_hosts = host.subnet.connected_hosts
         interfaces = []
-        self.action_results.add_metadata(
-            host.subnet.name, {"subnet_scanned": host.subnet}
-        )
+        self.action_results.add_metadata(host.subnet.name,
+                                         {"subnet_scanned": host.subnet})
         for each_host in subnet_hosts:
             for h in each_host.interfaces:
                 interfaces.append(h)
@@ -378,7 +377,8 @@ class ARTPortScan(ARTKillChainPhase):
         mitre_id = art_technique.mitre_id
         processes = []
         valid_tests = [
-            at for at in art_technique.atomic_tests if host_os in at.supported_platforms
+            at for at in art_technique.atomic_tests
+            if host_os in at.supported_platforms
         ]
         chosen_test = random.choice(valid_tests)
         # Get prereq command, prereq command (if dependency). then run executor command(s) and cleanup command.
@@ -423,10 +423,13 @@ class ARTPrivilegeEscalation(ARTKillChainPhase):
 
     name: str = "privilege-escalation"
 
-    def __init__(
-        self, src_host: Host, target_host: Host, valid_techniques: list[str] = []
-    ) -> None:
-        super().__init__(src_host, target_host, valid_techniques=valid_techniques)
+    def __init__(self,
+                 src_host: Host,
+                 target_host: Host,
+                 valid_techniques: list[str] = []) -> None:
+        super().__init__(src_host,
+                         target_host,
+                         valid_techniques=valid_techniques)
         self.name = "privilege-escalation"
 
 
@@ -445,10 +448,13 @@ class ARTDiscovery(ARTKillChainPhase):
 
     name: str = "discovery"
 
-    def __init__(
-        self, src_host: Host, target_host: Host, valid_techniques: list[str] = []
-    ) -> None:
-        super().__init__(src_host, target_host, valid_techniques=valid_techniques)
+    def __init__(self,
+                 src_host: Host,
+                 target_host: Host,
+                 valid_techniques: list[str] = []) -> None:
+        super().__init__(src_host,
+                         target_host,
+                         valid_techniques=valid_techniques)
         self.name = "discovery"
 
     def sim_execute(self):
@@ -476,10 +482,13 @@ class ARTLateralMovement(ARTKillChainPhase):
 
     name: str = "lateral-movement"
 
-    def __init__(
-        self, src_host: Host, target_host: Host, valid_techniques: list[str] = []
-    ) -> None:
-        super().__init__(src_host, target_host, valid_techniques=valid_techniques)
+    def __init__(self,
+                 src_host: Host,
+                 target_host: Host,
+                 valid_techniques: list[str] = []) -> None:
+        super().__init__(src_host,
+                         target_host,
+                         valid_techniques=valid_techniques)
         self.name = "lateral-movement"
 
 
@@ -497,8 +506,11 @@ class ARTImpact(ARTKillChainPhase):
 
     name: str = "impact"
 
-    def __init__(
-        self, src_host: Host, target_host: Host, valid_techniques: list[str] = []
-    ) -> None:
-        super().__init__(src_host, target_host, valid_techniques=valid_techniques)
+    def __init__(self,
+                 src_host: Host,
+                 target_host: Host,
+                 valid_techniques: list[str] = []) -> None:
+        super().__init__(src_host,
+                         target_host,
+                         valid_techniques=valid_techniques)
         self.name = "impact"

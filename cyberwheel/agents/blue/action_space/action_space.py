@@ -1,6 +1,7 @@
-from abc import abstractmethod, ABC
-from gym.core import ActType
+from abc import ABC, abstractmethod
+
 from gym import Space
+from gym.core import ActType
 
 from cyberwheel.agents.blue.blue_action import BlueAction
 from cyberwheel.network.network_base import Network

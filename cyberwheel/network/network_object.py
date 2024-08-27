@@ -1,8 +1,8 @@
 """这个代码实现了一个简单的网络路由和防火墙规则管理系统，使用了Python的pydantic库来进行数据验证。
 它主要包含三个类：Route、RoutingTable和NetworkObject。"""
 
-from ast import List
 import ipaddress as ipa
+from ast import List
 from typing import Generator
 
 from pydantic import BaseModel
@@ -12,11 +12,10 @@ from pydantic import BaseModel
 
 
 class Route(BaseModel):
-    """该类表示一个路由条目，包含目标网络(dest)和下一跳地址(via)。
-    属性：
-        - dest：目标网络，可以是 IPv4 或 IPv6 网络对象。
-        - via：下一跳地址，可以是 IPv4 或 IPv6 地址对象。
+    """该类表示一个路由条目，包含目标网络(dest)和下一跳地址(via)。 属性：
 
+    - dest：目标网络，可以是 IPv4 或 IPv6 网络对象。
+    - via：下一跳地址，可以是 IPv4 或 IPv6 地址对象。
     """
 
     dest: ipa.IPv4Network | ipa.IPv6Network
@@ -29,8 +28,7 @@ class Route(BaseModel):
 
 # Not using this just yet
 class RoutingTable(BaseModel):
-    """
-    功能：管理路由条目的集合。
+    """功能：管理路由条目的集合。
 
     属性：
         - routes：一个包含 Route 对象的集合，用于存储所有的路由条目。
@@ -68,10 +66,10 @@ class FirewallRule(BaseModel):
         __eq__：用于比较两个 FirewallRule 对象是否相等，主要比较源地址、端口和协议字段。
     """
 
-    name: str = "allow all"
-    src: str = "all"
-    port: int | str = "all"
-    proto: str = "tcp"
+    name: str = 'allow all'
+    src: str = 'all'
+    port: int | str = 'all'
+    proto: str = 'tcp'
     desc: str | None = None
 
     def __eq__(self, other) -> bool:
@@ -84,8 +82,8 @@ class FirewallRule(BaseModel):
 
 
 class NetworkObject:
-    """Base class for host, subnet, and router objects.
-    功能：NetworkObject 是主类, 表示网络中的一个对象（如主机、子网或路由器），管理该对象的路由条目和防火墙规则。
+    """Base class for host, subnet, and router objects. 功能：NetworkObject 是主类,
+    表示网络中的一个对象（如主机、子网或路由器），管理该对象的路由条目和防火墙规则。
 
     属性：
         name：网络对象的名称。
@@ -150,7 +148,9 @@ class NetworkObject:
 
         :param str rule_name: name of existing fw rule
         """
-        updated_rules = [rule for rule in self.firewall_rules if rule.name != rule_name]
+        updated_rules = [
+            rule for rule in self.firewall_rules if rule.name != rule_name
+        ]
 
         # update firewall rules
         self.firewall_rules = updated_rules
@@ -164,7 +164,8 @@ class NetworkObject:
             raise e
 
     # 用于从字符串生成IP地址和网络对象。
-    def generate_ip_network_object(self, net: str) -> ipa.IPv4Network | ipa.IPv6Network:
+    def generate_ip_network_object(
+            self, net: str) -> ipa.IPv4Network | ipa.IPv6Network:
         try:
             return ipa.ip_network(net)
         except ValueError as e:
@@ -219,26 +220,29 @@ class NetworkObject:
         for route in routes:
             # make sure 'dest' is an ip_network object
             try:
-                if not isinstance(route["dest"], ipa.IPv4Network | ipa.IPv6Network):
-                    dest = self.generate_ip_network_object(route["dest"])
+                if not isinstance(route['dest'],
+                                  ipa.IPv4Network | ipa.IPv6Network):
+                    dest = self.generate_ip_network_object(route['dest'])
                 else:
-                    dest = route["dest"]
+                    dest = route['dest']
             except ValueError as e:
                 # TODO: custom exception here?
                 raise e
             # make sure 'via' is an ip_address object
             try:
-                if not isinstance(route["via"], ipa.IPv4Address | ipa.IPv6Address):
-                    via = self.generate_ip_object(route["via"])
+                if not isinstance(route['via'],
+                                  ipa.IPv4Address | ipa.IPv6Address):
+                    via = self.generate_ip_object(route['via'])
                 else:
-                    via = route["via"]
+                    via = route['via']
             except ValueError as e:
                 # TODO: custom exception here?
                 raise e
             self.add_route(route=Route(dest=dest, via=via))
 
     #  获取与目标IP匹配的下一跳地址（最具体的匹配）。
-    def get_nexthop_from_routes(self, dest_ip: ipa.IPv4Address | ipa.IPv6Address):
+    def get_nexthop_from_routes(self,
+                                dest_ip: ipa.IPv4Address | ipa.IPv6Address):
         """Return most specific route that matches dest_ip.
 
         :param (IPv4Address | IPv6Address) dest_ip: destination IP object

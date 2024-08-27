@@ -16,7 +16,7 @@ class _ActionConfigInfo:
 
     def __init__(
         self,
-        name: str = "",
+        name: str = '',
         configs: List = [],
         immediate_reward: float = 0.0,
         recurring_reward: float = 0.0,
@@ -31,14 +31,14 @@ class _ActionConfigInfo:
         self.action_space_args = action_space_args
 
     def __str__(self) -> str:
-        return f"config: {self.configs}, immediate_reward: {self.immediate_reward}, reccuring_reward: {self.recurring_reward}, action_type: {self.action_type}"
+        return f'config: {self.configs}, immediate_reward: {self.immediate_reward}, reccuring_reward: {self.recurring_reward}, action_type: {self.action_type}'
 
 
 class DynamicBlueAgent(BlueAgent):
-    """
-    The purpose of this blue agent is to prevent having to create new blue agents everytime a new
-    blue action is introduced. The idea is to have a config file specify what blue actions this instance
-    has and import them dynamically.
+    """The purpose of this blue agent is to prevent having to create new blue
+    agents everytime a new blue action is introduced. The idea is to have a
+    config file specify what blue actions this instance has and import them
+    dynamically.
 
     Actions need to be very standardized. Each one will need to have the following associated with it:
     - An action name: The name of the action performed. If you have two deploy actions, then the names would
@@ -61,52 +61,52 @@ class DynamicBlueAgent(BlueAgent):
         self._init_reward_map()
 
     def from_yaml(self):
-        with open(self.config, "r") as r:
+        with open(self.config, 'r') as r:
             contents = yaml.safe_load(r)
 
         # Get module import paths
-        action_module_path = contents["action_module_path"]
+        action_module_path = contents['action_module_path']
         if not isinstance(action_module_path, str):
             raise TypeError(
-                f'value for key "action_module_path" must be a string')
-        as_module_path = contents["action_space_module_path"]
+                'value for key "action_module_path" must be a string')
+        as_module_path = contents['action_space_module_path']
         if not isinstance(as_module_path, str):
             raise TypeError(
-                f'value for key "action_space_module_path" must be a string')
+                'value for key "action_space_module_path" must be a string')
 
         # Initialize the action space converter
-        action_space = contents["action_space"]
-        as_module = action_space["module"]
-        as_class = action_space["class"]
-        if "args" in action_space:
-            as_args = action_space["args"]
+        action_space = contents['action_space']
+        as_module = action_space['module']
+        as_class = action_space['class']
+        if 'args' in action_space:
+            as_args = action_space['args']
             if as_args is None:
                 as_args = {}
-        import_path = ".".join([as_module_path, as_module])
+        import_path = '.'.join([as_module_path, as_module])
         m = importlib.import_module(import_path)
         self.action_space = getattr(m, as_class)(self.network, **as_args)
 
         # Get information needed to later initialize blue actions.
         actions = []
-        for k, v in contents["actions"].items():
-            module_name = v["module"]
-            class_name = v["class"]
+        for k, v in contents['actions'].items():
+            module_name = v['module']
+            class_name = v['class']
             configs = {}
-            if isinstance(v["configs"], Dict):
-                configs = v["configs"]
+            if isinstance(v['configs'], Dict):
+                configs = v['configs']
             shared_data = []
-            if isinstance(v["shared_data"], List):
-                shared_data = v["shared_data"]
+            if isinstance(v['shared_data'], List):
+                shared_data = v['shared_data']
 
-            import_path = ".".join([action_module_path, module_name])
+            import_path = '.'.join([action_module_path, module_name])
             m = importlib.import_module(import_path)
             class_ = getattr(m, class_name)
             action_info = _ActionConfigInfo(
                 k,
                 configs,
-                v["reward"]["immediate"],
-                v["reward"]["recurring"],
-                v["action_space_args"],
+                v['reward']['immediate'],
+                v['reward']['recurring'],
+                v['action_space_args'],
                 shared_data,
             )
             actions.append((class_, action_info))
@@ -115,23 +115,23 @@ class DynamicBlueAgent(BlueAgent):
         # Set up data shared between actions
         self.shared_data = {}
         self.reset_map = {}
-        if contents["shared_data"] is None:
+        if contents['shared_data'] is None:
             return
-        for k, v in contents["shared_data"].items():
-            if v in ("list", "set", "dict"):
+        for k, v in contents['shared_data'].items():
+            if v in ('list', 'set', 'dict'):
                 data_type = getattr(builtins, v)
                 self.shared_data[k] = data_type()
             else:
-                if "module" not in v or "class" not in v:
+                if 'module' not in v or 'class' not in v:
                     raise KeyError(
                         "If using custom object, 'module' and 'class' must be defined."
                     )
-                a = importlib.import_module(v["module"])
-                data_type = getattr(a, v["class"])
+                a = importlib.import_module(v['module'])
+                data_type = getattr(a, v['class'])
 
                 kwargs = {}
-                if "args" in v and v["args"] is not None:
-                    kwargs = v["args"]
+                if 'args' in v and v['args'] is not None:
+                    kwargs = v['args']
 
                 self.shared_data[k] = data_type(**kwargs)
 
@@ -141,10 +141,10 @@ class DynamicBlueAgent(BlueAgent):
             action_configs = {}
             for name, config in action_info.configs.items():
                 # Skip configs that have already been seen
-                if not config in self.configs:
-                    conf_file = files(f"cyberwheel.resources.configs.{name}"
+                if config not in self.configs:
+                    conf_file = files(f'cyberwheel.resources.configs.{name}'
                                       ).joinpath(config)
-                    with open(conf_file, "r") as f:
+                    with open(conf_file, 'r') as f:
                         contents = yaml.safe_load(f)
                     self.configs[config] = contents
                     action_configs[name] = contents
@@ -166,7 +166,7 @@ class DynamicBlueAgent(BlueAgent):
         for _, action_config_info in self.actions:
             if action_config_info.name in self.reward_map:
                 raise KeyError(
-                    "error constructing reward map: action names should be unique"
+                    'error constructing reward map: action names should be unique'
                 )
             self.reward_map[action_config_info.name] = (
                 action_config_info.immediate_reward,

@@ -12,8 +12,9 @@ from cyberwheel.reward import RewardMap
 
 
 class RedAgent(ABC):
-    """
-    Base class for Red Agent. Defines structure for any additional red agents to be added.
+    """Base class for Red Agent.
+
+    Defines structure for any additional red agents to be added.
     """
 
     def __init__(self):
@@ -49,8 +50,7 @@ class RedAgent(ABC):
 
 
 class KnownHostInfo:
-    """
-    Defines red agent's knowledge of a given host.
+    """Defines red agent's knowledge of a given host.
 
     *   last_step - Index of the last step of the killchain that was executed on this host. Default is -1
     *   scanned - Whether the Host has been Portscanned
@@ -67,7 +67,7 @@ class KnownHostInfo:
         scanned: bool = False,
         sweeped: bool = False,
         ip_address: IPv4Address | IPv6Address | None = None,
-        type: str = "Unknown",
+        type: str = 'Unknown',
         services: List[Service] = [],
         vulnerabilities: List[str] = [],
     ):
@@ -95,8 +95,7 @@ class KnownHostInfo:
 
 
 class KnownSubnetInfo:
-    """
-    Defines red agent's knowledge of a given subnet.
+    """Defines red agent's knowledge of a given subnet.
 
     *   scanned - Whether the Subnet has been pingsweeped
     *   connected_hosts - List of hosts in the subnet
@@ -116,8 +115,8 @@ class KnownSubnetInfo:
 
 
 class AgentHistory:
-    """
-    Defines history of red agent throughout the game.
+    """Defines history of red agent throughout the game.
+
     *   initial_host (required) - sets the initial entry host for the red agent to have a foothold on the network.
     *   history - List of metadata detailing red agent actions. Grows with each step.
     *   red_action_history - List of action results for every given step.
@@ -149,24 +148,23 @@ class AgentHistory:
         action: Type[ARTAction],
         red_action_results: RedActionResults,
     ):
-        """
-        Updates the history of the red agent at a given step with action and RedActionResults metadata
-        """
+        """Updates the history of the red agent at a given step with action and
+        RedActionResults metadata."""
         self.step += 1
         target_host_metadata = red_action_results.metadata[
             red_action_results.target_host.name]
         techniques = {
-            "mitre_id": target_host_metadata["mitre_id"],
-            "technique": target_host_metadata["technique"],
-            "commands": target_host_metadata["commands"],
+            'mitre_id': target_host_metadata['mitre_id'],
+            'technique': target_host_metadata['technique'],
+            'commands': target_host_metadata['commands'],
         }
         self.history.append({
-            "step": self.step,
-            "action": action.__name__,
-            "src_host": red_action_results.src_host.name,
-            "target_host": red_action_results.target_host.name,
-            "techniques": techniques,
-            "success": red_action_results.attack_success,
+            'step': self.step,
+            'action': action.__name__,
+            'src_host': red_action_results.src_host.name,
+            'target_host': red_action_results.target_host.name,
+            'techniques': techniques,
+            'success': red_action_results.attack_success,
         })
         self.red_action_history.append(red_action_results)
 
@@ -175,10 +173,11 @@ class AgentHistory:
 
 
 class HybridSetList:
-    """
-    Defines a Hybrid Set/List object. This allows us to take advantage of the O(1) time complexity for
-    membership checking of sets, while taking advantage of the O(1) time complexity of random.choice()
-    of lists.
+    """Defines a Hybrid Set/List object.
+
+    This allows us to take advantage of the O(1) time complexity for membership
+    checking of sets, while taking advantage of the O(1) time complexity of
+    random.choice() of lists.
     """
 
     def __init__(self):

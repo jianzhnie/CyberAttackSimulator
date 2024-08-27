@@ -9,17 +9,14 @@ from cyberwheel.network.subnet import Subnet
 
 
 def generate_id() -> str:
-    """
-    Returns a UUID4 as string of hex digits.
-    """
+    """Returns a UUID4 as string of hex digits."""
     return uuid.uuid4().hex
 
 
 class BlueActionReturn:
 
-    def __init__(self, id="", success=False, recurring=0) -> None:
-        """
-        The output of blue actions.
+    def __init__(self, id='', success=False, recurring=0) -> None:
+        """The output of blue actions.
 
         - `id`: a string that identifies an action with a recurring reward. Should be the empty string otherwise.
         - `success`: specifies if the action was completel successfully.
@@ -34,17 +31,18 @@ class BlueActionReturn:
 class BlueAction(ABC):
 
     def __init__(self, network: Network, configs: Dict[str, any] = {}) -> None:
-        """
-        Base class for all blue actions. It requires the environment's network.
-        Config information can also be supplied here.
+        """Base class for all blue actions.
+
+        It requires the environment's network. Config information can also be
+        supplied here.
         """
         self.network = network
         self.configs = configs
 
     @abstractmethod
     def execute(self) -> BlueActionReturn:
-        """
-        This method executes a blue action.
+        """This method executes a blue action.
+
         Returns whether the action was successful and the action's id.
         """
         raise NotImplementedError
@@ -80,16 +78,16 @@ class SubnetAction(BlueAction):
         raise NotImplementedError
 
     def define_configs(self) -> None:
-        self.decoy_info = self.configs["decoy_hosts"]
-        self.host_info = self.configs["host_definitions"]
-        self.service_info = self.configs["services"]
-        self.type = list(self.decoy_info.values())[0]["type"]
+        self.decoy_info = self.configs['decoy_hosts']
+        self.host_info = self.configs['host_definitions']
+        self.service_info = self.configs['services']
+        self.type = list(self.decoy_info.values())[0]['type']
 
     def define_services(self) -> None:
-        type_info = self.host_info["host_types"][self.type]
+        type_info = self.host_info['host_types'][self.type]
         self.services = set()
         self.cves = set()
-        for s in type_info["services"]:
+        for s in type_info['services']:
             service = Service.create_service_from_dict(self.service_info[s])
             self.services.add(service)
             self.cves.update(service.vulns)

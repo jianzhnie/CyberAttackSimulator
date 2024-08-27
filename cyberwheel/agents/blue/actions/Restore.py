@@ -1,7 +1,6 @@
 from typing import Dict
 
 import BlueActionReturn
-import HostAction
 
 from cyberwheel.agents.blue.blue_action import HostAction
 from cyberwheel.network.host import Host
@@ -16,9 +15,9 @@ class Restore(HostAction):
 
     def execute(self, host: Host, **kwargs) -> BlueActionReturn:
         if host.restored:
-            return BlueActionReturn("", False)
+            return BlueActionReturn('', False)
 
-        host.remove_process("malware.exe")
+        host.remove_process('malware.exe')
         host.restored = True
 
-        return BlueActionReturn("", True)
+        return BlueActionReturn('', True)

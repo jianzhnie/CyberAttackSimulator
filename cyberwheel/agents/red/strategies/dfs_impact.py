@@ -1,10 +1,8 @@
+"""The DFS Impact strategy is to attack the current host until it's impacted,
+move to another random unimpacted host, and repeat."""
 import random
 
 from cyberwheel.agents.red.strategies.red_strategy import RedStrategy
-"""
-The DFS Impact strategy is to attack the current host until it's impacted,
-move to another random unimpacted host, and repeat.
-"""
 
 
 class DFSImpact(RedStrategy):
@@ -30,10 +28,10 @@ class DFSImpact(RedStrategy):
     @classmethod
     def get_reward_map(cls) -> dict[str, tuple[int, int]]:
         return {
-            "pingsweep": (-1, 0),
-            "portscan": (-1, 0),
-            "discovery": (-2, 0),
-            "lateral-movement": (-4, 0),
-            "privilege-escalation": (-6, 0),
-            "impact": (-8, -4),
+            'pingsweep': (-1, 0),
+            'portscan': (-1, 0),
+            'discovery': (-2, 0),
+            'lateral-movement': (-4, 0),
+            'privilege-escalation': (-6, 0),
+            'impact': (-8, -4),
         }

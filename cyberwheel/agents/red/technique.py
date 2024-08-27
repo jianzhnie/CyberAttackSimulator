@@ -7,8 +7,9 @@ from cyberwheel.agents.red.atomic_test import AtomicTest
 
 
 class Technique:
-    """
-    Defines base class to derive ART Techniques from. Includes all attributes from ART Technique.
+    """Defines base class to derive ART Techniques from.
+
+    Includes all attributes from ART Technique.
     """
 
     mitre_id: str
@@ -47,10 +48,10 @@ class Technique:
         self.kill_chain_phases = kill_chain_phases
         self.data_source_platforms = data_source_platforms
         self.mitigations = mitigations
-        self.description = description.decode("utf-8")
+        self.description = description.decode('utf-8')
         self.atomic_tests = [AtomicTest(at) for at in atomic_tests]
-        self.is_subtechnique = "." in self.mitre_id
-        self.parent_technique = (self.mitre_id.split(".")[0]
+        self.is_subtechnique = '.' in self.mitre_id
+        self.parent_technique = (self.mitre_id.split('.')[0]
                                  if self.is_subtechnique else self.mitre_id)
         self.supported_os = list(
             set([

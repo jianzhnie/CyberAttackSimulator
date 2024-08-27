@@ -19,7 +19,7 @@ class ARTAgent(RedAgent):
         self,
         entry_host: Host,
         network: Network = Network(),
-        name: str = "ARTAgent",
+        name: str = 'ARTAgent',
         killchain: List[Type[ARTKillChainPhase]] = [
             ARTDiscovery,  # Count reconnaissance techniques (only 1) under Discovery
             ARTPrivilegeEscalation,  # Use previous exploit to elevate privilege level
@@ -28,8 +28,8 @@ class ARTAgent(RedAgent):
         red_strategy: RedStrategy = ServerDowntime,
         service_mapping: dict = {},
     ):
-        """
-        An Atomic Red Team (ART) Red Agent that uses a defined Killchain to attack hosts in a particular order.
+        """An Atomic Red Team (ART) Red Agent that uses a defined Killchain to
+        attack hosts in a particular order.
 
         Before going down the killchain on a host, the agent must Pingsweep the host's subnet and Portscan the host.
         These actions are defined to specific ART Techniques, and always succeed. After portscanning, the agent can start
@@ -110,9 +110,8 @@ class ARTAgent(RedAgent):
 
     @classmethod
     def get_service_map(cls, network: Network):
-        """
-        Class function to get the service mapping based on host attributes.
-        """
+        """Class function to get the service mapping based on host
+        attributes."""
         killchain = [
             ARTDiscovery,
             ARTPrivilegeEscalation,
@@ -133,9 +132,7 @@ class ARTAgent(RedAgent):
         return service_mapping
 
     def get_valid_techniques_by_host(self, host, all_kcps):
-        """
-        Returns service mapping for a given host and killchain phases.
-        """
+        """Returns service mapping for a given host and killchain phases."""
         valid_techniques = {}
         for kcp in all_kcps:
             valid_techniques[kcp] = []
@@ -148,9 +145,8 @@ class ARTAgent(RedAgent):
         return valid_techniques
 
     def handle_network_change(self):
-        """
-        Does a 'check' at every step to initialize any newly added decoys to view.
-        """
+        """Does a 'check' at every step to initialize any newly added decoys to
+        view."""
         current_hosts = set(self.network.get_host_names())
 
         new_hosts = current_hosts - self.tracked_hosts
@@ -177,16 +173,14 @@ class ARTAgent(RedAgent):
             self.unknowns.add(new_host.name)
 
     def select_next_target(self) -> Host:
-        """
-        Logic to determine which host the agent targets.
-        """
+        """Logic to determine which host the agent targets."""
         return self.strategy.select_target(self)
 
     def run_action(
             self, target_host: Host
     ) -> Tuple[RedActionResults, Type[ARTKillChainPhase]]:
-        """
-        Helper function to run the appropriate action given the target Host's place in the Killchain.
+        """Helper function to run the appropriate action given the target
+        Host's place in the Killchain.
 
         Parameters:
 
@@ -244,13 +238,13 @@ class ARTAgent(RedAgent):
         )
 
     def act(self) -> type[ARTKillChainPhase]:
-        """
-        This defines the red agent's action at each step of the simulation.
-        It will
-            *   handle any newly added hosts
-            *   Select the next target
-            *   Run an action on the target
-            *   Handle any additional metadata and update history
+        """This defines the red agent's action at each step of the simulation.
+        It will.
+
+        *   handle any newly added hosts
+        *   Select the next target
+        *   Run an action on the target
+        *   Handle any additional metadata and update history
         """
         self.handle_network_change()
 
@@ -266,7 +260,7 @@ class ARTAgent(RedAgent):
                 self.add_host_info(h_name, action_results.metadata[h_name])
             if action == ARTImpact:
                 self.history.hosts[target_host.name].impacted = True
-                if self.history.hosts[target_host.name].type == "Server":
+                if self.history.hosts[target_host.name].type == 'Server':
                     self.unimpacted_servers.remove(target_host.name)
             # elif action == ARTPrivilegeEscalation:
             #    target_host.restored = False
@@ -276,8 +270,9 @@ class ARTAgent(RedAgent):
         return action
 
     def add_host_info(self, host_name: str, metadata: Dict[str, Any]) -> None:
-        """
-        Helper function to add metadata to the Red Agent's history/knowledge. Metadata is in JSON object representation, with key-value pairs.
+        """Helper function to add metadata to the Red Agent's
+        history/knowledge. Metadata is in JSON object representation, with key-
+        value pairs.
 
         Metadata Keys Supported:
         * `ip_address` : str
@@ -291,18 +286,18 @@ class ARTAgent(RedAgent):
             and the available IPS of a Subnet to history.subnets[Subnet].available_ips
         """
         for k, v in metadata.items():
-            if k == "type":
+            if k == 'type':
                 host_type = v
-                known_type = "Unknown"
-                if "server" in host_type.lower():
-                    known_type = "Server"
+                known_type = 'Unknown'
+                if 'server' in host_type.lower():
+                    known_type = 'Server'
                     self.unimpacted_servers.add(host_name)
                     self.unknowns.remove(host_name)
-                elif "workstation" in host_type.lower():
-                    known_type = "User"
+                elif 'workstation' in host_type.lower():
+                    known_type = 'User'
                     self.unknowns.remove(host_name)
                 self.history.hosts[host_name].type = known_type
-            elif k == "subnet_scanned":
+            elif k == 'subnet_scanned':
                 if v.name not in self.history.subnets.keys():
                     self.history.mapping[v.name] = v
                     self.history.subnets[v.name] = KnownSubnetInfo(
@@ -322,7 +317,7 @@ class ARTAgent(RedAgent):
                         self.history.mapping[h.name] = h
                         self.history.hosts[h.name] = KnownHostInfo()
                         self.unknowns.add(h.name)
-            elif k == "ip_address":
+            elif k == 'ip_address':
                 if host_name not in self.history.hosts.keys():
                     self.history.hosts[host_name] = KnownHostInfo(
                         ip_address=v.ip_address)
@@ -330,17 +325,15 @@ class ARTAgent(RedAgent):
                     self.history.mapping[host_name] = v
 
     def get_reward_map(self) -> RewardMap:
-        """
-        Get the reward mapping for the red agent. This is defined in the Red Strategy.
-        It dictates which actions have the greater costs, for example Impact having -8
-        while Discovery has -2.
+        """Get the reward mapping for the red agent.
+
+        This is defined in the Red Strategy. It dictates which actions have the
+        greater costs, for example Impact having -8 while Discovery has -2.
         """
         return self.strategy.get_reward_map()
 
     def reset(self, entry_host: Host, network: Network):
-        """
-        Resets the red agent back to blank slate.
-        """
+        """Resets the red agent back to blank slate."""
         self.network = network
         self.current_host = entry_host
         self.history: AgentHistory = AgentHistory(initial_host=entry_host)

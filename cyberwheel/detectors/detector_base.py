@@ -5,7 +5,7 @@ from cyberwheel.detectors.alert import Alert
 
 
 class Detector:
-    name = "Detector"
+    name = 'Detector'
 
     def __init__(self) -> None:
         """Abstract base class for defining detectors.

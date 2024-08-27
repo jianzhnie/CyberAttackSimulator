@@ -42,46 +42,46 @@ class DiscreteActionSpace(ActionSpace):
             action = int(action)
         except:
             raise TypeError(
-                f"provided action is of type {type(action)} and is unsupported by the chosen ActionSpaceConverter"
+                f'provided action is of type {type(action)} and is unsupported by the chosen ActionSpaceConverter'
             )
 
         for ac in self._action_checkers:
             if not ac.check_range(action):
                 continue
             name = ac.name
-            if ac.type == "standalone":
+            if ac.type == 'standalone':
                 return ASReturn(name, ac.action)
-            elif ac.type == "host":
+            elif ac.type == 'host':
                 index = (action - ac.lower_bound) % self.num_hosts
                 return ASReturn(name, ac.action, args=[self.hosts[index]])
-            elif ac.type == "subnet":
+            elif ac.type == 'subnet':
                 index = (action - ac.lower_bound) % self.num_subnets
                 return ASReturn(name, ac.action, args=[self.subnets[index]])
-            elif ac.type == "range":
+            elif ac.type == 'range':
                 index = (action - ac.lower_bound) % (ac.upper_bound -
                                                      ac.lower_bound)
                 return ASReturn(name, ac.action, args=[index])
             else:
-                raise TypeError(f"Unknown action type: {ac.type}.")
+                raise TypeError(f'Unknown action type: {ac.type}.')
 
     def add_action(self, name: str, action: BlueAction, **kwargs):
-        action_type = kwargs.get("type", "")
+        action_type = kwargs.get('type', '')
 
         lower_bound = self._action_space_size
-        if action_type == "standalone":
+        if action_type == 'standalone':
             self._action_space_size += 1
-        elif action_type.lower() == "host":
+        elif action_type.lower() == 'host':
             self._action_space_size += self.num_hosts
-        elif action_type.lower() == "subnet":
+        elif action_type.lower() == 'subnet':
             self._action_space_size += self.num_subnets
-        elif action_type.lower() == "range":
-            range_ = kwargs.get("range", int)
+        elif action_type.lower() == 'range':
+            range_ = kwargs.get('range', int)
             if range_ <= 0:
-                raise ValueError(f"value for range must be > 0")
+                raise ValueError('value for range must be > 0')
             self._action_space_size += range_
         else:
             raise ValueError(
-                f"action_type must be 'host', 'subnet', 'standalone', or 'range'"
+                "action_type must be 'host', 'subnet', 'standalone', or 'range'"
             )
         upper_bound = self._action_space_size
         self._action_checkers.append(

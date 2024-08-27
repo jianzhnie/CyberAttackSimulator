@@ -6,10 +6,10 @@ from .reward_base import RewardMap
 from .step_detected_reward import StepDetectedReward
 
 __all__ = [
-    "StepDetectedReward",
-    "IsolateReward",
-    "DecoyReward",
-    "RecurringReward",
-    "RestoreReward",
-    "RewardMap",
+    'StepDetectedReward',
+    'IsolateReward',
+    'DecoyReward',
+    'RecurringReward',
+    'RestoreReward',
+    'RewardMap',
 ]

@@ -5,9 +5,9 @@ from cyberwheel.detectors.detector_base import Detector
 
 
 class IsolateDetector(Detector):
-    """A detector that only gives alerts for hosts that access decoys"""
+    """A detector that only gives alerts for hosts that access decoys."""
 
-    name = "IsolateDetector"
+    name = 'IsolateDetector'
 
     def obs(self, perfect_alerts: Iterable[Alert]) -> Iterable[Alert]:
 

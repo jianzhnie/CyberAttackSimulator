@@ -8,18 +8,19 @@ from cyberwheel.detectors.detector_base import Detector
 
 
 def _read_detector_yaml(filename: str):
-    with open(filename, "r") as yaml_file:
+    with open(filename, 'r') as yaml_file:
         techniques = yaml.safe_load(yaml_file)
     return techniques
 
 
 class ProbabilityDetector(Detector):
-    """
-    A detector that can detect techniques with some probability.
-    The techniques that a detector supports should be defined in a YAML file along with a probabilty of detection for that technique.
+    """A detector that can detect techniques with some probability.
+
+    The techniques that a detector supports should be defined in a YAML file
+    along with a probabilty of detection for that technique.
     """
 
-    name = "ProbabilityDetector"
+    name = 'ProbabilityDetector'
 
     def __init__(self, config) -> None:
         self.technique_probabilites = _read_detector_yaml(config)

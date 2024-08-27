@@ -6,9 +6,10 @@ from cyberwheel.detectors.detector_base import Detector
 
 
 class CoinFlipDetector(Detector):
-    """Example detector that keeps everything or throws away everything with 50/50 odds."""
+    """Example detector that keeps everything or throws away everything with
+    50/50 odds."""
 
-    name = "CoinFlipDetector"
+    name = 'CoinFlipDetector'
 
     def obs(self, perfect_alerts: Iterable[Alert]) -> Iterable[Alert]:
         flip = random.randint(0, 1)
@@ -18,9 +19,9 @@ class CoinFlipDetector(Detector):
 
 
 class DecoyDetector(Detector):
-    """A detector that only gives alerts for hosts that access decoys"""
+    """A detector that only gives alerts for hosts that access decoys."""
 
-    name = "DecoyDetector"
+    name = 'DecoyDetector'
 
     def obs(self, perfect_alerts: Iterable[Alert]) -> Iterable[Alert]:
         a = [
@@ -36,7 +37,7 @@ class DecoyDetector(Detector):
 
 class PerfectDetector(Detector):
 
-    name = "PerfectDetector"
+    name = 'PerfectDetector'
 
     def obs(self, perfect_alerts: Iterable[Alert]) -> Iterable[Alert]:
         return perfect_alerts

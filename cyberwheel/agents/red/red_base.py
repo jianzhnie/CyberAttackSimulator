@@ -14,9 +14,12 @@ source = Union[Host, None]
 
 
 class RedActionResults:
-    """
-    A class for handling the results of a red action. The point of this class is to provide feedback to both the red and blue agents. The red agent could use `discovered_hosts` and `attack_success`
-    for determining its next action and maybe even for training. The blue agent will use `detector_alert` in the form of an observation vector that is created later by a `Detector` and an `AlertsConversion`.
+    """A class for handling the results of a red action. The point of this
+    class is to provide feedback to both the red and blue agents. The red agent
+    could use `discovered_hosts` and `attack_success` for determining its next
+    action and maybe even for training. The blue agent will use
+    `detector_alert` in the form of an observation vector that is created later
+    by a `Detector` and an `AlertsConversion`.
 
     Important member variables:
     - `discovered_hosts`: List of hosts discovered by this attack
@@ -46,16 +49,17 @@ class RedActionResults:
         self.cost = 0
 
     def add_host(self, host: Host) -> None:
-        """
-        Adds a host to the list of hosts discovered by this action. The agent can later update it's known hosts using this list.
+        """Adds a host to the list of hosts discovered by this action. The
+        agent can later update it's known hosts using this list.
 
         - `host`: a host that was discovered by this action
         """
         self.discovered_hosts.append(host)
 
     def modify_alert(self, dst: destination, src: source = None) -> None:
-        """
-        Modifies the RedActionResults' alert by adding either to alert.dst_hosts or alert.services. It selects which list to modify by the type of dst which is either a Host or Service object.
+        """Modifies the RedActionResults' alert by adding either to
+        alert.dst_hosts or alert.services. It selects which list to modify by
+        the type of dst which is either a Host or Service object.
 
         - `dst`: a Host or Service object to be added to the alert
         """
@@ -68,12 +72,11 @@ class RedActionResults:
             self.detector_alert.add_service(dst)
         else:
             raise TypeError(
-                f"RedActionResults.modify_alert(): dst needs to be Host or Service not {type(dst)}"
+                f'RedActionResults.modify_alert(): dst needs to be Host or Service not {type(dst)}'
             )
 
     def add_successful_action(self) -> None:
-        """
-        Adds the host to the list of successful actions
+        """Adds the host to the list of successful actions.
 
         - `host`: a Host where this action was successful
         """
@@ -99,8 +102,9 @@ class RedActionResults:
 
 
 class ARTAction:
-    """
-    Base class for defining Atomic Red Team actions. New ART actions should inherit from this class and define sim_execute().
+    """Base class for defining Atomic Red Team actions.
+
+    New ART actions should inherit from this class and define sim_execute().
     """
 
     def __init__(self, src_host: Host, target_host: Host) -> None:
@@ -116,7 +120,7 @@ class ARTAction:
         self.src_host = src_host
         self.target_host = target_host
         self.action_results = RedActionResults(src_host, target_host)
-        self.name = ""
+        self.name = ''
 
     @abstractmethod
     def sim_execute(self) -> RedActionResults | type[NotImplementedError]:

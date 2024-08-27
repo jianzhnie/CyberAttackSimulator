@@ -6,200 +6,202 @@ from cyberwheel.network.host import Host
 
 
 class ARTKillChainPhase(ARTAction):
-    """
-    Base for defining a KillChainPhase. Any new Killchain Phase (probably not needed) should inherit from this class.
+    """Base for defining a KillChainPhase.
+
+    Any new Killchain Phase (probably not needed) should inherit from this
+    class.
     """
 
     validity_mapping = {
-        "windows": {
-            "discovery": [
-                "T1010",
-                "T1217",
-                "T1069.002",
-                "T1482",
-                "T1083",
-                "T1087.002",
-                "T1087.001",
-                "T1615",
-                "T1069.001",
-                "T1046",
-                "T1135",
-                "T1040",
-                "T1201",
-                "T1120",
-                "T1057",
-                "T1012",
-                "T1018",
-                "T1518.001",
-                "T1518",
-                "T1497.001",
-                "T1082",
-                "T1614.001",
-                "T1016",
-                "T1049",
-                "T1033",
-                "T1007",
-                "T1124",
+        'windows': {
+            'discovery': [
+                'T1010',
+                'T1217',
+                'T1069.002',
+                'T1482',
+                'T1083',
+                'T1087.002',
+                'T1087.001',
+                'T1615',
+                'T1069.001',
+                'T1046',
+                'T1135',
+                'T1040',
+                'T1201',
+                'T1120',
+                'T1057',
+                'T1012',
+                'T1018',
+                'T1518.001',
+                'T1518',
+                'T1497.001',
+                'T1082',
+                'T1614.001',
+                'T1016',
+                'T1049',
+                'T1033',
+                'T1007',
+                'T1124',
             ],
-            "lateral-movement": [
-                "T1021.003",
-                "T1570",
-                "T1550.002",
-                "T1550.003",
-                "T1563.002",
-                "T1021.001",
-                "T1091",
-                "T1021.002",
-                "T1072",
-                "T1021.006",
+            'lateral-movement': [
+                'T1021.003',
+                'T1570',
+                'T1550.002',
+                'T1550.003',
+                'T1563.002',
+                'T1021.001',
+                'T1091',
+                'T1021.002',
+                'T1072',
+                'T1021.006',
             ],
-            "privilege-escalation": [
-                "T1546.008",
-                "T1547.014",
-                "T1546.009",
-                "T1546.010",
-                "T1546.011",
-                "T1055.004",
-                "T1053.002",
-                "T1547.002",
-                "T1547",
-                "T1548.002",
-                "T1574.012",
-                "T1546.001",
-                "T1546.015",
-                "T1134.002",
-                "T1574.001",
-                "T1574.002",
-                "T1078.001",
-                "T1055.001",
-                "T1546",
-                "T1055.011",
-                "T1484.001",
-                "T1546.012",
-                "T1547.006",
-                "T1547.008",
-                "T1078.003",
-                "T1547.015",
-                "T1037.001",
-                "T1546.007",
-                "T1134.004",
-                "T1574.008",
-                "T1574.009",
-                "T1547.010",
-                "T1055.002",
-                "T1546.013",
-                "T1547.012",
-                "T1055.012",
-                "T1055",
-                "T1547.001",
-                "T1134.005",
-                "T1053.005",
-                "T1546.002",
-                "T1547.005",
-                "T1574.011",
-                "T1547.009",
-                "T1055.003",
-                "T1547.003",
-                "T1134.001",
-                "T1546.003",
-                "T1543.003",
-                "T1547.004",
+            'privilege-escalation': [
+                'T1546.008',
+                'T1547.014',
+                'T1546.009',
+                'T1546.010',
+                'T1546.011',
+                'T1055.004',
+                'T1053.002',
+                'T1547.002',
+                'T1547',
+                'T1548.002',
+                'T1574.012',
+                'T1546.001',
+                'T1546.015',
+                'T1134.002',
+                'T1574.001',
+                'T1574.002',
+                'T1078.001',
+                'T1055.001',
+                'T1546',
+                'T1055.011',
+                'T1484.001',
+                'T1546.012',
+                'T1547.006',
+                'T1547.008',
+                'T1078.003',
+                'T1547.015',
+                'T1037.001',
+                'T1546.007',
+                'T1134.004',
+                'T1574.008',
+                'T1574.009',
+                'T1547.010',
+                'T1055.002',
+                'T1546.013',
+                'T1547.012',
+                'T1055.012',
+                'T1055',
+                'T1547.001',
+                'T1134.005',
+                'T1053.005',
+                'T1546.002',
+                'T1547.005',
+                'T1574.011',
+                'T1547.009',
+                'T1055.003',
+                'T1547.003',
+                'T1134.001',
+                'T1546.003',
+                'T1543.003',
+                'T1547.004',
             ],
-            "impact": [
-                "T1531",
-                "T1485",
-                "T1486",
-                "T1490",
-                "T1491.001",
-                "T1489",
-                "T1529",
+            'impact': [
+                'T1531',
+                'T1485',
+                'T1486',
+                'T1490',
+                'T1491.001',
+                'T1489',
+                'T1529',
             ],
         },
-        "macos": {
-            "discovery": [
-                "T1217",
-                "T1580",
-                "T1083",
-                "T1087.001",
-                "T1069.001",
-                "T1046",
-                "T1135",
-                "T1040",
-                "T1201",
-                "T1057",
-                "T1018",
-                "T1518.001",
-                "T1518",
-                "T1497.001",
-                "T1082",
-                "T1016",
-                "T1049",
-                "T1033",
-                "T1124",
+        'macos': {
+            'discovery': [
+                'T1217',
+                'T1580',
+                'T1083',
+                'T1087.001',
+                'T1069.001',
+                'T1046',
+                'T1135',
+                'T1040',
+                'T1201',
+                'T1057',
+                'T1018',
+                'T1518.001',
+                'T1518',
+                'T1497.001',
+                'T1082',
+                'T1016',
+                'T1049',
+                'T1033',
+                'T1124',
             ],
-            "lateral-movement": ["T1021.005"],
-            "privilege-escalation": [
-                "T1053.003",
-                "T1078.001",
-                "T1574.006",
-                "T1546.014",
-                "T1547.006",
-                "T1543.001",
-                "T1543.004",
-                "T1078.003",
-                "T1037.002",
-                "T1547.015",
-                "T1037.004",
-                "T1547.007",
-                "T1548.001",
-                "T1037.005",
-                "T1548.003",
-                "T1546.005",
-                "T1546.004",
+            'lateral-movement': ['T1021.005'],
+            'privilege-escalation': [
+                'T1053.003',
+                'T1078.001',
+                'T1574.006',
+                'T1546.014',
+                'T1547.006',
+                'T1543.001',
+                'T1543.004',
+                'T1078.003',
+                'T1037.002',
+                'T1547.015',
+                'T1037.004',
+                'T1547.007',
+                'T1548.001',
+                'T1037.005',
+                'T1548.003',
+                'T1546.005',
+                'T1546.004',
             ],
-            "impact": ["T1531", "T1485", "T1486", "T1496", "T1529"],
+            'impact': ['T1531', 'T1485', 'T1486', 'T1496', 'T1529'],
         },
-        "linux": {
-            "discovery": [
-                "T1217",
-                "T1580",
-                "T1069.002",
-                "T1083",
-                "T1087.002",
-                "T1087.001",
-                "T1069.001",
-                "T1046",
-                "T1135",
-                "T1040",
-                "T1201",
-                "T1057",
-                "T1018",
-                "T1518.001",
-                "T1497.001",
-                "T1082",
-                "T1614.001",
-                "T1016",
-                "T1049",
-                "T1033",
-                "T1007",
-                "T1124",
+        'linux': {
+            'discovery': [
+                'T1217',
+                'T1580',
+                'T1069.002',
+                'T1083',
+                'T1087.002',
+                'T1087.001',
+                'T1069.001',
+                'T1046',
+                'T1135',
+                'T1040',
+                'T1201',
+                'T1057',
+                'T1018',
+                'T1518.001',
+                'T1497.001',
+                'T1082',
+                'T1614.001',
+                'T1016',
+                'T1049',
+                'T1033',
+                'T1007',
+                'T1124',
             ],
-            "lateral-movement": [],
-            "privilege-escalation": [
-                "T1053.002",
-                "T1053.003",
-                "T1574.006",
-                "T1547.006",
-                "T1078.003",
-                "T1037.004",
-                "T1548.001",
-                "T1548.003",
-                "T1543.002",
-                "T1053.006",
-                "T1546.005",
-                "T1546.004",
+            'lateral-movement': [],
+            'privilege-escalation': [
+                'T1053.002',
+                'T1053.003',
+                'T1574.006',
+                'T1547.006',
+                'T1078.003',
+                'T1037.004',
+                'T1548.001',
+                'T1548.003',
+                'T1543.002',
+                'T1053.006',
+                'T1546.005',
+                'T1546.004',
             ],
-            "impact": ["T1531", "T1485", "T1486", "T1496", "T1529"],
+            'impact': ['T1531', 'T1485', 'T1486', 'T1496', 'T1529'],
         },
     }
 
@@ -209,8 +211,9 @@ class ARTKillChainPhase(ARTAction):
         target_host: Host = None,
         valid_techniques: list[str] = [],
     ) -> None:
-        """
-        Same parameters as defined and described in the ARTAction base class.
+        """Same parameters as defined and described in the ARTAction base
+        class.
+
         - `src_host`: Host from which the attack originates.
 
         - `target_service`: The service being targeted.
@@ -245,17 +248,17 @@ class ARTKillChainPhase(ARTAction):
             for dep in chosen_test.dependencies:
                 processes.extend(dep.get_prerequisite_command)
                 processes.extend(dep.prerequisite_command)
-            if chosen_test.executor != None:
+            if chosen_test.executor is not None:
                 processes.extend(chosen_test.executor.command)
                 processes.extend(chosen_test.executor.cleanup_command)
             for p in processes:
-                host.run_command(chosen_test.executor, p, "root")
+                host.run_command(chosen_test.executor, p, 'root')
             self.action_results.add_metadata(
                 host.name,
                 {
-                    "commands": processes,
-                    "mitre_id": mitre_id,
-                    "technique": art_technique.name,
+                    'commands': processes,
+                    'mitre_id': mitre_id,
+                    'technique': art_technique.name,
                 },
             )
 
@@ -263,8 +266,7 @@ class ARTKillChainPhase(ARTAction):
 
 
 class ARTPingSweep(ARTKillChainPhase):
-    """
-    PrivilegeEscalation Killchain Phase Attack. As described by MITRE:
+    """PrivilegeEscalation Killchain Phase Attack. As described by MITRE:
 
     The adversary is trying to gain higher-level permissions.
 
@@ -280,7 +282,7 @@ class ARTPingSweep(ARTKillChainPhase):
     These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.
     """
 
-    name: str = "pingsweep"
+    name: str = 'pingsweep'
 
     def __init__(
         self,
@@ -288,7 +290,7 @@ class ARTPingSweep(ARTKillChainPhase):
         target_host: Host,
     ) -> None:
         super().__init__(src_host, target_host)
-        self.name = "pingsweep"
+        self.name = 'pingsweep'
 
     def sim_execute(self):
         self.action_results.detector_alert.add_src_host(self.src_host)
@@ -296,8 +298,7 @@ class ARTPingSweep(ARTKillChainPhase):
         self.action_results.modify_alert(dst=host)
 
         host_os = host.os
-        action_type = self.name
-        art_technique = art_techniques.technique_mapping["T1018"]
+        art_technique = art_techniques.technique_mapping['T1018']
         mitre_id = art_technique.mitre_id
         processes = []
         valid_tests = [
@@ -309,38 +310,37 @@ class ARTPingSweep(ARTKillChainPhase):
         for dep in chosen_test.dependencies:
             processes.extend(dep.get_prerequisite_command)
             processes.extend(dep.prerequisite_command)
-        if chosen_test.executor != None:
+        if chosen_test.executor is not None:
             processes.extend(chosen_test.executor.command)
             processes.extend(chosen_test.executor.cleanup_command)
         for p in processes:
-            host.run_command(chosen_test.executor, p, "user")
+            host.run_command(chosen_test.executor, p, 'user')
 
         self.action_results.add_successful_action()
         self.action_results.add_metadata(
             host.name,
             {
-                "commands": processes,
-                "mitre_id": mitre_id,
-                "technique": art_technique.name,
+                'commands': processes,
+                'mitre_id': mitre_id,
+                'technique': art_technique.name,
             },
         )
 
         subnet_hosts = host.subnet.connected_hosts
         interfaces = []
         self.action_results.add_metadata(host.subnet.name,
-                                         {"subnet_scanned": host.subnet})
+                                         {'subnet_scanned': host.subnet})
         for each_host in subnet_hosts:
             for h in each_host.interfaces:
                 interfaces.append(h)
         for h in interfaces:
-            self.action_results.add_metadata(h.name, {"ip_address": h})
+            self.action_results.add_metadata(h.name, {'ip_address': h})
 
         return self.action_results
 
 
 class ARTPortScan(ARTKillChainPhase):
-    """
-    PrivilegeEscalation Killchain Phase Attack. As described by MITRE:
+    """PrivilegeEscalation Killchain Phase Attack. As described by MITRE:
 
     The adversary is trying to gain higher-level permissions.
 
@@ -356,7 +356,7 @@ class ARTPortScan(ARTKillChainPhase):
     These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.
     """
 
-    name: str = "portscan"
+    name: str = 'portscan'
 
     def __init__(
         self,
@@ -364,7 +364,7 @@ class ARTPortScan(ARTKillChainPhase):
         target_host: Host,
     ) -> None:
         super().__init__(src_host, target_host)
-        self.name = "portscan"
+        self.name = 'portscan'
 
     def sim_execute(self):
         self.action_results.detector_alert.add_src_host(self.src_host)
@@ -372,8 +372,7 @@ class ARTPortScan(ARTKillChainPhase):
         self.action_results.modify_alert(dst=host)
 
         host_os = host.os
-        action_type = self.name
-        art_technique = art_techniques.technique_mapping["T1046"]
+        art_technique = art_techniques.technique_mapping['T1046']
         mitre_id = art_technique.mitre_id
         processes = []
         valid_tests = [
@@ -385,18 +384,18 @@ class ARTPortScan(ARTKillChainPhase):
         for dep in chosen_test.dependencies:
             processes.extend(dep.get_prerequisite_command)
             processes.extend(dep.prerequisite_command)
-        if chosen_test.executor != None:
+        if chosen_test.executor is not None:
             processes.extend(chosen_test.executor.command)
             processes.extend(chosen_test.executor.cleanup_command)
         for p in processes:
-            host.run_command(chosen_test.executor, p, "user")
+            host.run_command(chosen_test.executor, p, 'user')
         self.action_results.add_successful_action()
         self.action_results.add_metadata(
             host.name,
             {
-                "commands": processes,
-                "mitre_id": mitre_id,
-                "technique": art_technique.name,
+                'commands': processes,
+                'mitre_id': mitre_id,
+                'technique': art_technique.name,
             },
         )
 
@@ -404,8 +403,7 @@ class ARTPortScan(ARTKillChainPhase):
 
 
 class ARTPrivilegeEscalation(ARTKillChainPhase):
-    """
-    PrivilegeEscalation Killchain Phase Attack. As described by MITRE:
+    """PrivilegeEscalation Killchain Phase Attack. As described by MITRE:
 
     The adversary is trying to gain higher-level permissions.
 
@@ -421,7 +419,7 @@ class ARTPrivilegeEscalation(ARTKillChainPhase):
     These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.
     """
 
-    name: str = "privilege-escalation"
+    name: str = 'privilege-escalation'
 
     def __init__(self,
                  src_host: Host,
@@ -430,12 +428,11 @@ class ARTPrivilegeEscalation(ARTKillChainPhase):
         super().__init__(src_host,
                          target_host,
                          valid_techniques=valid_techniques)
-        self.name = "privilege-escalation"
+        self.name = 'privilege-escalation'
 
 
 class ARTDiscovery(ARTKillChainPhase):
-    """
-    Discovery Killchain Phase Attack. As described by MITRE:
+    """Discovery Killchain Phase Attack. As described by MITRE:
 
     The adversary is trying to figure out your environment.
 
@@ -446,7 +443,7 @@ class ARTDiscovery(ARTKillChainPhase):
     this post-compromise information-gathering objective.
     """
 
-    name: str = "discovery"
+    name: str = 'discovery'
 
     def __init__(self,
                  src_host: Host,
@@ -455,21 +452,20 @@ class ARTDiscovery(ARTKillChainPhase):
         super().__init__(src_host,
                          target_host,
                          valid_techniques=valid_techniques)
-        self.name = "discovery"
+        self.name = 'discovery'
 
     def sim_execute(self):
         super().sim_execute()
         if self.action_results.attack_success:
             self.action_results.add_metadata(
                 self.target_host.name,
-                {"type": self.target_host.host_type.name},
+                {'type': self.target_host.host_type.name},
             )
         return self.action_results
 
 
 class ARTLateralMovement(ARTKillChainPhase):
-    """
-    LateralMovement Killchain Phase Attack. As described by MITRE:
+    """LateralMovement Killchain Phase Attack. As described by MITRE:
 
     The adversary is trying to move through your environment.
 
@@ -480,7 +476,7 @@ class ARTLateralMovement(ARTKillChainPhase):
     or use legitimate credentials with native network and operating system tools, which may be stealthier.
     """
 
-    name: str = "lateral-movement"
+    name: str = 'lateral-movement'
 
     def __init__(self,
                  src_host: Host,
@@ -489,12 +485,11 @@ class ARTLateralMovement(ARTKillChainPhase):
         super().__init__(src_host,
                          target_host,
                          valid_techniques=valid_techniques)
-        self.name = "lateral-movement"
+        self.name = 'lateral-movement'
 
 
 class ARTImpact(ARTKillChainPhase):
-    """
-    Impact Killchain Phase Attack. As described by MITRE:
+    """Impact Killchain Phase Attack. As described by MITRE:
 
     The adversary is trying to manipulate, interrupt, or destroy your systems and data.
 
@@ -504,7 +499,7 @@ class ARTImpact(ARTKillChainPhase):
     through on their end goal or to provide cover for a confidentiality breach.
     """
 
-    name: str = "impact"
+    name: str = 'impact'
 
     def __init__(self,
                  src_host: Host,
@@ -513,4 +508,4 @@ class ARTImpact(ARTKillChainPhase):
         super().__init__(src_host,
                          target_host,
                          valid_techniques=valid_techniques)
-        self.name = "impact"
+        self.name = 'impact'

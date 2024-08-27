@@ -1,8 +1,10 @@
+"""The Server Downtime strategy is to find and attack all of the Servers it can
+find in the network.
+
+Once it finds a server, it will try to impact it. Once impacted, it will look
+for another server.
+"""
 from cyberwheel.agents.red.strategies.red_strategy import RedStrategy
-"""
-The Server Downtime strategy is to find and attack all of the Servers it can find in the network.
-Once it finds a server, it will try to impact it. Once impacted, it will look for another server.
-"""
 
 
 class ServerDowntime(RedStrategy):
@@ -18,7 +20,7 @@ class ServerDowntime(RedStrategy):
         """
 
         target_host = agent_obj.current_host
-        if (current_host_type == "Unknown"
+        if (current_host_type == 'Unknown'
                 or agent_obj.unimpacted_servers.check_membership(
                     agent_obj.current_host.name)):
             target_host = agent_obj.current_host
@@ -33,10 +35,10 @@ class ServerDowntime(RedStrategy):
     @classmethod
     def get_reward_map(cls) -> dict[str, tuple[int, int]]:
         return {
-            "pingsweep": (-1, 0),
-            "portscan": (-1, 0),
-            "discovery": (-2, 0),
-            "lateral-movement": (-4, 0),
-            "privilege-escalation": (-6, 0),
-            "impact": (-8, -4),
+            'pingsweep': (-1, 0),
+            'portscan': (-1, 0),
+            'discovery': (-2, 0),
+            'lateral-movement': (-4, 0),
+            'privilege-escalation': (-6, 0),
+            'impact': (-8, -4),
         }

@@ -9,9 +9,9 @@ from cyberwheel.network.subnet import Subnet
 
 
 def get_host_types() -> List[Dict[str, any]]:
-    with open("resources/metadata/host_definitions.json", "rb") as f:
+    with open('resources/metadata/host_definitions.json', 'rb') as f:
         host_defs = json.load(f)
-    return host_defs["host_types"]
+    return host_defs['host_types']
 
 
 class DeployDecoyHost(SubnetAction):
@@ -21,18 +21,18 @@ class DeployDecoyHost(SubnetAction):
         super().__init__(network, configs)
         self.define_configs()
         self.define_services()
-        self.decoy_list = kwargs.get("decoy_list", [])
+        self.decoy_list = kwargs.get('decoy_list', [])
 
     def execute(self, subnet: Subnet, **kwargs) -> BlueActionReturn:
         name = generate_id()
-        if "server" in self.type.lower():
-            host_type = HostType(name="Server",
+        if 'server' in self.type.lower():
+            host_type = HostType(name='Server',
                                  services=self.services,
                                  decoy=True,
                                  cve_list=self.cves)
         else:
             host_type = HostType(
-                name="Workstation",
+                name='Workstation',
                 services=self.services,
                 decoy=True,
                 cve_list=self.cves,
@@ -50,7 +50,7 @@ class IsolateDecoyHost(SubnetAction):
         super().__init__(network, configs)
         self.define_configs()
         self.define_services()
-        self.isolate_data = kwargs.get("isolate_data", [])
+        self.isolate_data = kwargs.get('isolate_data', [])
 
     def execute(self, subnet: Subnet, **kwargs) -> BlueActionReturn:
         name = generate_id()

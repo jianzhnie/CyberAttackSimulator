@@ -1,23 +1,39 @@
-from typing import Dict
+from typing import Any, Dict
 
-import BlueActionReturn
-
-from cyberwheel.agents.blue.blue_action import HostAction
+from cyberwheel.agents.blue.blue_action import BlueActionReturn, HostAction
 from cyberwheel.network.host import Host
 from cyberwheel.network.network_base import Network
 
 
 class Restore(HostAction):
+    """Action to restore a host by removing malware and marking it as
+    restored."""
 
-    def __init__(self, network: Network, configs: Dict[str, any],
+    def __init__(self, network: Network, configs: Dict[str, Any],
                  **kwargs) -> None:
+        """Initializes the Restore action.
+
+        :param network: The network where the host resides.
+        :param configs: Configuration dictionary.
+        :param kwargs: Additional keyword arguments (unused).
+        """
         super().__init__(network, configs)
 
     def execute(self, host: Host, **kwargs) -> BlueActionReturn:
-        if host.restored:
-            return BlueActionReturn('', False)
+        """Executes the restore action on the given host.
 
+        :param host: The host to be restored.
+        :param kwargs: Additional keyword arguments (unused).
+        :return: BlueActionReturn indicating success or failure of the restoration.
+        """
+        # Check if the host has already been restored
+        if host.restored:
+            return BlueActionReturn(id='', success=False)
+
+        # Remove the malware process from the host
         host.remove_process('malware.exe')
+        # Mark the host as restored
         host.restored = True
 
-        return BlueActionReturn('', True)
+        # Return a successful action result
+        return BlueActionReturn(id='', success=True)

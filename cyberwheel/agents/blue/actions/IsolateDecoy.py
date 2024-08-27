@@ -1,24 +1,45 @@
-from typing import Dict
+from typing import Any, Dict, List, Tuple
 
 from cyberwheel.agents.blue.blue_action import (BlueActionReturn,
                                                 StandaloneAction)
+from cyberwheel.network.host import Host
 from cyberwheel.network.network_base import Network
+from cyberwheel.network.subnet import Subnet
 
 
 class IsolateDecoy(StandaloneAction):
+    """Action to isolate a decoy host within the network."""
 
-    def __init__(self, network: Network, configs: Dict[str, any],
+    def __init__(self, network: Network, configs: Dict[str, Any],
                  **kwargs) -> None:
-        super().__init__(network, configs)
-        self.isolate_data = kwargs.get('isolate_data')
+        """Initializes the IsolateDecoy action.
 
-    def execute(self, i, **kwargs) -> None:
+        :param network: The network where the decoy host resides.
+        :param configs: Configuration dictionary.
+        :param kwargs: Additional keyword arguments, including 'isolate_data'.
+        """
+        super().__init__(network, configs)
+        # Expecting 'isolate_data' to be a list of tuples (Host, Subnet)
+        self.isolate_data: List[Tuple[Host, Subnet]] = kwargs.get(
+            'isolate_data', [])
+
+    def execute(self, i: int, **kwargs) -> BlueActionReturn:
+        """Executes the action to isolate a decoy host.
+
+        :param i: The index of the host in the isolate_data list to isolate.
+        :param kwargs: Additional keyword arguments.
+        :return: BlueActionReturn indicating success or failure of the isolation.
+        """
+        # Check if the index is within the valid range of isolate_data
         if i >= len(self.isolate_data):
-            return BlueActionReturn('', False)
+            return BlueActionReturn(id='', success=False)
+
         host, subnet = self.isolate_data[i]
 
+        # Check if the host is already isolated
         if host.isolated:
-            return BlueActionReturn('', False)
+            return BlueActionReturn(id='', success=False)
 
+        # Isolate the host within the subnet
         self.network.isolate_host(host, subnet)
-        return BlueActionReturn('', True)
+        return BlueActionReturn(id='', success=True)

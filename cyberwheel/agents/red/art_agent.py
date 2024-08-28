@@ -1,13 +1,23 @@
 from typing import Any, Dict, List, Tuple, Type
 
 from cyberwheel.agents.red import art_techniques
-from cyberwheel.agents.red.actions.art_killchain_phases import (
-    ARTDiscovery, ARTImpact, ARTKillChainPhase, ARTLateralMovement,
-    ARTPingSweep, ARTPortScan, ARTPrivilegeEscalation)
-from cyberwheel.agents.red.red_agent_base import (AgentHistory, HybridSetList,
-                                                  KnownHostInfo,
-                                                  KnownSubnetInfo,
-                                                  RedActionResults, RedAgent)
+from cyberwheel.agents.red.actions import (
+    ARTDiscovery,
+    ARTImpact,
+    ARTKillChainPhase,
+    ARTLateralMovement,
+    ARTPingSweep,
+    ARTPortScan,
+    ARTPrivilegeEscalation,
+)
+from cyberwheel.agents.red.red_agent_base import (
+    AgentHistory,
+    HybridSetList,
+    KnownHostInfo,
+    KnownSubnetInfo,
+    RedAgent,
+)
+from cyberwheel.agents.red.actions import RedActionResults
 from cyberwheel.agents.red.strategies import RedStrategy, ServerDowntime
 from cyberwheel.network.network_base import Host, Network
 from cyberwheel.reward import RewardMap

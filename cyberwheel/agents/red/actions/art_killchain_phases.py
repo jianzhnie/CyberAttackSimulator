@@ -1,7 +1,8 @@
 import random
 
 import cyberwheel.agents.red.art_techniques as art_techniques
-from cyberwheel.agents.red.red_base import ARTAction, RedActionResults
+from cyberwheel.agents.red.actions.art_action import (ARTAction,
+                                                      RedActionResults)
 from cyberwheel.network.host import Host
 
 

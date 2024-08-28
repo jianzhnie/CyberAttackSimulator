@@ -20,7 +20,8 @@ class CustomSharedData(ABC):
 
         This method must be implemented by any subclass of CustomSharedData.
         """
-        raise NotImplementedError("Subclasses must implement the 'clear' method.")
+        raise NotImplementedError(
+            "Subclasses must implement the 'clear' method.")
 
 
 class IsolateData(CustomSharedData):
@@ -33,10 +34,9 @@ class IsolateData(CustomSharedData):
 
         :param kwargs: Optional keyword arguments. 'size' specifies the maximum number of decoys.
         """
-        self.size: int = kwargs.get("size", 10)
-        self.decoys: List[
-            Tuple[Host, Subnet]
-        ] = []  # List to store tuples of (decoy host, subnet)
+        self.size: int = kwargs.get('size', 10)
+        self.decoys: List[Tuple[Host, Subnet]] = [
+        ]  # List to store tuples of (decoy host, subnet)
 
     def __getitem__(self, k: int) -> Tuple[Host, Subnet]:
         """Gets the decoy-host-subnet pair at the specified index.

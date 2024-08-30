@@ -1,4 +1,4 @@
-from .action_space import ActionSpace
+from .action_space import ActionSpace, ASReturn
 from .discrete import DiscreteActionSpace
 
-__all__ = ['ActionSpace', 'DiscreteActionSpace']
+__all__ = ["ASReturn", "ActionSpace", "DiscreteActionSpace"]

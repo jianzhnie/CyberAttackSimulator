@@ -4,8 +4,7 @@ from typing import Iterable
 import numpy as np
 
 from cyberwheel.detectors.alert import Alert
-from cyberwheel.network.host import Host
-from cyberwheel.network.network_base import Network
+from cyberwheel.network import Host, Network
 
 
 class Observation:

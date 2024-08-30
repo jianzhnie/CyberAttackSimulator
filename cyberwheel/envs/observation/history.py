@@ -4,7 +4,7 @@ import numpy as np
 
 from cyberwheel.detectors.alert import Alert
 from cyberwheel.envs.observation.observation import Observation
-from cyberwheel.network.host import Host
+from cyberwheel.network import Host
 
 
 class HistoryObservation(Observation):

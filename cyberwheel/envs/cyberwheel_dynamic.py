@@ -11,8 +11,7 @@ from cyberwheel.agents.red.strategies import ServerDowntime
 from cyberwheel.detectors.alert import Alert
 from cyberwheel.detectors.handler import DetectorHandler
 from cyberwheel.envs.observation import HistoryObservation
-from cyberwheel.network.host import Host
-from cyberwheel.network.network_base import Network
+from cyberwheel.network import Host, Network
 from cyberwheel.reward import StepDetectedReward
 from cyberwheel.reward.recurring_reward import RecurringReward
 

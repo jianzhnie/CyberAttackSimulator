@@ -1,4 +1,4 @@
-from .action_space import ActionSpace, ASReturn
-from .discrete import DiscreteActionSpace
+from cyberwheel.agents.blue.action_space import ActionSpace, ASReturn
+from cyberwheel.agents.blue.action_space.discrete import DiscreteActionSpace
 
 __all__ = ['ASReturn', 'ActionSpace', 'DiscreteActionSpace']

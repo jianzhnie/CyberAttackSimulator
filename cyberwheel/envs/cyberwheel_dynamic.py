@@ -12,8 +12,7 @@ from cyberwheel.detectors.alert import Alert
 from cyberwheel.detectors.handler import DetectorHandler
 from cyberwheel.envs.observation import HistoryObservation
 from cyberwheel.network import Host, Network
-from cyberwheel.reward import StepDetectedReward
-from cyberwheel.reward.recurring_reward import RecurringReward
+from cyberwheel.reward import RecurringReward, StepDetectedReward
 
 from .cyberwheel import Cyberwheel
 

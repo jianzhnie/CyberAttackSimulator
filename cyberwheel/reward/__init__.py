@@ -1,9 +1,9 @@
-from .decoy_reward import DecoyReward
-from .isolate_reward import IsolateReward
-from .recurring_reward import RecurringReward
-from .restore_reward import RestoreReward
-from .reward_base import RewardMap
-from .step_detected_reward import StepDetectedReward
+from cyberwheel.reward.decoy_reward import DecoyReward
+from cyberwheel.reward.isolate_reward import IsolateReward
+from cyberwheel.reward.recurring_reward import RecurringReward
+from cyberwheel.reward.restore_reward import RestoreReward
+from cyberwheel.reward.reward_base import RewardMap
+from cyberwheel.reward.step_detected_reward import StepDetectedReward
 
 __all__ = [
     'StepDetectedReward',

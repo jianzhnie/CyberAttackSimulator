@@ -9,7 +9,7 @@ from gym import Space
 from cyberwheel.agents.blue.action_space import ActionSpace
 from cyberwheel.agents.blue.blue_agent import BlueAgent, BlueAgentResult
 from cyberwheel.network import Network
-from cyberwheel.reward.reward_base import RewardMap
+from cyberwheel.reward import RewardMap
 
 
 class ActionConfigInfo:

@@ -6,11 +6,11 @@ from typing import List, Union
 
 from pydantic import BaseModel
 
-from .command import Command
-from .network_object import NetworkObject
-from .process import Process
-from .service import Service
-from .subnet import Subnet
+from cyberwheel.network.command import Command
+from cyberwheel.network.network_object import NetworkObject
+from cyberwheel.network.process import Process
+from cyberwheel.network.service import Service
+from cyberwheel.network.subnet import Subnet
 
 
 class HostType(BaseModel):

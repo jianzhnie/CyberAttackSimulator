@@ -3,8 +3,8 @@ import random
 from copy import deepcopy
 from typing import List, Optional, Union
 
-from .network_object import NetworkObject, Route
-from .router import Router
+from cyberwheel.network.network_object import NetworkObject, Route
+from cyberwheel.network.router import Router
 
 
 class Subnet(NetworkObject):

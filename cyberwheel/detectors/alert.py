@@ -5,8 +5,7 @@ from ipaddress import IPv4Address, IPv6Address
 from typing import Any, Dict, List, Union
 
 from cyberwheel.agents.red.technique import Technique
-from cyberwheel.network.host import Host
-from cyberwheel.network.service import Service
+from cyberwheel.network import Host, Service
 
 IPAddress = Union[IPv4Address, IPv6Address, None]
 

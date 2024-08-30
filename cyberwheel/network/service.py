@@ -1,49 +1,72 @@
-from typing import Any, Type, TypeVar
+from typing import Any, Dict, Optional, Set, Type, TypeVar
 
 from pydantic import BaseModel, PositiveInt, validator
 
-# this allows return type hints to work with @classmethods
-# https://stackoverflow.com/a/44644576
+# Type variable to allow class methods to return instances of subclasses
 T = TypeVar('T', bound='Service')
 
 
-# TODO
 class Vuln(BaseModel):
+    """Represents a vulnerability with a name and an ID."""
+
     name: str
     id: str
 
-    def __key(self):
-        return (self.name, self.id)
+    def __key(self) -> tuple[str, str]:
+        """Generates a unique key for the Vuln instance.
 
-    def __hash__(self):
+        :return: Tuple of name and id.
+        """
+        return self.name, self.id
+
+    def __hash__(self) -> int:
+        """Allows Vuln to be used in sets or as dictionary keys."""
         return hash(self.__key())
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
+        """Checks equality between two Vuln instances."""
         if isinstance(other, Vuln):
-            name_matched: bool = self.name == other.name
-            id_matched: bool = self.id == other.id
-            return name_matched and id_matched
+            return self.__key() == other.__key()
         return False
 
-    # @validator('id')
-    # @classmethod
-    # def validate_id(cls, id: str) -> int:
-    #    if port not in range(2**16):
-    #        msg = 'Port should be an integer (1-65535)'
-    #        raise PortValueError(value=port, message=msg)
-    #    return port
+    # Validators for Vuln can be added here if needed
+
+
+class PortValueError(ValueError):
+    """Custom exception for invalid port values."""
+
+    def __init__(self, value: int, message: str) -> None:
+        self.value = value
+        self.message = message
+        super().__init__(message)
+
+
+class ProtocolValueError(ValueError):
+    """Custom exception for invalid protocol values."""
+
+    def __init__(self, value: str, message: str) -> None:
+        self.value = value
+        self.message = message
+        super().__init__(message)
 
 
 class Service(BaseModel):
-    name: str
-    port: PositiveInt = 1  # default value so we can omit port for ICMP
-    protocol: str = 'tcp'
-    version: str | None = None
-    vulns: set[str] = set()
-    description: str | None = None
-    decoy: bool | None = False
+    """Represents a network service with a name, port, protocol, and
+    vulnerabilities."""
 
-    def __key(self):
+    name: str
+    port: PositiveInt = 1  # Default port value for ICMP
+    protocol: str = 'tcp'
+    version: Optional[str] = None
+    vulns: Set[Vuln] = set()
+    description: Optional[str] = None
+    decoy: Optional[bool] = False
+
+    def __key(self) -> tuple:
+        """Generates a unique key for the Service instance.
+
+        :return: Tuple of attributes that define the uniqueness of the service.
+        """
         return (
             self.name,
             self.port,
@@ -53,10 +76,12 @@ class Service(BaseModel):
             self.decoy,
         )
 
-    def __hash__(self):
+    def __hash__(self) -> int:
+        """Allows Service to be used in sets or as dictionary keys."""
         return hash(self.__key())
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: Any) -> bool:
+        """Checks equality between two Service instances."""
         if isinstance(other, Service):
             port_matched: bool = self.port == other.port
             proto_matched: bool = self.protocol == other.protocol
@@ -67,72 +92,76 @@ class Service(BaseModel):
     @validator('port')
     @classmethod
     def validate_port(cls, port: PositiveInt) -> int:
-        if port not in range(2**16):
-            msg = 'Port should be an integer (1-65535)'
-            raise PortValueError(value=port, message=msg)
+        """Validates the port number.
+
+        :param port: The port number to validate.
+        :return: The validated port number.
+        :raises PortValueError: If the port is out of the valid range.
+        """
+        if not (1 <= port <= 65535):
+            raise PortValueError(value=port,
+                                 message='Port should be between 1 and 65535')
         return port
 
     @validator('protocol')
     @classmethod
-    def validate_proto(cls, proto) -> str:
-        if proto not in ['tcp', 'udp', 'icmp']:
-            msg = "Protocol should be 'tcp', 'udp', or 'icmp'"
-            raise ProtocolValueError(value=proto, message=msg)
-        return proto
+    def validate_protocol(cls, protocol: str) -> str:
+        """Validates the protocol.
 
-    # using classmethod here only so I don't have to hard code `Service`
+        :param protocol: The protocol to validate.
+        :return: The validated protocol.
+        :raises ProtocolValueError: If the protocol is not 'tcp', 'udp', or 'icmp'.
+        """
+        if protocol not in ['tcp', 'udp', 'icmp']:
+            raise ProtocolValueError(
+                value=protocol,
+                message="Protocol should be 'tcp', 'udp', or 'icmp'")
+        return protocol
+
     @classmethod
-    def create_service_from_dict(cls: Type[T], service: dict[str, Any]) -> T:
-        # instantiate any defined Vulns
-        vulns = service.get('cve', [])
-        # vulns = [cls.create_vuln_from_list(v) for v in service_vulns]
+    def create_service_from_dict(cls: Type[T], service: Dict[str, Any]) -> T:
+        """Creates a Service instance from a dictionary.
 
-        return Service(
-            name=service.get('name'),  # type: ignore
-            port=service.get('port', 1),  # type: ignore
-            protocol=service.get('protocol', 'tcp'),  # type: ignore
-            version=service.get('version'),  # type: ignore
+        :param service: The dictionary containing service attributes.
+        :return: An instance of the Service class.
+        """
+        vulns = {
+            Vuln(name=v['name'], id=v['id'])
+            for v in service.get('vulns', [])
+        }
+        return cls(
+            name=service.get('name', ''),
+            port=service.get('port', 1),
+            protocol=service.get('protocol', 'tcp'),
+            version=service.get('version'),
             vulns=vulns,
-            description=service.get('description'),  # type: ignore
-            decoy=service.get('decoy'),
-        )  # type: ignore
+            description=service.get('description'),
+            decoy=service.get('decoy', False),
+        )
 
-    # using classmethod here only so I don't have to hard code `Service`
     @classmethod
-    def create_service_from_yaml(cls: Type[T], service_objs: list[dict[str,
+    def create_service_from_yaml(cls: Type[T], service_objs: list[Dict[str,
                                                                        Any]],
                                  service_str: str) -> T:
-        # instantiate any defined Vulns
-        service = service_objs.get(service_str, {})
-        vulns = service.get('cve', set())
-        # vulns = [cls.create_vuln_from_list(v) for v in service_vulns]
+        """Creates a Service instance from a YAML configuration.
 
-        return Service(
-            name=service_str,  # type: ignore
-            port=service.get('port', 1),  # type: ignore
-            protocol=service.get('protocol', 'tcp'),  # type: ignore
-            version=service.get('version'),  # type: ignore
-            vulns=set(vulns),
-            description=service.get('description'),  # type: ignore
-            decoy=service.get('decoy'),
-        )  # type: ignore
-
-    # @staticmethod
-    # def create_vuln_from_str(vuln: str):
-    #    return Vuln(name=vuln, id=vuln)
-
-
-class PortValueError(ValueError):
-
-    def __init__(self, value: int, message: str) -> None:
-        self.value = value
-        self.message = message
-        super().__init__(message)
-
-
-class ProtocolValueError(ValueError):
-
-    def __init__(self, value: str, message: str) -> None:
-        self.value = value
-        self.message = message
-        super().__init__(message)
+        :param service_objs: A list of dictionaries containing service objects.
+        :param service_str: The key of the service object in the list.
+        :return: An instance of the Service class.
+        """
+        service = next(
+            (obj for obj in service_objs if obj.get('name') == service_str),
+            {})
+        vulns = {
+            Vuln(name=v['name'], id=v['id'])
+            for v in service.get('vulns', [])
+        }
+        return cls(
+            name=service_str,
+            port=service.get('port', 1),
+            protocol=service.get('protocol', 'tcp'),
+            version=service.get('version'),
+            vulns=vulns,
+            description=service.get('description'),
+            decoy=service.get('decoy', False),
+        )

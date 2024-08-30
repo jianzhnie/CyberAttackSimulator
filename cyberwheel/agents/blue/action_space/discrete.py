@@ -5,7 +5,7 @@ from gym.core import ActType
 
 from cyberwheel.agents.blue.action_space import ActionSpace, ASReturn
 from cyberwheel.agents.blue.blue_action import BlueAction
-from cyberwheel.network.network_base import Network
+from cyberwheel.network import Network
 
 
 class ActionRangeChecker:

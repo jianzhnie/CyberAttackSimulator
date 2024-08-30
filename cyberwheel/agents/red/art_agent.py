@@ -10,7 +10,7 @@ from cyberwheel.agents.red.red_agent_base import (AgentHistory, HybridSetList,
                                                   KnownHostInfo,
                                                   KnownSubnetInfo, RedAgent)
 from cyberwheel.agents.red.strategies import RedStrategy, ServerDowntime
-from cyberwheel.network.network_base import Host, Network
+from cyberwheel.network import Host, Network
 from cyberwheel.reward import RewardMap
 
 
@@ -167,7 +167,7 @@ class ARTAgent(RedAgent):
                 new_host = h
             self.tracked_hosts.add(h.name)
         if (
-                network_change and new_host != None
+                network_change and new_host is not None
         ):  # Add the new host to self.history if the subnet is scanned. Else do nothing.
             self.history.mapping[new_host.name] = new_host
             self.history.hosts[new_host.name] = KnownHostInfo()
@@ -250,7 +250,6 @@ class ARTAgent(RedAgent):
         self.handle_network_change()
 
         target_host = self.select_next_target()
-        source_host = self.current_host
         action_results, action = self.run_action(target_host)
         success = action_results.attack_success
         no_update = [ARTLateralMovement, ARTPingSweep, ARTPortScan]

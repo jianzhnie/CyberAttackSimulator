@@ -3,9 +3,7 @@ from typing import Any, Dict, List
 
 from cyberwheel.agents.blue.blue_action import (BlueActionReturn, SubnetAction,
                                                 generate_id)
-from cyberwheel.network.host import HostType
-from cyberwheel.network.network_base import Network
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import HostType, Network, Subnet
 
 
 def get_host_types() -> List[Dict[str, Any]]:

@@ -1,8 +1,7 @@
 from typing import Any, Dict, List
 
 from cyberwheel.agents.blue.blue_action import BlueActionReturn, HostAction
-from cyberwheel.network.host import Host
-from cyberwheel.network.network_base import Network
+from cyberwheel.network import Host, Network
 
 
 class QuarantineHost(HostAction):

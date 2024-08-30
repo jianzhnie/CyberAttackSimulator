@@ -5,8 +5,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 from cyberwheel.agents.red.actions import (ARTAction, ARTKillChainPhase,
                                            RedActionResults)
-from cyberwheel.network.network_base import Host,Subnet
-from cyberwheel.network.service import Service
+from cyberwheel.network import Host, Service, Subnet
 from cyberwheel.reward import RewardMap
 
 

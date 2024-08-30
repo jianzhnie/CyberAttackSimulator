@@ -2,7 +2,7 @@ import random
 
 import cyberwheel.agents.red.art_techniques as art_techniques
 from cyberwheel.agents.red.actions import ARTAction, RedActionResults
-from cyberwheel.network.host import Host
+from cyberwheel.network import Host
 
 
 class ARTKillChainPhase(ARTAction):

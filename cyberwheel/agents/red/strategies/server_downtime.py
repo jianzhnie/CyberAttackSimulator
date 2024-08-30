@@ -8,7 +8,7 @@ for another server.
 from typing import Dict, Optional, Tuple
 
 from cyberwheel.agents.red.strategies.red_strategy import RedStrategy
-from cyberwheel.network.host import Host
+from cyberwheel.network import Host
 
 
 class ServerDowntime(RedStrategy):

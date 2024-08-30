@@ -2,10 +2,7 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Set
 
-from cyberwheel.network.host import Host
-from cyberwheel.network.network_base import Network
-from cyberwheel.network.service import Service
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import Host, Network, Service, Subnet
 
 
 def generate_id() -> str:

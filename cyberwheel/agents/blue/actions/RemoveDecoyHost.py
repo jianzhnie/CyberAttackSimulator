@@ -1,8 +1,7 @@
 from typing import Any, Dict
 
 from cyberwheel.agents.blue.blue_action import BlueActionReturn, SubnetAction
-from cyberwheel.network.network_base import Network
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import Network, Subnet
 
 
 class RemoveDecoyHost(SubnetAction):

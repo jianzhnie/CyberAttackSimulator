@@ -3,7 +3,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Optional, Tuple
 
-from cyberwheel.network.host import Host
+from cyberwheel.network import Host
 
 
 class RedStrategy(ABC):

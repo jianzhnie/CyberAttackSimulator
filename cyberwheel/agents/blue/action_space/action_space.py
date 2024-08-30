@@ -5,7 +5,7 @@ from gym import Space, spaces
 from gym.core import ActType
 
 from cyberwheel.agents.blue.blue_action import BlueAction
-from cyberwheel.network.network_base import Network
+from cyberwheel.network import Network
 
 
 class ASReturn:

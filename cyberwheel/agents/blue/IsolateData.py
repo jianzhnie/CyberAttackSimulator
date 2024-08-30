@@ -1,8 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple
 
-from cyberwheel.network.host import Host
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import Host, Subnet
 
 
 class CustomSharedData(ABC):

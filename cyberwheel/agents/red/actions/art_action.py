@@ -4,9 +4,7 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Union
 
 from cyberwheel.detectors.alert import Alert
-from cyberwheel.network.host import Host
-from cyberwheel.network.service import Service
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import Host, Service, Subnet
 
 # Type aliases for better readability
 Targets = Union[List[Host], List[Subnet]]

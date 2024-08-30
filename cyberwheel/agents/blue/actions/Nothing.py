@@ -2,7 +2,7 @@ from typing import Any, Dict
 
 from cyberwheel.agents.blue.blue_action import (BlueActionReturn,
                                                 StandaloneAction, generate_id)
-from cyberwheel.network.network_base import Network
+from cyberwheel.network import Network
 
 
 class Nothing(StandaloneAction):

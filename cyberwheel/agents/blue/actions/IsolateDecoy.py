@@ -2,9 +2,7 @@ from typing import Any, Dict, List, Tuple
 
 from cyberwheel.agents.blue.blue_action import (BlueActionReturn,
                                                 StandaloneAction)
-from cyberwheel.network.host import Host
-from cyberwheel.network.network_base import Network
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import Host, Network, Subnet
 
 
 class IsolateDecoy(StandaloneAction):

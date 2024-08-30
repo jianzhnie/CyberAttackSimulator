@@ -4,8 +4,7 @@ from ipaddress import IPv4Address, IPv6Address
 from typing import Any, List, Type
 
 from cyberwheel.agents.red.actions import ARTAction, RedActionResults
-from cyberwheel.agents.red.actions.art_killchain_phases import \
-    ARTKillChainPhase
+from cyberwheel.agents.red.actions import ARTKillChainPhase
 from cyberwheel.network.network_base import Host
 from cyberwheel.network.service import Service
 from cyberwheel.reward import RewardMap

@@ -1,7 +1,7 @@
 import ipaddress as ipa
 from typing import Dict, List, Optional, Union
 
-from cyberwheel.network.network_object import NetworkObject
+from cyberwheel.network import NetworkObject
 
 
 class Router(NetworkObject):

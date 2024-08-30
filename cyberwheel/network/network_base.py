@@ -11,12 +11,8 @@ import networkx as nx
 import tqdm
 import yaml
 
-from cyberwheel.network.host import Host, HostType
-from cyberwheel.network.network_object import (FirewallRule, NetworkObject,
-                                               Route)
-from cyberwheel.network.router import Router
-from cyberwheel.network.service import Service
-from cyberwheel.network.subnet import Subnet
+from cyberwheel.network import (FirewallRule, Host, HostType, NetworkObject,
+                                Route, Router, Service, Subnet)
 
 
 class Network:

@@ -6,7 +6,7 @@ from typing import Any, Dict, List, Tuple
 import yaml
 from gym import Space
 
-from cyberwheel.agents.blue.action_space.action_space import ActionSpace
+from cyberwheel.agents.blue.action_space import ActionSpace
 from cyberwheel.agents.blue.blue_agent import BlueAgent, BlueAgentResult
 from cyberwheel.network.network_base import Network
 from cyberwheel.reward.reward_base import RewardMap

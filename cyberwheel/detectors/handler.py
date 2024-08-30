@@ -1,5 +1,5 @@
 import importlib
-from typing import Iterator
+from typing import Iterator, Optional
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -9,19 +9,45 @@ from cyberwheel.detectors.alert import Alert
 from cyberwheel.detectors.detector_base import Detector
 
 
+def import_detector(module_name: str,
+                    class_name: str,
+                    config: Optional[str] = None) -> Detector:
+    """Dynamically imports a detector class from a given module and initializes
+    it.
+
+    Args:
+        module_name (str): The module where the detector class is located.
+        class_name (str): The class name of the detector.
+        config (Optional[str]): Optional configuration file for the detector.
+
+    Returns:
+        Detector: An instance of the detector class.
+    """
+    module = importlib.import_module(module_name)
+    detector_class = getattr(module, class_name)
+    if config:
+        return detector_class(config)
+    return detector_class()
+
+
 class DetectorHandler:
 
     def __init__(self, config: str) -> None:
-        """
-        - `config`: file name of the detector handler config file. Currently only YAML is supported.
+        """Initializes the DetectorHandler with a configuration file.
+
+        Args:
+            config (str): The file name of the detector handler config file (YAML).
         """
         self.config = config
+        self.DG = nx.DiGraph()
         self._from_config()
 
-    def _create_graph(self):
+    def _create_graph(self) -> None:
+        """Initializes an empty directed graph for the detector handler."""
         self.DG = nx.DiGraph()
 
-    def _from_config(self):
+    def _from_config(self) -> None:
+        """Parses the configuration file and builds the detector graph."""
         self._create_graph()
         with open(self.config, 'r') as r:
             contents = yaml.safe_load(r)
@@ -33,9 +59,9 @@ class DetectorHandler:
             node = entry[0]
             detector = None
             self.DG.add_node(node, detector_output=[])
-            if node != 'start' and node != 'end':
+            if node not in ['start', 'end']:
                 if node not in init_info:
-                    raise KeyError(f'node {node} not defined in init_info')
+                    raise KeyError(f'Node {node} not defined in init_info')
                 detector = import_detector(
                     init_info[node]['module'],
                     init_info[node]['class'],
@@ -44,27 +70,31 @@ class DetectorHandler:
             for child in entry[1:]:
                 self.DG.add_edge(node, child, attr={'detector': detector})
 
-        # Start should have no in-edges and End should have not out-edges/
-        # All other nodes should have at least 1 of both.
+        # Validate graph structure
+        self._validate_graph_structure()
+
+    def _validate_graph_structure(self) -> None:
+        """Validates the structure of the detector graph."""
         for node, in_degree in self.DG.in_degree():
             if node == 'start' and in_degree > 0:
                 raise ValueError("'start' node must have an in-degree of 0")
             elif node != 'start' and in_degree == 0:
-                raise ValueError(f"node '{node}' must have an in-degree > 0")
+                raise ValueError(f"Node '{node}' must have an in-degree > 0")
 
         for node, out_degree in self.DG.out_degree():
             if node == 'end' and out_degree > 0:
                 raise ValueError("'end' node must have an out-degree of 0")
             elif node != 'end' and out_degree == 0:
-                raise ValueError(f"node '{node}' must have an out-degree > 0")
-
-        return self.DG
+                raise ValueError(f"Node '{node}' must have an out-degree > 0")
 
     def obs(self, perfect_alerts: Iterator[Alert]) -> Iterator[Alert]:
-        """Traverses the detector graph and executing each detector's `obs()`
-        method.
+        """Processes alerts through the detector graph.
 
-        - `perfect_alerts`: an iterable of Alerts produced by the red agent. Used as input to the detector graph.
+        Args:
+            perfect_alerts (Iterator[Alert]): An iterable of alerts to be processed.
+
+        Returns:
+            Iterator[Alert]: Processed alerts that reach the 'end' node.
         """
         for edge in self.DG.edges:
             node_data_view = self.DG.nodes.data('detector_output', default=[])
@@ -74,32 +104,36 @@ class DetectorHandler:
             else:
                 input_alerts = node_data_view[edge[0]]
                 detector = self.DG.get_edge_data(*edge)['attr']['detector']
-                result = detector.obs(input_alerts)
-            # print(len(next_node_input))
+                if detector:  # Ensure detector is not None
+                    result = detector.obs(input_alerts)
+                else:
+                    result = input_alerts  # Pass through if no detector
+
+            # Append unique alerts to the next node's input
             for r in result:
                 if r not in next_node_input:
                     next_node_input.append(r)
             self.DG.add_node(edge[1], detector_output=next_node_input)
-        return self.DG.nodes.data('detector_output', default=[])['end']
+
+        return iter(self.DG.nodes.data('detector_output', default=[])['end'])
 
     def reset(self) -> None:
+        """Resets the detector graph by clearing the detector outputs."""
         for node in self.DG.nodes:
             self.DG.add_node(node, detector_output=[])
 
-    def draw(self, filename='detector.png'):
-        """Draws the detector graph.
+    def draw(self, filename: str = 'detector.png') -> None:
+        """Draws the detector graph and saves it as an image file.
 
-        - `filename`: file to save the drawing of the detector graph to
+        Args:
+            filename (str): The file to save the drawing of the detector graph to.
         """
-        plt.clf()  # clear
-        colors = []
-        for node in list(self.DG):
-            if node == 'start':
-                colors.append('lightgreen')
-            elif node == 'end':
-                colors.append('red')
-            else:
-                colors.append('lightblue')
+        plt.clf()  # Clear any existing plot
+        colors = [
+            'lightgreen'
+            if node == 'start' else 'red' if node == 'end' else 'lightblue'
+            for node in self.DG.nodes
+        ]
         nx.draw(
             self.DG,
             node_size=300,
@@ -111,18 +145,3 @@ class DetectorHandler:
             node_color=colors,
         )
         plt.savefig(filename)
-
-
-def import_detector(module: str, class_: str, config: str | None) -> Detector:
-    """Imports the specifed detector.
-
-    - `module`: The module this detector is located in.
-
-    - `class_`: The detector's class name.
-
-    - `config`: Name of a config file to initialize this detector with.
-    """
-    import_path = '.'.join(['cyberwheel.detectors.detectors', module])
-    m = importlib.import_module(import_path)
-    detector_type = getattr(m, class_)
-    return detector_type(config) if config else detector_type()

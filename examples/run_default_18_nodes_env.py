@@ -157,12 +157,11 @@ def main() -> None:
         )
 
     # Train the agent
+
     agent.learn(
         total_timesteps=args.max_timesteps,
         callback=[eval_callback, wandb_callback],
         log_interval=args.train_log_interval,
-        eval_freq=args.test_log_interval,
-        n_eval_episodes=args.eval_episodes,
         progress_bar=True,
     )
     evaluate_policy(agent, env, n_eval_episodes=args.eval_episodes)

@@ -1,7 +1,8 @@
 import random
 from typing import Tuple
 
-import gym
+
+import gymnasium as gym
 import networkx as nx
 import numpy as np
 

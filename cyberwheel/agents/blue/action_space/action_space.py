@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict, Tuple
 
-from gym import Space, spaces
+from gymnasium import Space, spaces
 from gym.core import ActType
 
 from cyberwheel.agents.blue.blue_action import BlueAction

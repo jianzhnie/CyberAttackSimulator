@@ -22,7 +22,8 @@ Configurable Parameters:
 import logging
 from typing import Tuple
 
-import gym
+
+import gymnasium as gym
 import numpy as np
 
 from cyberattacksim.agents.nsa_red import NSARed

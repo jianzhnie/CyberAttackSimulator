@@ -4,7 +4,7 @@ from importlib.resources import files
 from typing import Any, Dict, List, Tuple
 
 import yaml
-from gym import Space
+from gymnasium import Space
 
 from cyberwheel.agents.blue.action_space import ActionSpace
 from cyberwheel.agents.blue.blue_agent import BlueAgent, BlueAgentResult

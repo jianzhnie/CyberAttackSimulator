@@ -2,8 +2,7 @@
 它主要包含三个类：Route、RoutingTable和NetworkObject。"""
 
 import ipaddress as ipa
-from ast import List
-from typing import Generator
+from typing import Generator, Union
 
 from pydantic import BaseModel
 
@@ -18,8 +17,8 @@ class Route(BaseModel):
     - via：下一跳地址，可以是 IPv4 或 IPv6 地址对象。
     """
 
-    dest: ipa.IPv4Network | ipa.IPv6Network
-    via: ipa.IPv4Address | ipa.IPv6Address
+    dest: Union[ipa.IPv4Network, ipa.IPv6Network]
+    via: Union[ipa.IPv4Address, ipa.IPv6Address]
 
     def __hash__(self):
         # __hash__方法使得Route对象可以作为字典的键或存储在集合中。
@@ -68,9 +67,9 @@ class FirewallRule(BaseModel):
 
     name: str = 'allow all'
     src: str = 'all'
-    port: int | str = 'all'
+    port: Union[int, str] = 'all'
     proto: str = 'tcp'
-    desc: str | None = None
+    desc: Union[str, None] = None
 
     def __eq__(self, other) -> bool:
         if isinstance(other, FirewallRule):
@@ -112,7 +111,7 @@ class NetworkObject:
             get_nexthop_from_routes：根据目的 IP 地址查询匹配的下一跳地址（选择最具体的匹配路由）。
     """
 
-    def __init__(self, name, firewall_rules: List[FirewallRule | None]):
+    def __init__(self, name, firewall_rules: Union[FirewallRule, None]):
         self.name = name
         # default to 'allow all' if no rules defined
         # this is antithetical to how firewalls work in the real world,
@@ -156,7 +155,8 @@ class NetworkObject:
         self.firewall_rules = updated_rules
 
     # 生成IP地址和网络对象
-    def generate_ip_object(self, ip: str) -> ipa.IPv4Address | ipa.IPv6Address:
+    def generate_ip_object(self,
+                           ip: str) -> Union[ipa.IPv4Address, ipa.IPv6Address]:
         try:
             return ipa.ip_address(ip)
         except ValueError as e:
@@ -165,7 +165,7 @@ class NetworkObject:
 
     # 用于从字符串生成IP地址和网络对象。
     def generate_ip_network_object(
-            self, net: str) -> ipa.IPv4Network | ipa.IPv6Network:
+            self, net: str) -> Union[ipa.IPv4Network, ipa.IPv6Network]:
         try:
             return ipa.ip_network(net)
         except ValueError as e:
@@ -175,8 +175,8 @@ class NetworkObject:
     # 生成路由
     def generate_route(
         self,
-        dest_net: ipa.IPv4Network | ipa.IPv6Network,
-        via_ip: ipa.IPv4Address | ipa.IPv6Address,
+        dest_net: Union[ipa.IPv4Network, ipa.IPv6Network],
+        via_ip: Union[ipa.IPv4Address, ipa.IPv6Address],
     ) -> Route:
         """根据目标网络和下一跳地址生成一个Route对象。
 
@@ -196,8 +196,10 @@ class NetworkObject:
         :raises ValueError:
         """
         try:
-            dest: ipa.IPv4Network | ipa.IPv6Network = ipa.ip_network(dest_net)
-            via: ipa.IPv4Address | ipa.IPv6Address = ipa.ip_address(via_ip)
+            dest: Union[Union[ipa.IPv4Network,
+                              ipa.IPv6Network]] = ipa.ip_network(dest_net)
+            via: Union[ipa.IPv4Address,
+                       ipa.IPv6Address] = ipa.ip_address(via_ip)
         except ValueError as e:
             # TODO: raise custom exception?
             raise e
@@ -220,8 +222,9 @@ class NetworkObject:
         for route in routes:
             # make sure 'dest' is an ip_network object
             try:
-                if not isinstance(route['dest'],
-                                  ipa.IPv4Network | ipa.IPv6Network):
+                if not isinstance(
+                        route['dest'], Union[Union[ipa.IPv4Network,
+                                                   ipa.IPv6Network]]):
                     dest = self.generate_ip_network_object(route['dest'])
                 else:
                     dest = route['dest']
@@ -230,8 +233,8 @@ class NetworkObject:
                 raise e
             # make sure 'via' is an ip_address object
             try:
-                if not isinstance(route['via'],
-                                  ipa.IPv4Address | ipa.IPv6Address):
+                if not isinstance(route['via'], Union[ipa.IPv4Address,
+                                                      ipa.IPv6Address]):
                     via = self.generate_ip_object(route['via'])
                 else:
                     via = route['via']
@@ -241,8 +244,8 @@ class NetworkObject:
             self.add_route(route=Route(dest=dest, via=via))
 
     #  获取与目标IP匹配的下一跳地址（最具体的匹配）。
-    def get_nexthop_from_routes(self,
-                                dest_ip: ipa.IPv4Address | ipa.IPv6Address):
+    def get_nexthop_from_routes(self, dest_ip: Union[ipa.IPv4Address,
+                                                     ipa.IPv6Address]):
         """Return most specific route that matches dest_ip.
 
         :param (IPv4Address | IPv6Address) dest_ip: destination IP object

@@ -1,9 +1,10 @@
 from importlib.resources import files
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
-import gym
+
+import gymnasium as gym
 import yaml
-from gym import spaces
+from gymnasium import spaces
 
 from cyberwheel.agents.blue.dynamic_blue_agent import DynamicBlueAgent
 from cyberwheel.agents.red.art_agent import ARTAgent

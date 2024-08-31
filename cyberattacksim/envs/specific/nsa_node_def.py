@@ -49,9 +49,10 @@ Configurable parameters:
 import logging
 from typing import Tuple
 
-import gym
+
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 from cyberattacksim.agents.nsa_red import NSARed
 from cyberattacksim.envs.generic.helpers.graph2plot import CustomEnvGraph

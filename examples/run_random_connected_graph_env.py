@@ -80,9 +80,7 @@ def main():
                                  deterministic=False,
                                  render=True)
 
-    agent.learn(total_timesteps=100000,
-                n_eval_episodes=1,
-                callback=eval_callback)
+    agent.learn(total_timesteps=100000, callback=eval_callback)
 
     loop = ActionLoop(env, agent, filename, episode_count=10)
     loop.gif_action_loop(

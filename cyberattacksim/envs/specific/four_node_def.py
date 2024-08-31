@@ -35,7 +35,6 @@ Inspired by:
 import logging
 from typing import Tuple
 
-
 import gymnasium as gym
 import networkx as nx
 import numpy as np
@@ -134,7 +133,7 @@ class FourNodeDef(gym.Env):
         logger.debug('Environment Reset')
         logger.debug(f'Starting State: {self.initial_states}')
 
-        return self._observe()
+        return self._observe(), {}
 
     def step(self, action: int) -> Tuple[np.array, float, bool, dict]:
         """Take a time step and execute the actions for both Blue RL agent and
@@ -221,7 +220,7 @@ class FourNodeDef(gym.Env):
             f'Total Reward: {self.total_rewards} Total No. of Steps : {self.total_no_of_steps}'
         )
 
-        return observation, reward, self.done, {'action': action}
+        return observation, reward, self.done, False, {'action': action}
 
     def render(self, mode: str = 'human'):
         """Render the environment to the screen so that it can be played in

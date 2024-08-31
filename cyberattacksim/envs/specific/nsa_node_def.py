@@ -49,7 +49,6 @@ Configurable parameters:
 import logging
 from typing import Tuple
 
-
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
@@ -155,7 +154,7 @@ class NodeEnv(gym.Env):
         logger.debug('Environment Reset')
         logger.debug(f'Starting State: {self.state.get_observation()}')
 
-        return self.env_observation
+        return self.env_observation, {}
 
     def step(self, action: int) -> Tuple[np.array, float, bool, dict]:
         """Take one timestep within the environment.
@@ -262,6 +261,7 @@ class NodeEnv(gym.Env):
             self.env_observation,
             reward,
             done,
+            False,
             {
                 'nodes': self.state.get_number_of_un_compromised()
             },

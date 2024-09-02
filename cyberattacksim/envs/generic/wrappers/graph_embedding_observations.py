@@ -2,7 +2,7 @@ import gymnasium as gym
 import networkx as nx
 import numpy as np
 from gymnasium import ObservationWrapper
-from gym.spaces import Box
+from gymnasium.spaces import Box
 from karateclub.graph_embedding.feathergraph import FeatherGraph
 
 from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv

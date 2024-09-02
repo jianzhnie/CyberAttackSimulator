@@ -85,7 +85,8 @@ for current_env in all_envs:
     current_var_4 = []
     while current_step < MAX_STEP and not done:
         action = agent.predict(None, 0, done, current_env)
-        env_observation, reward, done, notes = current_env.step(action)
+        env_observation, reward, done, truncated, notes = current_env.step(
+            action)
 
         cost = (cost_action_1 * math.floor(agent.probabilities[0])) + (
             cost_action_2 * math.floor(agent.probabilities[1]))

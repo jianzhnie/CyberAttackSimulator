@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Tuple
 
 from gymnasium import Space, spaces
-from gym.core import ActType
+from gymnasium.core import ActType
 
 from cyberwheel.agents.blue.blue_action import BlueAction
 from cyberwheel.network import Network

@@ -10,6 +10,9 @@
   - [CyberAttackSimulator GUI](#cyberattacksimulator-gui)
     - [CyberAttackSimulator GUI 是如何构建的](#cyberattacksimulator-gui-是如何构建的)
     - [启动 GUI](#启动-gui)
+  - [Build Docker](#build-docker)
+    - [For CUDA users](#for-cuda-users)
+    - [For Ascend NPU users](#for-ascend-npu-users)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
   - [Citation](#citation)
@@ -104,6 +107,85 @@ CyberAttackSimulator GUI 还集成了定制版Cytoscape JS ，该版本已扩展
 
 ```python
 python3 -m manage.py runserver
+```
+
+## Build Docker
+
+### For CUDA users
+
+- Build Docker
+
+```shell
+docker build -f ./docker/docker-cuda/Dockerfile \
+    --build-arg INSTALL_BNB=false \
+    --build-arg INSTALL_VLLM=false \
+    --build-arg INSTALL_DEEPSPEED=false \
+    --build-arg INSTALL_FLASHATTN=false \
+    --build-arg PIP_INDEX=https://pypi.org/simple \
+    -t cybersim:latest .
+```
+
+- Start the Docker daemon
+
+```shell
+docker run -dit --gpus=all \
+    -v ./hf_cache:/root/.cache/huggingface \
+    -v ./ms_cache:/root/.cache/modelscope \
+    -v ./data:/app/data \
+    -v ./output:/app/output \
+    -p 7860:7860 \
+    -p 8000:8000 \
+    --shm-size 16G \
+    --name cybersim \
+    cybersim:latest
+```
+
+- Exec command to step inside a running Docker container
+
+```shell
+docker exec -it cybersim bash
+```
+
+### For Ascend NPU users
+
+- Build Docker
+
+```shell
+# Choose docker image upon your environment
+docker build -f ./docker/docker-npu/Dockerfile \
+    --build-arg INSTALL_DEEPSPEED=false \
+    --build-arg PIP_INDEX=https://pypi.org/simple \
+    -t cybersim:latest .
+```
+
+- Start the Docker daemon
+
+```shell
+# Change `device` upon your resources
+docker run -dit \
+    -v ./hf_cache:/root/.cache/huggingface \
+    -v ./ms_cache:/root/.cache/modelscope \
+    -v ./data:/app/data \
+    -v ./output:/app/output \
+    -v /usr/local/dcmi:/usr/local/dcmi \
+    -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
+    -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \
+    -v /etc/ascend_install.info:/etc/ascend_install.info \
+    -p 7860:7860 \
+    -p 8000:8000 \
+    --device /dev/davinci0 \
+    --device /dev/davinci_manager \
+    --device /dev/devmm_svm \
+    --device /dev/hisi_hdc \
+    --shm-size 16G \
+    --name cybersim \
+    cybersim:latest
+```
+
+- Exec command to step inside a running Docker container
+
+```shell
+docker exec -it cybersim bash
 ```
 
 ## License

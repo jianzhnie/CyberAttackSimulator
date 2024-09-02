@@ -60,7 +60,7 @@ if __name__ == '__main__':
     red = RedInterface(network_interface)
     blue = BlueInterface(network_interface)
     env = GenericNetworkEnv(red, blue, network_interface)
-    agent = PPO(PPOMlp, env, verbose=1)
+    agent = PPO(PPOMlp, env, device='auto', verbose=1)
     agent.learn(total_timesteps=1000)
     loop = ActionLoop(env, agent, episode_count=5)
     loop.gif_action_loop(

@@ -1,4 +1,4 @@
-gym
+gym==0.26.2
 matplotlib
 moviepy
 networkx
@@ -6,8 +6,14 @@ numpy
 pandas
 scipy
 seaborn
-stable_baselines3
+# stable_baselines3==1.6.2
 tabulate
 tensorboard
 tinydb
 torch
+tyro
+wandb
+
+## server
+Django
+corsheaders

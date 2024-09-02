@@ -11,6 +11,7 @@ from logging import Logger, getLogger
 from typing import Dict, Final, List, Optional, Union
 from uuid import uuid4
 
+import torch
 import yaml
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
@@ -91,6 +92,7 @@ class CyberAttackRun:
         logger: Optional[Logger] = None,
         output_dir: Optional[str] = None,
         auto: bool = True,
+        device: Union[torch.device, str] = 'cuda',
         **kwargs,
     ):
         """The CyberAttackRun constructor.
@@ -161,6 +163,7 @@ class CyberAttackRun:
         self.render = render
         self.verbose = verbose
         self.auto = auto
+        self.device = device
 
         self.logger = _LOGGER if logger is None else logger
         self.logger.debug(f'CyberAttackSim Run  {self.uuid}: Run initialised')
@@ -204,6 +207,7 @@ class CyberAttackRun:
             verbose=self.verbose,
             tensorboard_log=str(PPO_TENSORBOARD_LOGS_DIR),
             seed=self.env.network_interface.random_seed,
+            device=self.device,
         )
 
     def _load_existing_ppo(self, ppo_zip_path: str) -> PPO:
@@ -290,6 +294,7 @@ class CyberAttackRun:
 
         self.eval_callback = EvalCallback(
             Monitor(self.env, str(self.output_dir)),
+            n_eval_episodes=self.n_eval_episodes,
             eval_freq=self.eval_freq,
             deterministic=self.deterministic,
             render=self.render,
@@ -309,7 +314,6 @@ class CyberAttackRun:
             for i in range(self.training_runs):
                 self.agent.learn(
                     total_timesteps=self.total_timesteps,
-                    n_eval_episodes=self.n_eval_episodes,
                     callback=self.eval_callback,
                 )
                 self.logger.debug(

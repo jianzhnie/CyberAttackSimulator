@@ -11,9 +11,9 @@ import json
 from collections import Counter
 from typing import Dict, Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 from stable_baselines3.common.utils import set_random_seed
 
 import cyberattacksim.envs.generic.core.reward_functions as reward_functions
@@ -94,7 +94,7 @@ class GenericNetworkEnv(gym.Env):
         self.collect_data = collect_additional_per_ts_data
         self.env_observation = self.network_interface.get_current_observation()
 
-    def reset(self) -> np.array:
+    def reset(self, seed: int = 0) -> np.array:
         """Reset the environment to the default state.
 
         :todo: May need to add customization of cuda setting.
@@ -109,7 +109,7 @@ class GenericNetworkEnv(gym.Env):
         self.env_observation = self.network_interface.get_current_observation()
         self.current_game_blue = {}
 
-        return self.env_observation
+        return self.env_observation, {}
 
     def step(self,
              action: int) -> Tuple[np.array, float, bool, Dict[str, dict]]:
@@ -380,7 +380,7 @@ class GenericNetworkEnv(gym.Env):
             json_data = json.dumps(notes)
             print(json_data)
         # Returns the environment information that AI gym uses and all of the information collected in a dictionary
-        return self.env_observation, reward, done, notes
+        return self.env_observation, reward, done, False, notes
 
     def render(
         self,

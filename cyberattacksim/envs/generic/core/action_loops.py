@@ -78,7 +78,7 @@ class ActionLoop:
         for i in range(self.episode_count):
             # temporary log to satisfy repeatability tests until logging can be full implemented
             results = pd.DataFrame(columns=['action', 'rewards', 'info'])
-            obs = self.env.reset()
+            obs, _ = self.env.reset()
             done = False
             frame_names = []
             current_image = 0
@@ -90,7 +90,7 @@ class ActionLoop:
                 # TODO: setup logging properly here
                 # logging.info(f'Blue Agent Action: {action}')
                 # step the env
-                obs, rewards, done, info = self.env.step(action)
+                obs, rewards, done, truncated, info = self.env.step(action)
                 results.loc[len(results.index)] = [action, rewards, info]
                 # TODO: setup logging properly here
                 # logging.info(f'Observations: {obs.flatten()} Rewards:{rewards} Done:{done}')
@@ -182,14 +182,14 @@ class ActionLoop:
         for i in range(self.episode_count):
             # temporary log to satisfy repeatability tests until logging can be full implemented
             results = pd.DataFrame(columns=['action', 'rewards', 'info'])
-            obs = self.env.reset()
+            obs, _ = self.env.reset()
             done = False
             while not done:
                 action, _states = self.agent.predict(
                     obs, deterministic=deterministic)
                 # TODO: setup logging properly here
                 # logging.info(f'Blue Agent Action: {action}')
-                obs, rewards, done, info = self.env.step(action)
+                obs, rewards, done, truncated, info = self.env.step(action)
                 results.loc[len(results.index)] = [action, rewards, info]
             complete_results.append(results)
         return complete_results
@@ -201,7 +201,7 @@ class ActionLoop:
             deterministic: Toggle if the agent's actions should be deterministic. Default is False.
         """
         for i in range(self.episode_count):
-            obs = self.env.reset()
+            obs, _ = self.env.reset()
             done = False
             reward = 0
             while not done:
@@ -209,7 +209,7 @@ class ActionLoop:
                                             reward,
                                             done,
                                             deterministic=deterministic)
-                ob, reward, done, ep_history = self.env.step(action)
+                ob, reward, done, truncated, ep_history = self.env.step(action)
                 if done:
                     break
 

@@ -1,7 +1,8 @@
 import logging
 from statistics import mean
 
-import gym
+
+import gymnasium as gym
 from scipy.stats import describe, iqr
 from stable_baselines3 import A2C, DQN, PPO
 from stable_baselines3.a2c import MlpPolicy as A2CMlp

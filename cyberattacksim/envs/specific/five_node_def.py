@@ -22,7 +22,7 @@ Configurable Parameters:
 import logging
 from typing import Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
 
 from cyberattacksim.agents.nsa_red import NSARed
@@ -115,7 +115,7 @@ class FiveNodeDef(gym.Env):
         logger.debug('Environment Reset')
         logger.debug(f'Starting State: {self.initial_states}')
 
-        return self._observe()
+        return self._observe(), {}
 
     def step(self, action: int) -> Tuple[np.array, float, bool, dict]:
         """Take a time step and execute the actions for both Blue RL agent and
@@ -176,7 +176,7 @@ class FiveNodeDef(gym.Env):
         logger.debug(
             f'Total Reward: {self.total_rewards} Total No. of Steps : {self.total_no_of_steps} No. of Compromised Machines: {self.no_compromised_machines} '
         )
-        return observation, reward, self.done, {}
+        return observation, reward, self.done, False, {}
 
     def _observe(self) -> np.array:
         """Create the next observation.

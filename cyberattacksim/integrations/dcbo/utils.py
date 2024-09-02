@@ -1,7 +1,7 @@
 from logging import getLogger
 from typing import List, Optional
 
-from gym import spaces
+from gymnasium import spaces
 from stable_baselines3.common.env_checker import check_env
 
 from cyberattacksim.agents.sinewave_red import SineWaveRedAgent

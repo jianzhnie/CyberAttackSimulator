@@ -13,7 +13,196 @@ class ARTKillChainPhase(ARTAction):
     """
 
     validity_mapping = {
-        # OS-based technique mapping (as shown in the original code)
+        "windows": {
+            "discovery": [
+                "T1010",
+                "T1217",
+                "T1069.002",
+                "T1482",
+                "T1083",
+                "T1087.002",
+                "T1087.001",
+                "T1615",
+                "T1069.001",
+                "T1046",
+                "T1135",
+                "T1040",
+                "T1201",
+                "T1120",
+                "T1057",
+                "T1012",
+                "T1018",
+                "T1518.001",
+                "T1518",
+                "T1497.001",
+                "T1082",
+                "T1614.001",
+                "T1016",
+                "T1049",
+                "T1033",
+                "T1007",
+                "T1124",
+            ],
+            "lateral-movement": [
+                "T1021.003",
+                "T1570",
+                "T1550.002",
+                "T1550.003",
+                "T1563.002",
+                "T1021.001",
+                "T1091",
+                "T1021.002",
+                "T1072",
+                "T1021.006",
+            ],
+            "privilege-escalation": [
+                "T1546.008",
+                "T1547.014",
+                "T1546.009",
+                "T1546.010",
+                "T1546.011",
+                "T1055.004",
+                "T1053.002",
+                "T1547.002",
+                "T1547",
+                "T1548.002",
+                "T1574.012",
+                "T1546.001",
+                "T1546.015",
+                "T1134.002",
+                "T1574.001",
+                "T1574.002",
+                "T1078.001",
+                "T1055.001",
+                "T1546",
+                "T1055.011",
+                "T1484.001",
+                "T1546.012",
+                "T1547.006",
+                "T1547.008",
+                "T1078.003",
+                "T1547.015",
+                "T1037.001",
+                "T1546.007",
+                "T1134.004",
+                "T1574.008",
+                "T1574.009",
+                "T1547.010",
+                "T1055.002",
+                "T1546.013",
+                "T1547.012",
+                "T1055.012",
+                "T1055",
+                "T1547.001",
+                "T1134.005",
+                "T1053.005",
+                "T1546.002",
+                "T1547.005",
+                "T1574.011",
+                "T1547.009",
+                "T1055.003",
+                "T1547.003",
+                "T1134.001",
+                "T1546.003",
+                "T1543.003",
+                "T1547.004",
+            ],
+            "impact": [
+                "T1531",
+                "T1485",
+                "T1486",
+                "T1490",
+                "T1491.001",
+                "T1489",
+                "T1529",
+            ],
+        },
+        "macos": {
+            "discovery": [
+                "T1217",
+                "T1580",
+                "T1083",
+                "T1087.001",
+                "T1069.001",
+                "T1046",
+                "T1135",
+                "T1040",
+                "T1201",
+                "T1057",
+                "T1018",
+                "T1518.001",
+                "T1518",
+                "T1497.001",
+                "T1082",
+                "T1016",
+                "T1049",
+                "T1033",
+                "T1124",
+            ],
+            "lateral-movement": ["T1021.005"],
+            "privilege-escalation": [
+                "T1053.003",
+                "T1078.001",
+                "T1574.006",
+                "T1546.014",
+                "T1547.006",
+                "T1543.001",
+                "T1543.004",
+                "T1078.003",
+                "T1037.002",
+                "T1547.015",
+                "T1037.004",
+                "T1547.007",
+                "T1548.001",
+                "T1037.005",
+                "T1548.003",
+                "T1546.005",
+                "T1546.004",
+            ],
+            "impact": ["T1531", "T1485", "T1486", "T1496", "T1529"],
+        },
+        "linux": {
+            "discovery": [
+                "T1217",
+                "T1580",
+                "T1069.002",
+                "T1083",
+                "T1087.002",
+                "T1087.001",
+                "T1069.001",
+                "T1046",
+                "T1135",
+                "T1040",
+                "T1201",
+                "T1057",
+                "T1018",
+                "T1518.001",
+                "T1497.001",
+                "T1082",
+                "T1614.001",
+                "T1016",
+                "T1049",
+                "T1033",
+                "T1007",
+                "T1124",
+            ],
+            "lateral-movement": [],
+            "privilege-escalation": [
+                "T1053.002",
+                "T1053.003",
+                "T1574.006",
+                "T1547.006",
+                "T1078.003",
+                "T1037.004",
+                "T1548.001",
+                "T1548.003",
+                "T1543.002",
+                "T1053.006",
+                "T1546.005",
+                "T1546.004",
+            ],
+            "impact": ["T1531", "T1485", "T1486", "T1496", "T1529"],
+        },
     }
 
     def __init__(
@@ -23,7 +212,17 @@ class ARTKillChainPhase(ARTAction):
         valid_techniques: list[str] = [],
     ) -> None:
         """Initialize with the source host, target host, and valid
-        techniques."""
+        techniques.
+
+        - `src_host`: Host from which the attack originates.
+
+        - `target_service`: The service being targeted.
+
+        - `target_hosts`: The hosts being targeted. Can either be a list of hosts or list of subnets. If it is a list of subnets, then the attack should target all known hosts on that subnet.
+
+        - `techniques`: A list of techniques that can be used to perform this attack.
+
+        """
         super().__init__(src_host, target_host)
         self.valid_techniques = valid_techniques
 
@@ -75,6 +274,16 @@ class ARTPingSweep(ARTKillChainPhase):
     The adversary is trying to gain higher-level permissions.
 
     Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network.
+
+    Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow
+    through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and
+    vulnerabilities. Examples of elevated access include:
+    - SYSTEM/root level
+    - local administrator
+    - user account with admin-like access
+    - user accounts with access to specific system or perform specific function
+
+    These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.
     """
 
     name: str = 'pingsweep'
@@ -141,6 +350,16 @@ class ARTPortScan(ARTKillChainPhase):
     The adversary is trying to gain higher-level permissions.
 
     Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network.
+
+    Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow
+    through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and
+    vulnerabilities. Examples of elevated access include:
+    - SYSTEM/root level
+    - local administrator
+    - user account with admin-like access
+    - user accounts with access to specific system or perform specific function
+
+    These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.
     """
 
     name: str = 'portscan'
@@ -198,7 +417,13 @@ class ARTPrivilegeEscalation(ARTKillChainPhase):
     Privilege Escalation consists of techniques that adversaries use to gain higher-level permissions on a system or network.
     Adversaries can often enter and explore a network with unprivileged access but require elevated permissions to follow
     through on their objectives. Common approaches are to take advantage of system weaknesses, misconfigurations, and
-    vulnerabilities.
+    vulnerabilities. Examples of elevated access include:
+    - SYSTEM/root level
+    - local administrator
+    - user account with admin-like access
+    - user accounts with access to specific system or perform specific function
+
+    These techniques often overlap with Persistence techniques, as OS features that let an adversary persist can execute in an elevated context.
     """
 
     name: str = 'privilege-escalation'

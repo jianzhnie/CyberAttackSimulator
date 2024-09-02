@@ -120,7 +120,7 @@ def keyboard_agent():
     blue = BlueInterface(network_interface)
     env = GenericNetworkEnv(red, blue, network_interface)
     check_env(env, warn=True)
-    _ = env.reset()
+    _, _ = env.reset()
     kb = KeyboardAgent(env)
     kb.play(render_graphically=False)
 

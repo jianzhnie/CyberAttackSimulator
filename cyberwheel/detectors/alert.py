@@ -121,7 +121,6 @@ class Alert:
         """Remove a service from the alert and update dst_ports."""
         if service in self.services:
             self.services.remove(service)
-            self.dst_ports.remove(service.port)
 
     def add_techniques(self, techniques: List[Technique]) -> None:
         """Add one or more techniques to the alert."""

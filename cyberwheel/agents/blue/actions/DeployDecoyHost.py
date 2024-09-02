@@ -100,6 +100,7 @@ class IsolateDecoyHost(SubnetAction):
         self.host = self.network.create_decoy_host(name, subnet, host_type)
 
         # Isolate the decoy host and update isolate_data
+        # TODO
         isolation_success = self.isolate_data.append_decoy(self.host, subnet)
 
         return BlueActionReturn(id=name,

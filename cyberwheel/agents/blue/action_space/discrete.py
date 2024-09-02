@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
-from gym import Space, spaces
-from gym.core import ActType
+from gymnasium import Space, spaces
+from gymnasium.core import ActType
 
 from cyberwheel.agents.blue.action_space import ActionSpace, ASReturn
 from cyberwheel.agents.blue.blue_action import BlueAction

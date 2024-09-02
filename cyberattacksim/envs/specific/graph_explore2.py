@@ -1,7 +1,7 @@
 import random
 from typing import Tuple
 
-import gym
+import gymnasium as gym
 import networkx as nx
 import numpy as np
 
@@ -72,7 +72,7 @@ class GraphExplore(gym.Env):
         if len(self.BLUE_VISIT) == self.NODES or (self.CURRENT_STEP
                                                   == self.GAME_MAX):
             done = True
-        return obs, reward, done, {}
+        return obs, reward, done, False, {}
 
     def _take_action(self, action: int):
         """Take an action withint the environment from the node chosen to be
@@ -137,7 +137,7 @@ class GraphExplore(gym.Env):
         self.CURRENT_STEP = 0
         self.BLUE_SCORE = 0
         self.BLUE_VISIT = [self.INITIAL_BLUE]
-        return self._next_observation()
+        return self._next_observation(), {}
 
     def render(self, mode: str = 'live', close: bool = False):
         """Render the environment to the screen so that it can be played in

@@ -49,9 +49,9 @@ Configurable parameters:
 import logging
 from typing import Tuple
 
-import gym
+import gymnasium as gym
 import numpy as np
-from gym import spaces
+from gymnasium import spaces
 
 from cyberattacksim.agents.nsa_red import NSARed
 from cyberattacksim.envs.generic.helpers.graph2plot import CustomEnvGraph
@@ -154,7 +154,7 @@ class NodeEnv(gym.Env):
         logger.debug('Environment Reset')
         logger.debug(f'Starting State: {self.state.get_observation()}')
 
-        return self.env_observation
+        return self.env_observation, {}
 
     def step(self, action: int) -> Tuple[np.array, float, bool, dict]:
         """Take one timestep within the environment.
@@ -261,6 +261,7 @@ class NodeEnv(gym.Env):
             self.env_observation,
             reward,
             done,
+            False,
             {
                 'nodes': self.state.get_number_of_un_compromised()
             },

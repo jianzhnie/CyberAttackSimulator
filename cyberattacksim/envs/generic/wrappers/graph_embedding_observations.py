@@ -1,7 +1,7 @@
-import gym
+import gymnasium as gym
 import networkx as nx
 import numpy as np
-from gym import ObservationWrapper
+from gymnasium import ObservationWrapper
 from gym.spaces import Box
 from karateclub.graph_embedding.feathergraph import FeatherGraph
 

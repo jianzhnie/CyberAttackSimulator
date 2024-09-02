@@ -78,7 +78,7 @@ class ActionLoop:
         for i in range(self.episode_count):
             # temporary log to satisfy repeatability tests until logging can be full implemented
             results = pd.DataFrame(columns=['action', 'rewards', 'info'])
-            obs = self.env.reset()
+            obs, _ = self.env.reset()
             done = False
             frame_names = []
             current_image = 0
@@ -182,7 +182,7 @@ class ActionLoop:
         for i in range(self.episode_count):
             # temporary log to satisfy repeatability tests until logging can be full implemented
             results = pd.DataFrame(columns=['action', 'rewards', 'info'])
-            obs = self.env.reset()
+            obs, _ = self.env.reset()
             done = False
             while not done:
                 action, _states = self.agent.predict(
@@ -201,7 +201,7 @@ class ActionLoop:
             deterministic: Toggle if the agent's actions should be deterministic. Default is False.
         """
         for i in range(self.episode_count):
-            obs = self.env.reset()
+            obs, _ = self.env.reset()
             done = False
             reward = 0
             while not done:

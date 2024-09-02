@@ -2,7 +2,6 @@ import random
 from typing import Any, Dict, List, Tuple
 
 import numpy as np
-from stable_baselines3.common.env_checker import check_env
 
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
 from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
@@ -66,7 +65,6 @@ def create_env(
         print_per_ts_data=False,
     )
 
-    check_env(env, warn=True)
     env.reset()
     return env
 

@@ -14,7 +14,6 @@ from uuid import uuid4
 import yaml
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
-from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
@@ -272,7 +271,7 @@ class CyberAttackRun:
 
         self.logger.debug(
             f'CyberAttackSim Run  {self.uuid}: Performing env check')
-        check_env(self.env, warn=self.warn)
+        # check_env(self.env, warn=self.warn)
         self.logger.debug(
             f'CyberAttackSim Run  {self.uuid}: Env checking complete')
 

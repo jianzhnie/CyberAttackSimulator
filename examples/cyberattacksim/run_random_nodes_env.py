@@ -60,18 +60,7 @@ if __name__ == '__main__':
     red = RedInterface(network_interface)
     blue = BlueInterface(network_interface)
     env = GenericNetworkEnv(red, blue, network_interface)
-    _ = env.reset()
-    done = False
-    steps = 0
-    while not done:
-        action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
-        env.render()
-        print(reward)
-        steps += 1
-    print(f'Episode finished after {steps} steps')
-    action_space = env.action_space
-    agent = PPO(PPOMlp, env, verbose=1)
+    agent = PPO(PPOMlp, env, device='auto', verbose=1)
     agent.learn(total_timesteps=1000)
     loop = ActionLoop(env, agent, episode_count=5)
     loop.gif_action_loop(

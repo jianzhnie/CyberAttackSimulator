@@ -194,7 +194,7 @@ class KeyboardAgent:
 
             print(final_action)
             # steps the environment 1 step forward using the chosen blue action
-            obs, rew, done, notes = self.env.step(final_action)
+            obs, rew, done, truncated, notes = self.env.step(final_action)
             if notes['blue_action'] != possible_top_actions[chosen_top_action]:
                 if not (notes['blue_action'] == 'do_nothing'
                         and possible_top_actions[chosen_top_action]

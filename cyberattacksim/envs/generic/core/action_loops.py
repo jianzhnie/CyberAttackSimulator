@@ -90,7 +90,7 @@ class ActionLoop:
                 # TODO: setup logging properly here
                 # logging.info(f'Blue Agent Action: {action}')
                 # step the env
-                obs, rewards, done, info = self.env.step(action)
+                obs, rewards, done, truncated, info = self.env.step(action)
                 results.loc[len(results.index)] = [action, rewards, info]
                 # TODO: setup logging properly here
                 # logging.info(f'Observations: {obs.flatten()} Rewards:{rewards} Done:{done}')
@@ -189,7 +189,7 @@ class ActionLoop:
                     obs, deterministic=deterministic)
                 # TODO: setup logging properly here
                 # logging.info(f'Blue Agent Action: {action}')
-                obs, rewards, done, info = self.env.step(action)
+                obs, rewards, done, truncated, info = self.env.step(action)
                 results.loc[len(results.index)] = [action, rewards, info]
             complete_results.append(results)
         return complete_results
@@ -209,7 +209,7 @@ class ActionLoop:
                                             reward,
                                             done,
                                             deterministic=deterministic)
-                ob, reward, done, ep_history = self.env.step(action)
+                ob, reward, done, truncated, ep_history = self.env.step(action)
                 if done:
                     break
 

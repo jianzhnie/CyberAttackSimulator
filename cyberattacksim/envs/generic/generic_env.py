@@ -94,7 +94,7 @@ class GenericNetworkEnv(gym.Env):
         self.collect_data = collect_additional_per_ts_data
         self.env_observation = self.network_interface.get_current_observation()
 
-    def reset(self) -> np.array:
+    def reset(self, seed: int = 0) -> np.array:
         """Reset the environment to the default state.
 
         :todo: May need to add customization of cuda setting.

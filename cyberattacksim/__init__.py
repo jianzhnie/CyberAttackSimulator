@@ -24,7 +24,7 @@ from pathlib import Path, PosixPath, WindowsPath
 from typing import Final, Union
 
 import yaml
-from gym.envs.registration import register
+from gymnasium.envs.registration import register
 
 register(id='five-node-def-v0',
          entry_point='cyberattacksim.envs.specific:FiveNodeDef')

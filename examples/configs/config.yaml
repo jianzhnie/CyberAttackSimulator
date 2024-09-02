@@ -1,7 +1,7 @@
 dqn:
   default_18_node_network:
     algo_name: dqn
-    max_timesteps: 10000000
+    max_timesteps: 100
     learning_rate: 0.01
     buffer_size: 100000
     soft_update_tau: 1.0

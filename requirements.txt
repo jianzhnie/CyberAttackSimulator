@@ -1,9 +1,10 @@
-gym
+gymnasium
 matplotlib
 moviepy
 networkx
 numpy
 pandas
+scikit-image
 scipy
 seaborn
 stable_baselines3

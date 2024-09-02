@@ -1,4 +1,4 @@
-gym
+gymnasium
 matplotlib
 moviepy
 networkx

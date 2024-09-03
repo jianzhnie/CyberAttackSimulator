@@ -46,7 +46,7 @@ ARG TORCH_INDEX=https://download.pytorch.org/whl/cpu
 WORKDIR /app
 ```
 
-- ` WORKDIR /app`: 设置工作目录为 /app。所有后续的 COPY 和 RUN 命令都会在这个目录下执行。
+- ` WORKDIR /app`: 设置工作目录为 /app。所有后续的 `COPY` 和` RUN` 命令都会在这个目录下执行。
 
 ## 5. 安装依赖
 
@@ -59,7 +59,7 @@ RUN pip config set global.index-url "$PIP_INDEX" && \
     python -m pip install -r requirements.txt
 ```
 
-- `COPY requirements.txt /app`: 将本地的 requirements.txt 文件复制到容器的 /app 目录中。
+- `COPY requirements.txt /app`: 将本地的 `requirements.txt` 文件复制到容器的 /app 目录中。
 - `RUN pip config set ...`: 配置 pip 使用指定的索引 URL。
 - `python -m pip install --upgrade pip`: 升级 pip 到最新版本。
 - `python -m pip install -r requirements.txt`: 根据 requirements.txt 文件安装 Python 依赖。
@@ -71,7 +71,7 @@ RUN pip config set global.index-url "$PIP_INDEX" && \
 COPY . /app
 ```
 
-- `COPY . /app`: 将当前目录下的所有文件复制到容器的 /app 目录中。这通常包括应用程序的源代码和其他必要文件。
+- `COPY . /app`: 将当前目录下的所有文件复制到容器的 `/app ` 目录中。这通常包括应用程序的源代码和其他必要文件。
 
 ## 7. 安装 LLaMA Factory
 
@@ -85,10 +85,10 @@ RUN EXTRA_PACKAGES="torch-npu,metrics"; \
 ```
 
 - `EXTRA_PACKAGES`: 设置一个包含默认包 `torch-npu` 和 `metrics` 的变量。
-- `if [ "$INSTALL_DEEPSPEED" == "true" ]`: 如果 `INSTALL_DEEPSPEED` 为 true，则将 deepspeed 包添加到 EXTRA_PACKAGES 中。
+- `if [ "$INSTALL_DEEPSPEED" == "true" ]`: 如果 `INSTALL_DEEPSPEED` 为 true，则将 `deepspeed` 包添加到 `EXTRA_PACKAGES` 中。
 - `pip install -e ".[$EXTRA_PACKAGES]"`
-  -e 表示以可编辑模式安装当前目录中的 Python 包。通常，这表示该目录包含一个 setup.py 或 pyproject.toml 文件，定义了如何安装你的包。
-  ".\[$EXTRA_PACKAGES\]" 是传递给 pip install 的选项，指定了要安装的附加依赖包。EXTRA_PACKAGES 变量的值会在运行时被替换，从而将附加的包名传递给 pip。
+  -e 表示以可编辑模式安装当前目录中的 Python 包。通常，这表示该目录包含一个 `setup.py `或 `pyproject.toml` 文件，定义了如何安装你的包。
+  ".\[$EXTRA_PACKAGES\]" 是传递给 pip install 的选项，指定了要安装的附加依赖包。\`\`EXTRA_PACKAGES \`变量的值会在运行时被替换，从而将附加的包名传递给 pip。
 
 ## 8. 设置挂载点
 
@@ -101,33 +101,25 @@ VOLUME [ "/root/.cache/huggingface", "/root/.cache/modelscope", "/app/data", "/a
 
 - VOLUME ：创建并挂载容器中的这些目录为数据卷，确保这些目录中的数据在容器重启或删除后仍然保留。目录包括：
 
-- `/root/.cache/huggingface`: 存储 Hugging Face 相关缓存数据。
-
-- `/root/.cache/modelscope`: 存储 ModelScope 相关缓存数据。
-
-- `/app/data`: 应用程序的数据目录。
-
-- `/app/output`: 应用程序的输出目录。
-
 - `/root/.cache/huggingface`:
 
-这个目录通常用于存储 Hugging Face 相关的缓存数据，例如模型文件和其他下载的资源。
-将其设置为卷可以确保这些缓存数据在容器的不同生命周期间保持持久性。\`
+  - 这个目录通常用于存储 Hugging Face 相关的缓存数据，例如模型文件和其他下载的资源。
+  - 将其设置为卷可以确保这些缓存数据在容器的不同生命周期间保持持久性。
 
 - `/root/.cache/modelscope`:
 
-类似于 Hugging Face 的缓存目录，这是用于存储 ModelScope 框架的缓存数据。
-通过设置为卷，可以持久化这些数据，避免每次启动容器时重新下载。
+  - 类似于 Hugging Face 的缓存目录，这是用于存储 ModelScope 框架的缓存数据。
+  - 通过设置为卷，可以持久化这些数据，避免每次启动容器时重新下载。
 
 - `/app/data`:
 
-这是一个应用程序数据目录，用于存储应用程序所需的数据文件。
-通过将其设置为卷，可以方便地将数据与容器中的应用程序分开管理，并允许数据持久化。
+  - 这是一个应用程序数据目录，用于存储应用程序所需的数据文件。
+  - 通过将其设置为卷，可以方便地将数据与容器中的应用程序分开管理，并允许数据持久化。
 
 - `/app/output`:
 
-这是一个用于存储应用程序输出数据的目录。
-将其设置为卷使得应用程序生成的输出数据可以在容器重启或删除后继续保留。
+  - 这是一个用于存储应用程序输出数据的目录。
+  - 将其设置为卷使得应用程序生成的输出数据可以在容器重启或删除后继续保留。
 
 ## 9. 暴露端口
 
@@ -141,7 +133,7 @@ ENV API_PORT 8000
 EXPOSE 8000
 ```
 
-- ENV GRADIO_SERVER_PORT 7860: 设置环境变量 GRADIO_SERVER_PORT 为 7860，用于指定 Gradio 服务器的端口。
-- EXPOSE 7860: 暴露容器的 7860 端口，使得主机和其他容器可以访问这个端口。
-- ENV API_PORT 8000: 设置环境变量 API_PORT 为 8000，用于指定 API 服务的端口。
-- EXPOSE 8000: 暴露容器的 8000 端口。
+- `ENV GRADIO_SERVER_PORT 7860`: 设置环境变量 `GRADIO_SERVER_PORT` 为 7860，用于指定 Gradio 服务器的端口。
+- `EXPOSE 7860`: 暴露容器的 7860 端口，使得主机和其他容器可以访问这个端口。
+- `ENV API_PORT 8000`: 设置环境变量 API_PORT 为 8000，用于指定 API 服务的端口。
+- `EXPOSE 8000`: 暴露容器的 8000 端口。

@@ -1,9 +1,14 @@
 # Use the Ubuntu 22.04 image with CANN 8.0.rc1
 # More versions can be found at https://hub.docker.com/r/ascendai/cann/tags
-# FROM ascendai/cann:8.0.rc1-910-ubuntu22.04-py3.8
-FROM ascendai/cann:8.0.rc1-910b-ubuntu22.04-py3.8
 # FROM ascendai/cann:8.0.rc1-910-openeuler22.03-py3.8
 # FROM ascendai/cann:8.0.rc1-910b-openeuler22.03-py3.8
+# FROM ascendai/cann:8.0.rc1-910-ubuntu22.04-py3.8
+# FROM ascendai/cann:8.0.rc1-910-ubuntu22.04-py3.9
+# FROM ascendai/cann:8.0.rc1-910b-ubuntu22.04-py3.8
+# FROM ascendai/cann:8.0.rc1-910b-ubuntu20.04-py3.8
+FROM ascendai/cann:8.0.rc1-910b-ubuntu22.04-py3.9
+# FROM ascendai/cann:8.0.rc1-910b-ubuntu20.04-py3.9
+
 
 # Define environments
 ENV DEBIAN_FRONTEND=noninteractive

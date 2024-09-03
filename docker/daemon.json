@@ -1,0 +1,40 @@
+{
+    "insecure-registries": [
+        "swr.cn-south-222.ai.pcl.cn",
+        "https://swr.cn-east-317.qdrgznjszx.com"
+    ],
+    "registry-mirrors": [
+        "https://registry.docker-cn.com",
+        "https://docker.m.daocloud.io",
+        "https://docker.mirrors.ustc.edu.cn",
+        "https://52jfog84.mirror.aliyuncs.com",
+        "http://hub-mirror.c.163.com",
+        "https://mirror.ccs.tencentyun.com",
+        "https://ccr.ccs.tencentyun.com",
+        "https://dockerproxy.com",
+        "https://mirror.baidubce.com",
+        "https://hub.uuuadc.top",
+        "https://docker.anyhub.us.kg",
+        "https://dockerhub.jobcher.com",
+        "https://dockerhub.icu",
+        "https://docker.ckyl.me",
+        "https://docker.awsl9527.cn",
+        "https://docker.hpcloud.cloud",
+        "https://docker.registry.cyou",
+        "https://docker-cf.registry.cyou",
+        "https://dockercf.jsdelivr.fyi",
+        "https://docker.jsdelivr.fyi",
+        "https://mirror.aliyuncs.com",
+        "https://docker.m.daocloud.io",
+        "https://docker.nju.edu.cn",
+        "https://docker.mirrors.sjtug.sjtu.edu.cn",
+        "https://mirror.iscas.ac.cn",
+        "https://docker.rainbond.cc"
+    ],
+    "runtimes": {
+        "nvidia": {
+            "args": [],
+            "path": "nvidia-container-runtime"
+        }
+    }
+}

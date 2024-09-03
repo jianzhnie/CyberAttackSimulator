@@ -1,6 +1,5 @@
 # 使用本地已有的镜像作为基础镜像
-FROM swr.cn-east-317.qdrgznjszx.com/donggang/llama-factory-ascend910b:cann8-py310-torch2.2.0-ubuntu18.04
-
+FROM 3b7c5870a34d
 # Define environments
 ENV DEBIAN_FRONTEND=noninteractive
 
@@ -15,10 +14,6 @@ COPY requirements.txt /app
 RUN pip config set global.index-url "$PIP_INDEX" && \
     python -m pip install --upgrade pip && \
     python -m pip install -r requirements.txt
-
-
-# Set up volumes
-VOLUME [ "/root/.cache/huggingface", "/root/.cache/modelscope", "/app/data", "/app/output" ]
 
 # Expose port 7860 for the LLaMA Board
 ENV GRADIO_SERVER_PORT 7860

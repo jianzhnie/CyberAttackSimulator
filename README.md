@@ -182,6 +182,19 @@ docker run -it -u root --ipc=host --net=host \
         /bin/bash
 ```
 
+- Exec command to step inside a running Docker container
+
+```shell
+docker exec -it cybersim:latest bash
+```
+
+- Stop & Kill a Running Docker Container
+
+```shell
+docker stop container_id
+docker kill container_id
+```
+
 ### 在 NPU 上启动 Docker 须知
 
 注意启动 Docker 容器时：
@@ -197,19 +210,6 @@ docker run -it -u root --ipc=host --net=host \
 - `model_dir` 需要挂载到容器使用的代码目录， 如果需要挂载其他路径，可以参考这种方式
 
 - 当前的卡挂载到容器时是以独占的方式， 所以如果启动 Docker 时尽量选择一张空的卡
-
-- Exec command to step inside a running Docker container
-
-```shell
-docker exec -it cybersim:latest bash
-```
-
-- Stop & Kill a Running Docker Container
-
-```shell
-docker stop container_id
-docker kill container_id
-```
 
 ### 关于当前镜像
 

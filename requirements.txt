@@ -16,4 +16,4 @@ tyro
 wandb
 # server
 Django
-corsheaders
+django-cors-headers

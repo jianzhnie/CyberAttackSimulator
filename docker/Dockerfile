@@ -3,16 +3,12 @@ FROM 3b7c5870a34d
 # Define environments
 ENV DEBIAN_FRONTEND=noninteractive
 
-# Define installation arguments
-ARG PIP_INDEX=https://pypi.org/simple
-
 # Set the working directory
 WORKDIR /app
 
 # Install the requirements
 COPY requirements.txt /app
-RUN pip config set global.index-url "$PIP_INDEX" && \
-    python -m pip install --upgrade pip && \
+RUN python -m pip install --upgrade pip && \
     python -m pip install -r requirements.txt
 
 # Expose port 7860 for the LLaMA Board

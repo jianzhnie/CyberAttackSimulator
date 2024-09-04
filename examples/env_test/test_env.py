@@ -117,7 +117,7 @@ def creat_massive_env(network: Network) -> gym.Env:
 
 if __name__ == '__main__':
     start_time = time.time()
-    network = creat_massive_network(graph_name='path_graph', num_nodes=100000)
+    network = creat_massive_network(graph_name='path_graph', num_nodes=100)
     end_time = time.time()
     print(f'Time to create network: {end_time - start_time}')
     start_time = time.time()
@@ -126,11 +126,11 @@ if __name__ == '__main__':
     print(f'Time to create env: {end_time - start_time}')
     done = False
     steps = 0
-    obs = env.reset()
+    obs, _ = env.reset()
     start_time = time.time()
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
+        obs, reward, done, truncated, info = env.step(action)
         print(reward)
         steps += 1
     end_time = time.time()

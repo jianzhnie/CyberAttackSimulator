@@ -10,9 +10,12 @@
   - [CyberAttackSimulator GUI](#cyberattacksimulator-gui)
     - [CyberAttackSimulator GUI 是如何构建的](#cyberattacksimulator-gui-是如何构建的)
     - [启动 GUI](#启动-gui)
-  - [Build Docker](#build-docker)
-    - [For CUDA users](#for-cuda-users)
-    - [For Ascend NPU users](#for-ascend-npu-users)
+  - [使用 Docker](#使用-docker)
+    - [Build Docker](#build-docker)
+      - [For CUDA users](#for-cuda-users)
+      - [For Ascend NPU users](#for-ascend-npu-users)
+    - [在 NPU 上启动 Docker 须知](#在-npu-上启动-docker-须知)
+    - [关于当前镜像](#关于当前镜像)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
   - [Citation](#citation)
@@ -59,7 +62,7 @@ conda create -n cybersim python=3.10 && conda activate cybersim
 使用 HTTPS 克隆 CyberAttackSimulator 仓库
 
 ```shell
-git clone https://github.com/jianzhnie/CyberAttackSimulator.git
+git clone https://git.pcl.ac.cn/niejzh/CyberAttackSimulator.git
 ```
 
 3. 安装所有依赖项：
@@ -109,9 +112,11 @@ CyberAttackSimulator GUI 还集成了定制版Cytoscape JS ，该版本已扩展
 python3 -m manage.py runserver
 ```
 
-## Build Docker
+## 使用 Docker
 
-### For CUDA users
+### Build Docker
+
+#### For CUDA users
 
 - Build Docker
 
@@ -143,10 +148,10 @@ docker run -dit --gpus=all \
 - Exec command to step inside a running Docker container
 
 ```shell
-docker exec -it cybersim bash
+docker exec -it cybersim:latest bash
 ```
 
-### For Ascend NPU users
+#### For Ascend NPU users
 
 - Build Docker
 
@@ -162,31 +167,72 @@ docker build -f ./docker/docker-npu/Dockerfile \
 
 ```shell
 # Change `device` upon your resources
-docker run -dit \
-    -v ./hf_cache:/root/.cache/huggingface \
-    -v ./ms_cache:/root/.cache/modelscope \
-    -v ./data:/app/data \
-    -v ./output:/app/output \
-    -v /usr/local/dcmi:/usr/local/dcmi \
-    -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi \
-    -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \
-    -v /etc/ascend_install.info:/etc/ascend_install.info \
-    -p 7860:7860 \
-    -p 8000:8000 \
-    --device /dev/davinci0 \
-    --device /dev/davinci_manager \
-    --device /dev/devmm_svm \
-    --device /dev/hisi_hdc \
-    --shm-size 16G \
-    --name cybersim \
-    cybersim:latest
+docker_images=cybersim:latest
+model_dir=/path_to/CyberAttackSimulator
+docker run -it -u root --ipc=host --net=host \
+        --device=/dev/davinci0 \
+        --device=/dev/davinci_manager \
+        --device=/dev/devmm_svm \
+        --device=/dev/hisi_hdc \
+        -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \
+        -v /usr/local/Ascend/add-ons/:/usr/local/Ascend/add-ons/ \
+        -v /usr/local/sbin/npu-smi:/usr/local/sbin/npu-smi \
+        -v ${model_dir}:${model_dir} \
+        -v /var/log/npu:/usr/slog ${docker_images} \
+        /bin/bash
 ```
+
+### 在 NPU 上启动 Docker 须知
+
+注意启动 Docker 容器时：
+
+- `--device=/dev/davinci0` 是将第`0`张卡挂载到容器里面；
+
+- 挂载多张卡时， 可以这样添加：
+
+- `--device=/dev/davinci0`
+
+- `--device=/dev/davinci1`
+
+- `model_dir` 需要挂载到容器使用的代码目录， 如果需要挂载其他路径，可以参考这种方式
+
+- 当前的卡挂载到容器时是以独占的方式， 所以如果启动 Docker 时尽量选择一张空的卡
 
 - Exec command to step inside a running Docker container
 
 ```shell
-docker exec -it cybersim bash
+docker exec -it cybersim:latest bash
 ```
+
+- Stop & Kill a Running Docker Container
+
+```shell
+docker stop container_id
+docker kill container_id
+```
+
+### 关于当前镜像
+
+- CANN版本：8.0
+
+- 操作系统版本：Ubuntu18.08
+
+- 昇腾驱动固件版本：23.0.0以上
+
+- Python版本：3.10.13
+
+- 几个关键 Python 包版本
+
+  ```shell
+  gymnasium==0.29.1
+  networkx==3.3
+  pandas==2.2.2
+  stable_baselines3==2.3.2
+  tinydb==4.7.0
+  torch==2.2
+  Django==5.1
+  django-cors-headers==4.4.0
+  ```
 
 ## License
 

@@ -16,6 +16,11 @@
       - [For Ascend NPU users](#for-ascend-npu-users)
     - [在 NPU 上启动 Docker 须知](#在-npu-上启动-docker-须知)
     - [关于当前镜像](#关于当前镜像)
+  - [代码规范](#代码规范)
+    - [步骤 1: 安装 `pre-commit`](#步骤-1-安装-pre-commit)
+    - [步骤 2: 创建 `.pre-commit-config.yaml` 配置文件](#步骤-2-创建-pre-commit-configyaml-配置文件)
+    - [步骤 3: 安装 `pre-commit` 钩子](#步骤-3-安装-pre-commit-钩子)
+    - [步骤 4: 手动运行 `pre-commit` 钩子](#步骤-4-手动运行-pre-commit-钩子)
   - [License](#license)
   - [Acknowledgements](#acknowledgements)
   - [Citation](#citation)
@@ -233,6 +238,50 @@ docker kill container_id
   Django==5.1
   django-cors-headers==4.4.0
   ```
+
+## 代码规范
+
+项目使用 `pre-commit` 来对代码格式进行统一。 `pre-commit` 是一个用于在提交代码之前自动运行代码检查和格式化工具的框架。它能帮助开发者确保代码在提交前符合一定的标准，减少代码审查的工作量和代码库中的问题。以下是一个详细的 `pre-commit` 教程。
+
+### 步骤 1: 安装 `pre-commit`
+
+首先，你需要安装 `pre-commit`。你可以使用 `pip` 来安装：
+
+```
+pip install pre-commit
+```
+
+### 步骤 2: 创建 `.pre-commit-config.yaml` 配置文件
+
+在你的项目根目录下创建一个 `.pre-commit-config.yaml` 文件。这是 `pre-commit` 的配置文件，用于定义需要运行的钩子（hooks）。
+
+这里 `.pre-commit-config.yaml` 已经定义好了，无需编辑，跳过这一步。
+
+### 步骤 3: 安装 `pre-commit` 钩子
+
+在配置文件创建并保存后，运行以下命令来安装 `pre-commit` 钩子：
+
+```shell
+pre-commit install
+```
+
+这将会在 `.git/hooks` 目录中安装 `pre-commit` 钩子，每次你运行 `git commit` 时，这些钩子都会自动执行。
+
+### 步骤 4: 手动运行 `pre-commit` 钩子
+
+在你进行第一次提交前，你可以手动运行所有文件的 `pre-commit` 钩子来确保没有问题：
+
+```shell
+pre-commit run --all-files
+```
+
+这将对所有文件执行配置文件中定义的钩子。
+
+```shell
+pre-commit run ---file path_to_your_code
+```
+
+这将对某个特定的文件执行配置文件中定义的钩子。
 
 ## License
 

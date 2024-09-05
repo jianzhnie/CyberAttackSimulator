@@ -1,7 +1,7 @@
-from cyberwheel.reward.recurring_reward import RewardCalculator, RewardMap
+from cyberwheel.reward.reward_base import Reward, RewardMap
 
 
-class IsolateReward(RewardCalculator):
+class IsolateReward(Reward):
 
     def __init__(
         self,

@@ -1,11 +1,10 @@
 from typing import Any, Dict, List, Optional, Tuple, Type
 
-from cyberwheel.agents.red import art_techniques
 from cyberwheel.agents.red.actions import (ARTDiscovery, ARTImpact,
                                            ARTKillChainPhase,
                                            ARTLateralMovement, ARTPingSweep,
                                            ARTPortScan, ARTPrivilegeEscalation,
-                                           RedActionResults)
+                                           RedActionResults, art_techniques)
 from cyberwheel.agents.red.red_agent_base import (AgentHistory, HybridSetList,
                                                   KnownHostInfo,
                                                   KnownSubnetInfo, RedAgent)

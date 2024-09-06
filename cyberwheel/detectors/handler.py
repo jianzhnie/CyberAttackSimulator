@@ -23,7 +23,8 @@ def import_detector(module_name: str,
     Returns:
         Detector: An instance of the detector class.
     """
-    module = importlib.import_module(module_name)
+    import_path = '.'.join(['cyberwheel.detectors.detectors', module_name])
+    module = importlib.import_module(import_path)
     detector_class = getattr(module, class_name)
     if config:
         return detector_class(config)
@@ -115,7 +116,7 @@ class DetectorHandler:
                     next_node_input.append(r)
             self.DG.add_node(edge[1], detector_output=next_node_input)
 
-        return iter(self.DG.nodes.data('detector_output', default=[])['end'])
+        return self.DG.nodes.data('detector_output', default=[])['end']
 
     def reset(self) -> None:
         """Resets the detector graph by clearing the detector outputs."""

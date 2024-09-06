@@ -46,7 +46,8 @@ class RedActionResults:
         """Modifies the RedActionResults' alert by adding to either
         alert.dst_hosts or alert.services."""
         if isinstance(dst, Host):
-            self.detector_alert.add_dst_host(dst)
+            if dst:  # Only add the host if it's not None.
+                self.detector_alert.add_dst_host(dst)
             if src:
                 self.detector_alert.add_src_host(src)
         elif isinstance(dst, Service):

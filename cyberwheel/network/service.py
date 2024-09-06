@@ -17,7 +17,7 @@ class Vuln(BaseModel):
 
         :return: Tuple of name and id.
         """
-        return self.name, self.id
+        return (self.name, self.id)
 
     def __hash__(self) -> int:
         """Allows Vuln to be used in sets or as dictionary keys."""
@@ -125,10 +125,7 @@ class Service(BaseModel):
         :param service: The dictionary containing service attributes.
         :return: An instance of the Service class.
         """
-        vulns = {
-            Vuln(name=v['name'], id=v['id'])
-            for v in service.get('vulns', [])
-        }
+        vulns = service.get('cve', [])
         return cls(
             name=service.get('name', ''),
             port=service.get('port', 1),
@@ -149,19 +146,15 @@ class Service(BaseModel):
         :param service_str: The key of the service object in the list.
         :return: An instance of the Service class.
         """
-        service = next(
-            (obj for obj in service_objs if obj.get('name') == service_str),
-            {})
-        vulns = {
-            Vuln(name=v['name'], id=v['id'])
-            for v in service.get('vulns', [])
-        }
+        service = service_objs.get(service_str, {})
+        vulns = service.get('cve', set())
+
         return cls(
             name=service_str,
             port=service.get('port', 1),
             protocol=service.get('protocol', 'tcp'),
             version=service.get('version'),
-            vulns=vulns,
+            vulns=set(vulns),
             description=service.get('description'),
             decoy=service.get('decoy', False),
         )

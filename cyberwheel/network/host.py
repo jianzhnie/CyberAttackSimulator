@@ -125,14 +125,14 @@ class Host(NetworkObject):
         :param HostType host_type: Host type to apply to this host instance.
         """
         # Using sets to join and deduplicate services
+        deduped_services = []
         if self.services:
             host_type_services = set(host_type.services)
             host_services = set(self.services)
-            self.services = list(host_services.union(host_type_services))
-        else:
-            self.services = list(host_type.services)
+            deduped_services = list(host_services.union(host_type_services))
 
-        self.decoy = host_type.decoy
+        self.services: list[Service] = deduped_services
+        self.decoy: bool = host_type.decoy
 
     @staticmethod
     def _generate_mac_address() -> str:
@@ -160,11 +160,7 @@ class Host(NetworkObject):
         :param str ip: IP address in string format.
         :raises ValueError: If the IP address is invalid.
         """
-        try:
-            ip_obj = ipa.ip_address(ip)
-            self.set_ip(ip_obj)
-        except ValueError as e:
-            raise ValueError(f'Invalid IP address: {ip}') from e
+        self.ip_address = self.generate_ip_object(ip)
 
     def set_dns(self, ip: Union[ipa.IPv4Address, ipa.IPv6Address]) -> None:
         """Manually sets the DNS IP address of the host.
@@ -179,11 +175,7 @@ class Host(NetworkObject):
         :param str ip: IP address in string format.
         :raises ValueError: If the IP address is invalid.
         """
-        try:
-            ip_obj = ipa.ip_address(ip)
-            self.set_dns(ip_obj)
-        except ValueError as e:
-            raise ValueError(f'Invalid DNS IP address: {ip}') from e
+        self.dns_server = self.generate_ip_object(ip)
 
     def get_dhcp_lease(self) -> None:
         """Obtains an IP lease from a DHCP server within the subnet."""
@@ -216,7 +208,7 @@ class Host(NetworkObject):
             protocol=kwargs.get('protocol', 'tcp'),
             version=kwargs.get('version', ''),
             vulns=kwargs.get('vulns', []),
-            description=kwargs.get('description', ''),
+            description=kwargs.get('desc', ''),
             decoy=kwargs.get('decoy', False),
         )
 
@@ -239,19 +231,27 @@ class Host(NetworkObject):
             if service.name.lower() != service_name.lower()
         ]
 
-    def add_process(self, name: str, **kwargs) -> None:
+    def add_process(self, process_name: str,
+                    process_privilege_level: str) -> None:
         """Adds a process to the list of processes running on the host.
 
         :param str name: Name of the process.
         :param kwargs: Additional process details like PID, user, command, etc.
         """
         process = Process(
-            pid=kwargs.get('pid', random.randint(1000, 9999)),
-            user=kwargs.get('user', 'root'),
-            command=kwargs.get('command', ''),
-            name=name,
+            name=process_name,
+            privilege=process_privilege_level,
         )
         self.processes.append(process)
+
+    def run_command(self, command_exector: Command, command_content: str,
+                    privilege: str) -> None:
+        """Adds a command to the host's command history.
+
+        :param Command command: Command object representing the executed command.
+        """
+        command = Command(command_exector, command_content, privilege)
+        self.command_history.append(command)
 
     def remove_process(self, process_name: str) -> None:
         """Removes an existing process from the list of processes running on
@@ -268,10 +268,3 @@ class Host(NetworkObject):
         """Removes all processes from the host, effectively killing any
         potentially malicious processes."""
         self.processes = []
-
-    def run_command(self, command: Command) -> None:
-        """Adds a command to the host's command history.
-
-        :param Command command: Command object representing the executed command.
-        """
-        self.command_history.append(command)

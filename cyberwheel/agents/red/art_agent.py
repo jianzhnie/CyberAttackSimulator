@@ -17,11 +17,58 @@ class ARTAgent(RedAgent):
     """An Atomic Red Team (ART) Red Agent that uses a defined Killchain to
     attack hosts in a particular order.
 
+    Before going down the killchain on a host, the agent must Pingsweep the host's subnet and Portscan the host.
+    These actions are defined to specific ART Techniques, and always succeed. After portscanning, the agent can start
+    attacking down the killchain on a host.
+    The KillChain in this case:
+    1. ARTDiscovery - Chooses a 'discovery' Atomic Red Team technique to attack the host. Also exposes the Host's CVEs to the attacker.
+    2. ARTPrivilegeEscalation - Chooses a 'privilege-escalation' Atomic Red Team technique to attack the host. Also escalates its privileges to 'root'
+    3. ARTImpact - Chooses an 'impact' Atomic Red Team technique to attack the host.
+
+    General Logic:
+    - The agent will start on a given Host, with its CVEs, ports, subnet, and vulnerabilities already scanned.
+    - At each step the agent will
+        - Determine which Host is its target_host with its given red strategy (ServerDowntime by default)
+        - Run a Pingsweep on the target_host's subnet if not already scanned
+        - Run a Portscan on target_host, revealing services and vulnerabilities, if not already scanned
+        - Run LateralMovement to hack into target_host if not already physically on target_host
+        - On target_host, the agent will run the next step of the Killchain.
+            - For example, if it has already run Discovery on the target_host, it will run PrivilegeEscalation
+
+    Important member variables:
+
+    * `entry_host`: required
+        - The host for the red agent to start on. The agent will have info on the Host's ports, subnet (list of other hosts in subnet), and CVEs.
+        - NOTE: This will be used as the initial value of the class variable `current_host`. This will track which Host the red agent is currently on.
+
+    * `name`: optional
+        - Name of the Agent.
+        - Default: 'ARTAgent'
+
+    * `network`: required
+        - The network that the red agent will explore.
+
+    * `killchain`: optional
+        - The sequence of Actions the Red Agent will take on a given Host.
+        - Default: [ARTDiscovery, ARTPrivilegeEscalation, ARTImpact]
+        - NOTE: This is currently only tested with the default Killchain.
+
+    * `red_strategy`: optional
+        - The logic that the red agent will use to select it's next target.
+        - This is implemented as separate class to allow modularity in red agent implementations.
+        - Default: ServerDowntime
+
+    * `service_mapping`: optional
+        - A mapping that is initialized with a network, dictating with a bool, whether a given Technique will be valid on a given Host.
+        - This is generated and passed before initialization to avoid checking for CVEs for every environment if running parallel.
+        - Default: {} (if empty, will generate during __init__())
+
+
     The agent follows these steps:
-    1. Pingsweep the target host's subnet if not already scanned.
-    2. Portscan the target host to reveal services and vulnerabilities if not already scanned.
-    3. Perform lateral movement if not already on the target host.
-    4. Execute the next phase of the kill chain on the target host (Discovery, Privilege Escalation, Impact).
+        1. Pingsweep the target host's subnet if not already scanned.
+        2. Portscan the target host to reveal services and vulnerabilities if not already scanned.
+        3. Perform lateral movement if not already on the target host.
+        4. Execute the next phase of the kill chain on the target host (Discovery, Privilege Escalation, Impact).
 
     Attributes:
         name (str): Name of the Agent.
@@ -70,10 +117,12 @@ class ARTAgent(RedAgent):
         self.strategy: RedStrategy = red_strategy or ServerDowntime()
         self.all_kcps: List[
             Type[ARTKillChainPhase]] = self.killchain + [ARTLateralMovement]
+
         self.services_map: Dict[str,
                                 Dict[Type[ARTKillChainPhase], List[str]]] = (
                                     service_mapping if service_mapping else
                                     self._initialize_service_mapping())
+
         self.tracked_hosts: set[str] = set(self.services_map.keys())
 
     def _initialize_service_mapping(
@@ -97,7 +146,7 @@ class ARTAgent(RedAgent):
             ARTLateralMovement,
         ]
         service_mapping = {}
-        for host in network.get_all_hosts():
+        for host in network.get_hosts():
             service_mapping[host.name] = cls.get_valid_techniques_by_host(
                 host, killchain)
         return service_mapping
@@ -124,7 +173,7 @@ class ARTAgent(RedAgent):
         new_hosts = current_hosts - self.tracked_hosts
 
         for host_name in new_hosts:
-            new_host = self.network.get_node_from_name(host_name)
+            new_host: Host = self.network.get_node_from_name(host_name)
             self.services_map[
                 new_host.name] = self.get_valid_techniques_by_host(
                     new_host, self.all_kcps)
@@ -178,10 +227,16 @@ class ARTAgent(RedAgent):
                                       target_host).sim_execute()
         if action_results.attack_success:
             for host in target_host.subnet.connected_hosts:
-                self.history.hosts.setdefault(host.name,
-                                              KnownHostInfo(sweeped=True))
-                self.unknowns.add(host.name)
-                self.history.mapping.setdefault(host.name, host)
+                # Create Red Agent History for host if not in there
+                if host.name not in self.history.hosts:
+                    self.history.hosts[host.name] = KnownHostInfo(sweeped=True)
+                    self.unknowns.add(host.name)
+                else:
+                    self.history.hosts[host.name].ping_sweeped = True
+
+                if host.name not in self.history.mapping:
+                    self.history.mapping[host.name] = host
+
         return action_results, ARTPingSweep
 
     def _port_scan(
@@ -312,7 +367,7 @@ class ARTAgent(RedAgent):
                 # Update host IP address information.
                 if host_name not in self.history.hosts:
                     self.history.hosts[host_name] = KnownHostInfo(
-                        ip_address=value)
+                        ip_address=value.ip_address)
                     self.unknowns.add(host_name)
                     self.history.mapping[host_name] = value
 

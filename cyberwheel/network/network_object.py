@@ -196,8 +196,8 @@ class NetworkObject:
         :raises ValueError:
         """
         try:
-            dest: Union[Union[ipa.IPv4Network,
-                              ipa.IPv6Network]] = ipa.ip_network(dest_net)
+            dest: Union[ipa.IPv4Network,
+                        ipa.IPv6Network] = ipa.ip_network(dest_net)
             via: Union[ipa.IPv4Address,
                        ipa.IPv6Address] = ipa.ip_address(via_ip)
         except ValueError as e:
@@ -222,9 +222,8 @@ class NetworkObject:
         for route in routes:
             # make sure 'dest' is an ip_network object
             try:
-                if not isinstance(
-                        route['dest'], Union[Union[ipa.IPv4Network,
-                                                   ipa.IPv6Network]]):
+                if not isinstance(route['dest'], Union[ipa.IPv4Network,
+                                                       ipa.IPv6Network]):
                     dest = self.generate_ip_network_object(route['dest'])
                 else:
                     dest = route['dest']

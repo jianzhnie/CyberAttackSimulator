@@ -50,7 +50,9 @@ class Process(BaseModel):
             bool: True if both processes have the same name and privilege, False otherwise.
         """
         if isinstance(other, Process):
-            return self.__key() == other.__key()
+            name_matched: bool = self.name == other.name
+            privilege_matched: bool = self.privilege == other.privilege
+            return name_matched and privilege_matched
         return False
 
     @validator('privilege')

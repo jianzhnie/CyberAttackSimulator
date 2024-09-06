@@ -80,8 +80,10 @@ class SubnetAction(BlueAction):
 
     def __init__(self, network: Network, configs: Dict[str, Any]) -> None:
         super().__init__(network, configs)
-        self.define_configs()
-        self.define_services()
+
+    @abstractmethod
+    def execute(self, subnet: Subnet, **kwargs) -> BlueActionReturn:
+        raise NotImplementedError
 
     def define_configs(self) -> None:
         """Defines the configuration for the subnet action."""
@@ -99,10 +101,6 @@ class SubnetAction(BlueAction):
             service = Service.create_service_from_dict(self.service_info[s])
             self.services.add(service)
             self.cves.update(service.vulns)
-
-    @abstractmethod
-    def execute(self, subnet: Subnet, **kwargs) -> BlueActionReturn:
-        raise NotImplementedError
 
 
 class RangeAction(BlueAction):

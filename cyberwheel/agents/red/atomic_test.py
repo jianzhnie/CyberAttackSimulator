@@ -66,11 +66,11 @@ class Executor:
     ):
         self.name = name
         self.elevation_required = elevation_required
-        if command != '' and command != None:
+        if command != '' and command is not None:
             self.command = command.strip().split('\n')
         else:
             self.command = []
-        if cleanup_command != '' and cleanup_command != None:
+        if cleanup_command != '' and cleanup_command is not None:
             self.cleanup_command = cleanup_command.strip().split('\n')
         else:
             self.cleanup_command = []

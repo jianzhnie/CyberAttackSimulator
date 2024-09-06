@@ -8,7 +8,8 @@ import networkx as nx
 sys.path.append(os.getcwd())
 
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
-from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
+from cyberattacksim.envs.generic.core.network_interface_pro import \
+    NetworkInterface
 from cyberattacksim.envs.generic.core.red_interface import RedInterface
 from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
@@ -122,7 +123,7 @@ if __name__ == '__main__':
     start_time = time.time()
     network = creat_massive_network(graph_name='path_graph',
                                     data_dir='work_dir/networks',
-                                    num_nodes=100)
+                                    num_nodes=100000)
     end_time = time.time()
     print(f'Time to create network: {end_time - start_time}')
     start_time = time.time()
@@ -136,6 +137,7 @@ if __name__ == '__main__':
     while not done:
         action = env.action_space.sample()
         obs, reward, done, truncated, info = env.step(action)
+        print(obs)
         print(reward, done, truncated)
         steps += 1
     end_time = time.time()

@@ -15,16 +15,17 @@ from stable_baselines3.ppo import MlpPolicy as PPOMlp
 from wandb.integration.sb3 import WandbCallback
 
 sys.path.append(os.getcwd())
+
+from algorithms.MC.MCAgent import MC
+from algorithms.MC.MCMlp import MCPolicy as MCMlp
+from algorithms.policies.policy import ACSNNPolicy
 from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import create_env
 from cyberattacksim.utils.file_utils import (load_yaml_config,
                                              update_dataclass_from_dict)
-from examples.configs.rl_args import A2CArguments, DQNArguments, PPOArguments
+from examples.configs.rl_args import (A2CArguments, DQNArguments, MCArguments,
+                                      PPOArguments)
 
-
-from algorithms.MC.MCAgent import MC
-from algorithms.MC.MCMlp import MCPolicy as MCMlp
-from examples.configs.rl_args import MCArguments
 
 def main() -> None:
     # Initialize ArgumentParser
@@ -37,6 +38,7 @@ def main() -> None:
             'a2c',
             'ppo',
             'mc',
+            'snnppo',
         ],
         default='dqn',
         help="Name of the algorithm. Defaults to 'dqn'",
@@ -59,6 +61,8 @@ def main() -> None:
     elif run_args.algo_name == 'a2c':
         algo_args: A2CArguments = tyro.cli(A2CArguments)
     elif run_args.algo_name == 'ppo':
+        algo_args: PPOArguments = tyro.cli(PPOArguments)
+    elif run_args.algo_name == 'snnppo':
         algo_args: PPOArguments = tyro.cli(PPOArguments)
     elif run_args.algo_name == 'mc':
         algo_args: MCArguments = tyro.cli(MCArguments)
@@ -180,10 +184,27 @@ def main() -> None:
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
+    elif args.algo_name == 'snnppo':
+        agent = PPO(
+            policy=ACSNNPolicy,  # ActorCriticPolicy, ACSNNPolicy
+            env=env,
+            learning_rate=args.learning_rate,
+            n_steps=args.rollout_steps,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            clip_range=args.clip_range,
+            normalize_advantage=args.normalize_advantage,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+            policy_kwargs={'net_arch': [64, 64]})
 
-        
     # Train the agent
-    print("args.max_timesteps:", args.max_timesteps)
+    print('args.max_timesteps:', args.max_timesteps)
     # import pdb; pdb.set_trace()
     agent.learn(
         total_timesteps=args.max_timesteps,

@@ -22,6 +22,10 @@ from cyberattacksim.utils.file_utils import (load_yaml_config,
 from examples.configs.rl_args import A2CArguments, DQNArguments, PPOArguments
 
 
+from algorithms.MC.MCAgent import MC
+from algorithms.MC.MCMlp import MCPolicy as MCMlp
+from examples.configs.rl_args import MCArguments
+
 def main() -> None:
     # Initialize ArgumentParser
     parser = argparse.ArgumentParser(description='Cyber Attack Sim')
@@ -32,6 +36,7 @@ def main() -> None:
             'dqn',
             'a2c',
             'ppo',
+            'mc',
         ],
         default='dqn',
         help="Name of the algorithm. Defaults to 'dqn'",
@@ -55,6 +60,8 @@ def main() -> None:
         algo_args: A2CArguments = tyro.cli(A2CArguments)
     elif run_args.algo_name == 'ppo':
         algo_args: PPOArguments = tyro.cli(PPOArguments)
+    elif run_args.algo_name == 'mc':
+        algo_args: MCArguments = tyro.cli(MCArguments)
     else:
         raise NotImplementedError
 
@@ -70,6 +77,8 @@ def main() -> None:
 
     # Update parser with YAML configuration
     args: A2CArguments = update_dataclass_from_dict(algo_args, env_config)
+
+    args: MCArguments = update_dataclass_from_dict(algo_args, env_config)
 
     # set file path
     work_dir = os.path.join(args.work_dir, args.env_id)
@@ -155,9 +164,27 @@ def main() -> None:
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
+    elif args.algo_name == 'mc':
+        agent = MC(
+            policy=MCMlp,
+            env=env,
+            exploration_rate=args.exploration_rate,
+            learning_rate=args.learning_rate,
+            n_steps=args.rollout_steps,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
+            normalize_advantage=args.normalize_advantage,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+        )
 
+        
     # Train the agent
-
+    print("args.max_timesteps:", args.max_timesteps)
+    # import pdb; pdb.set_trace()
     agent.learn(
         total_timesteps=args.max_timesteps,
         callback=[eval_callback, wandb_callback],

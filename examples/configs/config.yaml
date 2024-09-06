@@ -11,6 +11,20 @@ dqn:
     gradient_steps: 1
     target_update_frequency: 10000
 
+mc:
+  default_18_node_network:
+    algo_name: mc
+    max_timesteps: 10000000
+    learning_rate: 0.01
+    rollout_steps: 8
+    gamma: 0.99
+    gae_lambda: 0.95
+    ent_coef: 0.01
+    vf_coef: 0.5
+    max_grad_norm: 0.5
+    normalize_advantage: False
+    exploration_rate: 0.4
+
 a2c:
   default_18_node_network:
     algo_name: a2c

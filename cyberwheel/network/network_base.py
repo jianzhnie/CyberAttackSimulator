@@ -8,8 +8,8 @@ from typing import Any, Dict, List, Optional, Union
 
 import matplotlib.pyplot as plt
 import networkx as nx
-import tqdm
 import yaml
+from tqdm import tqdm
 
 from cyberwheel.network.host import Host, HostType
 from cyberwheel.network.network_object import (FirewallRule, NetworkObject,
@@ -163,7 +163,7 @@ class Network:
 
         :param node: Network object to add.
         """
-        self.graph.add_node(node_for_adding=node)
+        self.graph.add_node(node.name, data=node)
 
     def remove_node(self, node: NetworkObject) -> None:
         """Remove a network object from the network graph.
@@ -437,12 +437,15 @@ class Network:
         # Create Network instance
         network = cls(name=config['network'].get('name'))
         # Load host types
-        types = cls._load_host_types(host_config)
+        conf_dir = files('cyberwheel.resources.configs.host_definitions')
+        conf_file = conf_dir.joinpath(host_config)
+        types = cls._load_host_types(conf_file)
 
         # add router to network graph
         cls._build_routers(network, config['routers'])
-        cls._build_subnets(network, config['subnets'])
-        cls._build_hosts(network, config['hosts'], types)
+        # cls._build_subnets(network, config['subnets'])
+        cls._build_hosts(network, config['interfaces'], config['hosts'],
+                         conf_file, types)
 
         network.initialize_interfacing()
         return network
@@ -465,9 +468,7 @@ class Network:
             return yaml.safe_load(yaml_file)
 
     @staticmethod
-    def _load_host_types(host_config):
-        conf_dir = files('cyberwheel.resources.configs.host_definitions')
-        conf_file = conf_dir.joinpath(host_config)
+    def _load_host_types(conf_file):
         with open(conf_file, '+r') as f:
             type_config = yaml.safe_load(f)
         types = type_config['host_types']
@@ -527,36 +528,61 @@ class Network:
                 subnet.set_dns_server(router_interface_ip)
 
     @staticmethod
-    def _build_hosts(network: 'Network', hosts_config: Any, types: Any):
+    def _build_hosts(
+        network: 'Network',
+        interface_config: Dict[str, Any],
+        hosts_config: Dict[str, Any],
+        conf_file: str,
+        types: Any,
+    ):
         hosts = tqdm(hosts_config)
         hosts.set_description('Building Hosts')
-        for h, val in hosts.items():
+        for host_name in hosts:
+            val = hosts_config[host_name]
+            fw_rules = []
             # Instantiate firewall rules, if defined
-            fw_rules = [
-                FirewallRule(
-                    name=rule['name'],
-                    src=rule.get('src'),
-                    port=rule.get('port'),
-                    prpto=rule.get('proto'),
-                    desc=rule.get('desc'),
-                ) for rule in val.get('firewall_rules', [])
-            ] or [FirewallRule()]
-            host_type = (network.create_host_type_from_yaml(
-                val.get('type'), types) if val.get('type') else None)
-            services = [
-                Service(
-                    name=service['name'],
-                    port=service['port'],
-                    protocol=service.get('protocol'),
-                    version=service.get('version'),
-                    vulns=service.get('vulns'),
-                    description=service.get('descscription'),
-                    decoy=service.get('decoy'),
-                ) for service in val.get('services', {}).values()
-            ]
-            interfaces = hosts_config.get('interfaces', [])
+            if rules := val.get('firewall_rules'):
+                for rule in rules:
+                    fw_rules.append(
+                        FirewallRule(
+                            name=rule['name'],
+                            src=rule.get('src'),
+                            port=rule.get('port'),
+                            prpto=rule.get('proto'),
+                            desc=rule.get('desc'),
+                        ))
+            else:
+                fw_rules.append(FirewallRule())
+
+            # instantiate HostType if defined
+            if type_str := val.get('type'):
+                host_type = network.create_host_type_from_yaml(
+                    type_str, conf_file, types)  # type: ignore
+            else:
+                host_type = None
+
+            services = []
+            if services_dict := val.get('services'):
+                for service_id in services_dict:
+                    service = services_dict[service_id]
+                    services.append(
+                        Service(
+                            name=service['name'],
+                            port=service['port'],
+                            protocol=service.get('protocol'),
+                            version=service.get('version'),
+                            vulns=service.get('vulns'),
+                            description=service.get('descscription'),
+                            decoy=service.get('decoy'),
+                        ))
+
+            interfaces = []
+            if host_name in interface_config:
+                interfaces = interface_config[host_name]
+
+            # instantiate host
             host = network.add_host_to_subnet(
-                name=h,
+                name=host_name,
                 subnet=network.get_node_from_name(val['subnet']),
                 host_type=host_type,
                 firewall_rules=fw_rules,

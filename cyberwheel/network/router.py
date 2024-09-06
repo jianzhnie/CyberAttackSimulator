@@ -2,7 +2,6 @@ import ipaddress as ipa
 from typing import Dict, List, Optional, Union
 
 from cyberwheel.network.network_object import NetworkObject
-from cyberwheel.network.subnet import Subnet
 
 
 class Router(NetworkObject):
@@ -97,7 +96,7 @@ class Router(NetworkObject):
 
         return self.interfaces.get(interface_name)
 
-    def add_subnet_interface(self, subnet: Subnet) -> None:
+    def add_subnet_interface(self, subnet) -> None:
         """Adds a subnet interface to the router and assigns an IP address to
         it.
 

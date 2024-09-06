@@ -1,4 +1,4 @@
-from typing import Any, Dict, Optional, Set, Type, TypeVar
+from typing import Any, Dict, Type, TypeVar, Union
 
 from pydantic import BaseModel, PositiveInt, validator
 
@@ -57,10 +57,10 @@ class Service(BaseModel):
     name: str
     port: PositiveInt = 1  # Default port value for ICMP
     protocol: str = 'tcp'
-    version: Optional[str] = None
-    vulns: Set[Vuln] = set()
-    description: Optional[str] = None
-    decoy: Optional[bool] = False
+    version: Union[str, None] = None
+    vulns: set[str] = set()
+    description: Union[str, None] = None
+    decoy: Union[bool, None] = False
 
     def __key(self) -> tuple:
         """Generates a unique key for the Service instance.
@@ -127,13 +127,13 @@ class Service(BaseModel):
         """
         vulns = service.get('cve', [])
         return cls(
-            name=service.get('name', ''),
+            name=service.get('name'),
             port=service.get('port', 1),
             protocol=service.get('protocol', 'tcp'),
             version=service.get('version'),
             vulns=vulns,
             description=service.get('description'),
-            decoy=service.get('decoy', False),
+            decoy=service.get('decoy'),
         )
 
     @classmethod

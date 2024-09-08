@@ -456,6 +456,7 @@ class TD3Arguments(RLArguments):
 
 
 
+@dataclass
 class DQfDArguments(RLArguments):
     """DQfD-specific settings."""
 
@@ -477,7 +478,7 @@ class DQfDArguments(RLArguments):
         },
     )
     target_update_frequency: int = field(
-        default=100,
+        default=10000,
         metadata={
             'help': 'Frequency of updating the target network. Defaults to 100'
         },
@@ -490,7 +491,7 @@ class DQfDArguments(RLArguments):
         },
     )
     train_frequency: int = field(
-        default=4,
+        default=5,
         metadata={'help': 'Frequency of training updates. Defaults to 1'},
     )
     gradient_steps: int = field(

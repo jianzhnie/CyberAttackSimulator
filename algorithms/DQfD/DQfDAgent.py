@@ -98,7 +98,7 @@ class DQfD(OffPolicyAlgorithm):
         verbose: int = 0,
         seed: Optional[int] = None,
         device: Union[th.device, str] = "auto",
-        _init_setup_model: bool = True,
+        _init_setup_model: bool = False,
     ) -> None:
         super().__init__(
             policy,

@@ -304,3 +304,268 @@ class MCArguments(RLArguments):
             'Flag indicating whether to normalize the advantages. Defaults to True'
         },
     )
+      
+@dataclass
+class SACArguments(RLArguments):
+    """SAC-specific settings."""
+
+    learning_rate: float = field(
+        default=1e-4,
+        metadata={
+            'help': 'Learning rate used by the optimizer. Defaults to 1e-4'
+        },
+    )
+
+    initialization: float = field(
+        default=1.0,
+    )
+
+    reward_scale: float = field(
+        default=1.0,
+    )
+
+    learning_rate: float = field(
+        default=1e-2,
+        metadata={'help': 'Learning rate for the optimizer. Defaults to 1e-4'},
+    )
+    rollout_steps: int = field(
+        default=2048,
+        metadata={
+            'help':
+            'The number of steps to run for each environment per update'
+        },
+    )
+    n_epochs: int = field(
+        default=10,
+        metadata={
+            'help': 'Number of epoch when optimizing the surrogate loss'
+        },
+    )
+    gae_lambda: float = field(
+        default=0.95,
+        metadata={
+            'help':
+            'Lambda for Generalized Advantage Estimation (GAE). Defaults to 0.95'
+        },
+    )
+    normalize_advantage: bool = field(
+        default=True,
+        metadata={
+            'help':
+            'Flag indicating whether to normalize the advantages. Defaults to True'
+        },
+    )
+    ent_coef: float = field(
+        default=0.01,
+        metadata={
+            'help':
+            'Coefficient for the entropy term in the PPO algorithm. Defaults to 0.01'
+        },
+    )
+    vf_coef: float = field(
+        default=0.5,
+        metadata={
+            'help':
+            'Coefficient for the value loss in the a2c algorithm. Defaults to 0.5'
+        },
+    )
+    clip_range: float = field(
+        default=0.2,
+        metadata={
+            'help': 'Clip parameter for the PPO algorithm. Defaults to 0.2'
+        },
+    )
+    max_grad_norm: float = field(
+        default=0.5,
+        metadata={'help': 'Maximum gradient norm. Defaults to 1.0'},
+    )
+
+    update_epochs: int = field(
+        default=1,
+        metadata={
+            'help': 'Number of epochs to run for training. Defaults to 10'
+        },
+    )
+    
+@dataclass
+class TD3Arguments(RLArguments):
+    """TD3-specific settings."""
+
+    learning_rate: float = field(
+        default=1e-2,
+        metadata={'help': 'Learning rate for the optimizer. Defaults to 1e-4'},
+    )
+    rollout_steps: int = field(
+        default=2048,
+        metadata={
+            'help':
+            'The number of steps to run for each environment per update'
+        },
+    )
+    n_epochs: int = field(
+        default=10,
+        metadata={
+            'help': 'Number of epoch when optimizing the surrogate loss'
+        },
+    )
+    gae_lambda: float = field(
+        default=0.95,
+        metadata={
+            'help':
+            'Lambda for Generalized Advantage Estimation (GAE). Defaults to 0.95'
+        },
+    )
+    normalize_advantage: bool = field(
+        default=True,
+        metadata={
+            'help':
+            'Flag indicating whether to normalize the advantages. Defaults to True'
+        },
+    )
+    ent_coef: float = field(
+        default=0.01,
+        metadata={
+            'help':
+            'Coefficient for the entropy term in the PPO algorithm. Defaults to 0.01'
+        },
+    )
+    vf_coef: float = field(
+        default=0.5,
+        metadata={
+            'help':
+            'Coefficient for the value loss in the a2c algorithm. Defaults to 0.5'
+        },
+    )
+    clip_range: float = field(
+        default=0.2,
+        metadata={
+            'help': 'Clip parameter for the PPO algorithm. Defaults to 0.2'
+        },
+    )
+    max_grad_norm: float = field(
+        default=0.5,
+        metadata={'help': 'Maximum gradient norm. Defaults to 1.0'},
+    )
+
+    update_epochs: int = field(
+        default=1,
+        metadata={
+            'help': 'Number of epochs to run for training. Defaults to 10'
+        },
+    )
+
+
+
+class DQfDArguments(RLArguments):
+    """DQfD-specific settings."""
+
+    learning_rate: float = field(
+        default=1e-3,
+        metadata={
+            'help': 'Learning rate used by the optimizer. Defaults to 1e-4'
+        },
+    )
+    max_grad_norm: float = field(
+        default=10.0,
+        metadata={'help': 'Maximum gradient norm. Defaults to 10.0'},
+    )
+    warmup_learn_steps: int = field(
+        default=1000,
+        metadata={
+            'help':
+            'Number of steps before starting to update the model. Defaults to 1000'
+        },
+    )
+    target_update_frequency: int = field(
+        default=100,
+        metadata={
+            'help': 'Frequency of updating the target network. Defaults to 100'
+        },
+    )
+    soft_update_tau: float = field(
+        default=1.0,
+        metadata={
+            'help':
+            'Interpolation parameter for soft target updates. Defaults to 1.0'
+        },
+    )
+    train_frequency: int = field(
+        default=4,
+        metadata={'help': 'Frequency of training updates. Defaults to 1'},
+    )
+    gradient_steps: int = field(
+        default=2,
+        metadata={
+            'help':
+            'Number of times to update the learner network. Defaults to 1'
+        },
+    )
+
+@dataclass
+class CFRArguments(RLArguments):
+    """CFR-specific settings."""
+
+    learning_rate: float = field(
+        default=5e-2,
+        metadata={'help': 'Learning rate for the optimizer. Defaults to 1e-4'},
+    )
+    rollout_steps: int = field(
+        default=2048,
+        metadata={
+            'help':
+            'The number of steps to run for each environment per update'
+        },
+    )
+    n_epochs: int = field(
+        default=10,
+        metadata={
+            'help': 'Number of epoch when optimizing the surrogate loss'
+        },
+    )
+    gae_lambda: float = field(
+        default=0.95,
+        metadata={
+            'help':
+            'Lambda for Generalized Advantage Estimation (GAE). Defaults to 0.95'
+        },
+    )
+    normalize_advantage: bool = field(
+        default=True,
+        metadata={
+            'help':
+            'Flag indicating whether to normalize the advantages. Defaults to True'
+        },
+    )
+    ent_coef: float = field(
+        default=0.01,
+        metadata={
+            'help':
+            'Coefficient for the entropy term in the CFR algorithm. Defaults to 0.01'
+        },
+    )
+    vf_coef: float = field(
+        default=0.5,
+        metadata={
+            'help':
+            'Coefficient for the value loss in the a2c algorithm. Defaults to 0.5'
+        },
+    )
+    clip_range: float = field(
+        default=0.2,
+        metadata={
+            'help': 'Clip parameter for the CFR algorithm. Defaults to 0.2'
+        },
+    )
+    max_grad_norm: float = field(
+        default=0.5,
+        metadata={'help': 'Maximum gradient norm. Defaults to 1.0'},
+    )
+
+    update_epochs: int = field(
+        default=1,
+        metadata={
+            'help': 'Number of epochs to run for training. Defaults to 10'
+        },
+    )
+
+    

@@ -131,7 +131,8 @@ class BlueInterface(BlueActionSet):
             action = action - self.deceptive_actions
             # global actions
             if action < self.number_global_action:
-                blue_action, blue_node = self.global_action_dict[action]()
+                # blue_action, blue_node = self.global_action_dict[action]()   # source version
+				blue_action, blue_node = self.global_action_dict[int(action)]()  # changed by ltl
             else:
                 # standard actions
                 action = action - self.number_global_action

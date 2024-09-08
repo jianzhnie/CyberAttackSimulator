@@ -4,6 +4,10 @@ import sys
 
 import tyro
 import wandb
+
+import torch_npu
+from torch_npu.contrib import transfer_to_npu
+
 from stable_baselines3 import A2C, DQN, PPO
 from stable_baselines3.a2c import MlpPolicy as A2CMlp
 from stable_baselines3.common.callbacks import (
@@ -26,6 +30,19 @@ from cyberattacksim.utils.file_utils import (load_yaml_config,
 from examples.configs.rl_args import (A2CArguments, DQNArguments, MCArguments,
                                       PPOArguments)
 
+from algorithms.TD3.TD3Agent import TD3
+from algorithms.TD3.TD3Mlp import TD3Policy as TD3Mlp
+
+from algorithms.SAC.SACAgent import SAC
+from algorithms.SAC.SACMlp import SACPolicy as SACMlp
+
+from algorithms.DQfD.DQfDAgent import DQfD
+from algorithms.DQfD.DQfDMlp import DQfDPolicy as DQfDMlp
+
+from algorithms.CFR.CFRAgent import CFR
+from algorithms.CFR.CFRMlp import CFRPolicy as CFRMlp
+from examples.configs.rl_args import DQfDArguments, CFRArguments, SACArguments, TD3Arguments
+
 
 def main() -> None:
     # Initialize ArgumentParser
@@ -39,6 +56,10 @@ def main() -> None:
             'ppo',
             'mc',
             'snnppo',
+            'sac',
+            'td3',
+            'dqfd',
+            'cfr'
         ],
         default='dqn',
         help="Name of the algorithm. Defaults to 'dqn'",
@@ -66,6 +87,14 @@ def main() -> None:
         algo_args: PPOArguments = tyro.cli(PPOArguments)
     elif run_args.algo_name == 'mc':
         algo_args: MCArguments = tyro.cli(MCArguments)
+    elif run_args.algo_name == 'sac':
+        algo_args: SACArguments = tyro.cli(SACArguments)
+    elif run_args.algo_name == 'td3':
+        algo_args: TD3Arguments = tyro.cli(TD3Arguments)
+    elif run_args.algo_name == 'dqfd':
+        algo_args: DQfDArguments = tyro.cli(DQfDArguments)
+    elif run_args.algo_name == 'cfr':
+        algo_args: CFRArguments = tyro.cli(CFRArguments)
     else:
         raise NotImplementedError
 
@@ -202,6 +231,51 @@ def main() -> None:
             tensorboard_log=tf_log_dir,
             verbose=1,
             policy_kwargs={'net_arch': [64, 64]})
+    elif args.algo_name == 'sac':
+        agent = SAC(
+            policy=SACMlp,
+            env=env,
+            learning_rate=args.learning_rate,
+            verbose=1,
+        )
+    elif args.algo_name == 'td3':
+        agent = TD3(
+            policy=TD3Mlp,
+            env=env,
+            verbose=1,
+        )
+    elif args.algo_name == 'dqfd':
+        agent = DQfD(
+            policy=DQfDMlp,
+            env=env,
+            learning_rate=args.learning_rate,
+            buffer_size=args.buffer_size,
+            tau=args.soft_update_tau,
+            learning_starts=args.warmup_learn_steps,
+            batch_size=args.batch_size,
+            train_freq=args.train_frequency,
+            gradient_steps=args.gradient_steps,
+            target_update_interval=args.target_update_frequency,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+
+        )
+    elif args.algo_name == 'cfr':
+        agent = CFR(
+            policy=CFRMlp,
+            env=env,
+            learning_rate=args.learning_rate,
+            n_steps=args.rollout_steps,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
+            normalize_advantage=args.normalize_advantage,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+
+        )
 
     # Train the agent
     print('args.max_timesteps:', args.max_timesteps)

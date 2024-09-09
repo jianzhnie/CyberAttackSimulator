@@ -304,7 +304,63 @@ class MCArguments(RLArguments):
             'Flag indicating whether to normalize the advantages. Defaults to True'
         },
     )
-      
+    
+
+
+@dataclass
+class BRArguments(RLArguments):
+    learning_rate: float = field(
+        default=1e-3,
+        metadata={
+            'help': 'Learning rate used by the optimizer. Defaults to 1e-4'
+        },
+    )
+    exploration_rate: float = field(
+        default=0.4,
+        metadata={
+            'help': 'exploration_rate'
+        },
+    )
+    rollout_steps: int = field(
+        default=5,
+        metadata={
+            'help':
+            'The number of steps to run for each environment per update'
+        },
+    )
+    gae_lambda: float = field(
+        default=0.95,
+        metadata={
+            'help':
+            'Lambda for Generalized Advantage Estimation (GAE). Defaults to 0.95'
+        },
+    )
+    ent_coef: float = field(
+        default=0,
+        metadata={
+            'help':
+            'Entropy weight for the policy gradient method. Defaults to 0.01'
+        },
+    )
+    vf_coef: float = field(
+        default=0.5,
+        metadata={
+            'help':
+            'Coefficient for the value loss in the a2c algorithm. Defaults to 0.5'
+        },
+    )
+    max_grad_norm: float = field(
+        default=0.5,
+        metadata={'help': 'Maximum gradient norm. Defaults to 1.0'},
+    )
+    normalize_advantage: bool = field(
+        default=True,
+        metadata={
+            'help':
+            'Flag indicating whether to normalize the advantages. Defaults to True'
+        },
+    )
+
 @dataclass
 class SACArguments(RLArguments):
     """SAC-specific settings."""

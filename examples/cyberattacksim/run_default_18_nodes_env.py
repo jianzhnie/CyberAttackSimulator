@@ -22,13 +22,14 @@ sys.path.append(os.getcwd())
 
 from algorithms.MC.MCAgent import MC
 from algorithms.MC.MCMlp import MCPolicy as MCMlp
+from algorithms.BR.BRAgent import BR
+from algorithms.BR.BRMlp import BRPolicy as BRMlp
 from algorithms.policies.policy import ACSNNPolicy
 from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import create_env
 from cyberattacksim.utils.file_utils import (load_yaml_config,
                                              update_dataclass_from_dict)
-from examples.configs.rl_args import (A2CArguments, DQNArguments, MCArguments,
-                                      PPOArguments)
+from examples.configs.rl_args import (A2CArguments, DQNArguments, MCArguments, BRArguments, PPOArguments)
 
 from algorithms.TD3.TD3Agent import TD3
 from algorithms.TD3.TD3Mlp import TD3Policy as TD3Mlp
@@ -55,6 +56,7 @@ def main() -> None:
             'a2c',
             'ppo',
             'mc',
+            'br',
             'snnppo',
             'sac',
             'td3',
@@ -87,6 +89,8 @@ def main() -> None:
         algo_args: PPOArguments = tyro.cli(PPOArguments)
     elif run_args.algo_name == 'mc':
         algo_args: MCArguments = tyro.cli(MCArguments)
+    elif run_args.algo_name == 'br':
+        algo_args: BRArguments = tyro.cli(BRArguments)
     elif run_args.algo_name == 'sac':
         algo_args: SACArguments = tyro.cli(SACArguments)
     elif run_args.algo_name == 'td3':
@@ -112,7 +116,8 @@ def main() -> None:
     args: A2CArguments = update_dataclass_from_dict(algo_args, env_config)
 
     args: MCArguments = update_dataclass_from_dict(algo_args, env_config)
-
+    args: BRArguments = update_dataclass_from_dict(algo_args, env_config)
+    
     # set file path
     work_dir = os.path.join(args.work_dir, args.env_id)
     model_dir = os.path.join(work_dir, args.algo_name)
@@ -199,6 +204,22 @@ def main() -> None:
         )
     elif args.algo_name == 'mc':
         agent = MC(
+            policy=MCMlp,
+            env=env,
+            exploration_rate=args.exploration_rate,
+            learning_rate=args.learning_rate,
+            n_steps=args.rollout_steps,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
+            normalize_advantage=args.normalize_advantage,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+        )
+    elif args.algo_name == 'br':
+        agent = BR(
             policy=MCMlp,
             env=env,
             exploration_rate=args.exploration_rate,

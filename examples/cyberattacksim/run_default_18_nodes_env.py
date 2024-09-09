@@ -5,8 +5,8 @@ import sys
 import tyro
 import wandb
 
-import torch_npu
-from torch_npu.contrib import transfer_to_npu
+# import torch_npu
+# from torch_npu.contrib import transfer_to_npu
 
 from stable_baselines3 import A2C, DQN, PPO
 from stable_baselines3.a2c import MlpPolicy as A2CMlp

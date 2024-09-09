@@ -24,12 +24,15 @@ from algorithms.MC.MCAgent import MC
 from algorithms.MC.MCMlp import MCPolicy as MCMlp
 from algorithms.BR.BRAgent import BR
 from algorithms.BR.BRMlp import BRPolicy as BRMlp
+from algorithms.policies.policy import ACRNNPolicy
+from algorithms.policies.policy import ACCNNPolicy
 from algorithms.policies.policy import ACSNNPolicy
 from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import create_env
 from cyberattacksim.utils.file_utils import (load_yaml_config,
                                              update_dataclass_from_dict)
-from examples.configs.rl_args import (A2CArguments, DQNArguments, MCArguments, BRArguments, PPOArguments)
+from examples.configs.rl_args import (A2CArguments, DQNArguments, 
+                                        MCArguments, BRArguments, PPOArguments)
 
 from algorithms.TD3.TD3Agent import TD3
 from algorithms.TD3.TD3Mlp import TD3Policy as TD3Mlp
@@ -86,8 +89,14 @@ def main() -> None:
         algo_args: A2CArguments = tyro.cli(A2CArguments)
     elif run_args.algo_name == 'ppo':
         algo_args: PPOArguments = tyro.cli(PPOArguments)
-    elif run_args.algo_name == 'snnppo':
+    elif run_args.algo_name == 'mlpppo':
         algo_args: PPOArguments = tyro.cli(PPOArguments)
+    elif run_args.algo_name == 'cnnppo':
+        algo_args: PPOArguments = tyro.cli(PPOArguments)
+    elif run_args.algo_name == 'snnppo':
+        algo_args: PPOArguments = tyro.cli(PPOArguments)   
+    elif run_args.algo_name == 'rnnppo':
+        algo_args: PPOArguments = tyro.cli(PPOArguments)  
     elif run_args.algo_name == 'mc':
         algo_args: MCArguments = tyro.cli(MCArguments)
     elif run_args.algo_name == 'br':
@@ -237,9 +246,9 @@ def main() -> None:
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
-    elif args.algo_name == 'snnppo':
+    elif args.algo_name == 'mlpppo':
         agent = PPO(
-            policy=ACSNNPolicy,  # ActorCriticPolicy, ACSNNPolicy
+            policy=PPOMlp,
             env=env,
             learning_rate=args.learning_rate,
             n_steps=args.rollout_steps,
@@ -254,7 +263,63 @@ def main() -> None:
             max_grad_norm=args.max_grad_norm,
             tensorboard_log=tf_log_dir,
             verbose=1,
-            policy_kwargs={'net_arch': [64, 64]})
+        )
+    elif args.algo_name == 'cnnppo':
+        agent = PPO(
+            policy=ACCNNPolicy,
+            env=env,
+            learning_rate=args.learning_rate,
+            n_steps=args.rollout_steps,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            clip_range=args.clip_range,
+            normalize_advantage=args.normalize_advantage,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+        )
+    elif args.algo_name == 'snnppo':
+        agent = PPO(
+            policy=ACSNNPolicy,     # ActorCriticPolicy, ACSNNPolicy
+            env=env,
+            learning_rate=args.learning_rate,
+            n_steps=args.rollout_steps,
+            batch_size=args.batch_size,
+            n_epochs=args.n_epochs,
+            gamma=args.gamma,
+            gae_lambda=args.gae_lambda,
+            clip_range=args.clip_range,
+            normalize_advantage=args.normalize_advantage,
+            ent_coef=args.ent_coef,
+            vf_coef=args.vf_coef,
+            max_grad_norm=args.max_grad_norm,
+            tensorboard_log=tf_log_dir,
+            verbose=1,
+            policy_kwargs={'net_arch': [64, 64]}
+        )
+    elif args.algo_name == 'rnnppo':
+            agent = PPO(
+                policy=ACRNNPolicy,     # ActorCriticPolicy, ACNNPolicy
+                env=env,
+                learning_rate=args.learning_rate,
+                n_steps=args.rollout_steps,
+                batch_size=args.batch_size,
+                n_epochs=args.n_epochs,
+                gamma=args.gamma,
+                gae_lambda=args.gae_lambda,
+                clip_range=args.clip_range,
+                normalize_advantage=args.normalize_advantage,
+                ent_coef=args.ent_coef,
+                vf_coef=args.vf_coef,
+                max_grad_norm=args.max_grad_norm,
+                tensorboard_log=tf_log_dir,
+                verbose=1,
+                policy_kwargs={'net_arch': [64, 64]}
+            )
     elif args.algo_name == 'sac':
         agent = SAC(
             policy=SACMlp,

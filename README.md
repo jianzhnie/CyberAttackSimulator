@@ -102,10 +102,11 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name ppo --env
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name sac --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network
+# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqfd --env_id default_18_node_network
 # 运行蒙特卡洛搜索算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mc --env_id default_18_node_network
 # 运行最优反应算法算法
-python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name br --env_id default_18_node_network
+#python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name br --env_id default_18_node_network
 # 运行SNN版本PPO算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name snnppo --env_id default_18_node_network
 # 运行CNN版本PPO算法

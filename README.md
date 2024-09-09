@@ -110,6 +110,8 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name snnppo --
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cnnppo --env_id default_18_node_network
 # 运行MLP版本PPO算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mlpppo --env_id default_18_node_network
+# 运行HER算法
+python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env_id default_18_node_network
 ```
 4.启发式算法GAIL和AIRL的运行脚本
 

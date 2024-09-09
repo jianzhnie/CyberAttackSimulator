@@ -34,7 +34,7 @@ def make_firewall(name: str = '',
     Returns:
         Tuple[str, str, str, int, str]: A tuple containing firewall details.
     """
-    return name, src, dest, port, protocol
+    return (name, src, dest, port, protocol)
 
 
 class NetworkYAMLGenerator:
@@ -90,6 +90,7 @@ class NetworkYAMLGenerator:
         Raises:
             KeyError: If the router already exists in the network.
         """
+        # initialize the router
         _initialize_dict(self.data, 'routers')
         if router_name in self.data['routers']:
             raise KeyError(f"Router '{router_name}' already exists")
@@ -342,7 +343,7 @@ class NetworkYAMLGenerator:
         for firewall in firewalls:
             self.add_firewall_to_host(host_name, *firewall)
 
-    def add_firewalls_to_multiple_hosts(
+    def add_firewalls_to_hosts(
             self, hosts: List[str], firewalls: List[Tuple[str, str, str, int,
                                                           str]]) -> None:
         """Adds firewall rules to multiple hosts.
@@ -383,6 +384,10 @@ class NetworkYAMLGenerator:
             dest (str): The destination network or address.
             via (str): The next hop address.
         """
+        if not self.data[index]:
+            raise KeyError(f"key '{index}' not found")
+        if not self.data[index][index2]:
+            raise KeyError(f"key '{index2}' not found")
         _initialize_list(self.data[index][index2], 'routes')
         self.data[index][index2]['routes'].append({'dest': dest, 'via': via})
 

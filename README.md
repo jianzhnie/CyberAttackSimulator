@@ -75,6 +75,9 @@ git clone https://git.pcl.ac.cn/niejzh/CyberAttackSimulator.git
 ```shell
 cd CyberAttackSimulator
 pip install -r requirements.txt
+pip install torch_geometric
+pip install spikingjelly
+# 注：安装完spikingjelly后，pytorch的版本回到原来的版本，不然不支持npu
 ```
 
 ## Usage
@@ -99,6 +102,7 @@ python cyber/CyberAttackSimulator/examples/cyberattacksim/run_random_connected_g
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqn --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name a2c --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name ppo --env_id default_18_node_network
+
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name sac --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network

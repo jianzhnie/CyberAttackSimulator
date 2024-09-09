@@ -11,7 +11,7 @@ import numpy as np
 import torch as th
 from gymnasium import spaces
 from torch import nn
-import torch_npu
+# import torch_npu
 
 from stable_baselines3.common.distributions import (
     BernoulliDistribution,
@@ -33,7 +33,7 @@ from stable_baselines3.common.torch_layers import (
 )
 from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
 from stable_baselines3.common.utils import get_device, is_vectorized_observation, obs_as_tensor
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 SelfBaseModel = TypeVar("SelfBaseModel", bound="BaseModel")
 
 

@@ -2,7 +2,7 @@ from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, TypeVar, Un
 
 import numpy as np
 import torch as th
-import torch_npu
+# import torch_npu
 from gymnasium import spaces
 from torch.nn import functional as F
 
@@ -13,7 +13,7 @@ from stable_baselines3.common.policies import BasePolicy, ContinuousCritic
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
 from stable_baselines3.common.utils import get_parameters_by_name, polyak_update
 from stable_baselines3.td3.policies import Actor, CnnPolicy, MlpPolicy, MultiInputPolicy, TD3Policy
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 
 SelfTD3 = TypeVar("SelfTD3", bound="TD3")
 

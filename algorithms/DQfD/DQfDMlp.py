@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Type
 import torch as th
 from gymnasium import spaces
 from torch import nn
-import torch_npu
+# import torch_npu
 
 from stable_baselines3.common.policies import BasePolicy
 from stable_baselines3.common.torch_layers import (
@@ -14,7 +14,7 @@ from stable_baselines3.common.torch_layers import (
     create_mlp,
 )
 from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 
 class QNetwork(BasePolicy):
     """

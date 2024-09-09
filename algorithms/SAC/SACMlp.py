@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 import torch as th
 from gymnasium import spaces
 from torch import nn
-import torch_npu
+# import torch_npu
 
 
 from stable_baselines3.common.distributions import SquashedDiagGaussianDistribution, StateDependentNoiseDistribution
@@ -18,7 +18,7 @@ from stable_baselines3.common.torch_layers import (
     get_actor_critic_arch,
 )
 from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 # CAP the standard deviation of the actor
 LOG_STD_MAX = 2
 LOG_STD_MIN = -20

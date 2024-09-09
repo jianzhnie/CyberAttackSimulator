@@ -3,7 +3,7 @@ from typing import Any, Dict, List, Optional, Type, Union
 import torch as th
 from gymnasium import spaces
 from torch import nn
-import torch_npu
+# import torch_npu
 
 from stable_baselines3.common.policies import BasePolicy, ContinuousCritic
 from stable_baselines3.common.preprocessing import get_action_dim
@@ -16,7 +16,7 @@ from stable_baselines3.common.torch_layers import (
     get_actor_critic_arch,
 )
 from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 
 class Actor(BasePolicy):
     """

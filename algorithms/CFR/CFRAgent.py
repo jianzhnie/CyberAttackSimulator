@@ -3,7 +3,7 @@ from typing import Any, ClassVar, Dict, Optional, Type, TypeVar, Union
 
 import numpy as np
 import torch as th
-import torch_npu
+# import torch_npu
 
 from gymnasium import spaces
 from torch.nn import functional as F
@@ -13,7 +13,7 @@ from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
 from stable_baselines3.common.policies import ActorCriticCnnPolicy, ActorCriticPolicy, BasePolicy, MultiInputActorCriticPolicy
 from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
 from stable_baselines3.common.utils import explained_variance, get_schedule_fn
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 SelfCFR = TypeVar("SelfCFR", bound="CFR")
 
 

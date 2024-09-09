@@ -107,12 +107,10 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mc --env_id default_18_node_network
 # 运行最优反应算法算法
 #python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name br --env_id default_18_node_network
-# 运行SNN版本PPO算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name snnppo --env_id default_18_node_network
-# 运行CNN版本PPO算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cnnppo --env_id default_18_node_network
-# 运行MLP版本PPO算法
-python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mlpppo --env_id default_18_node_network
+# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mlpppo --env_id default_18_node_network
+python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name rnnppo --env_id default_18_node_network
 # 运行HER算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env_id default_18_node_network
 ```

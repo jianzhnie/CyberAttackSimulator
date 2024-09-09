@@ -91,8 +91,8 @@ def main() -> None:
         algo_args: SACArguments = tyro.cli(SACArguments)
     elif run_args.algo_name == 'td3':
         algo_args: TD3Arguments = tyro.cli(TD3Arguments)
-    elif run_args.algo_name == 'dqfd':
-        algo_args: DQfDArguments = tyro.cli(DQfDArguments)
+    # elif run_args.algo_name == 'dqfd':
+    #     algo_args: DQfDArguments = tyro.cli(DQfDArguments)
     elif run_args.algo_name == 'cfr':
         algo_args: CFRArguments = tyro.cli(CFRArguments)
     else:

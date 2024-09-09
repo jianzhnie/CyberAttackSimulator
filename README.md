@@ -99,7 +99,9 @@ python cyber/CyberAttackSimulator/examples/cyberattacksim/run_random_connected_g
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqn --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name a2c --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name ppo --env_id default_18_node_network
-
+python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name sac --env_id default_18_node_network
+python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env_id default_18_node_network
+python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network
 # 运行蒙特卡洛搜索算法
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mc --env_id default_18_node_network
 # 运行最优反应算法算法

@@ -78,6 +78,7 @@ pip install -r requirements.txt
 pip install torch_geometric
 pip install spikingjelly
 # 注：安装完spikingjelly后，pytorch的版本回到原来的版本，不然不支持npu
+pip install numpy==1.24.0
 ```
 
 ## Usage

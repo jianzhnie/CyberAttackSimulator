@@ -79,6 +79,12 @@ def main() -> None:
         default='default_18_node_network',
         help="The environment name. Defaults to 'CartPole-v0'",
     )
+    parser.add_argument(
+        '--use_wandb',
+        type=bool,
+        default=False,
+        help="Will use wandb or not",
+    )
     # directories
     curr_path = os.getcwd()
     # Load YAML configuration
@@ -141,11 +147,12 @@ def main() -> None:
     media_dir = os.path.join(work_dir, args.algo_name, 'media')
     if not os.path.exists(work_dir):
         os.makedirs(work_dir)
-
-    run = wandb.init(dir=work_dir,
-                     project=args.project,
-                     name=args.env_id,
-                     sync_tensorboard=True)
+    
+    if run_args.use_wandb:
+        run = wandb.init(dir=work_dir,
+                        project=args.project,
+                        name=args.env_id,
+                        sync_tensorboard=True)
     env = create_env(env_id=args.env_id)
     # setup the monitor to check the training
     env = Monitor(env, model_name)
@@ -163,12 +170,13 @@ def main() -> None:
         render=False,
         verbose=1,
     )
-    wandb_callback = WandbCallback(
-        model_save_path=model_dir,
-        model_save_freq=1000,
-        verbose=2,
-    )
-    if args.algo_name == 'dqn':
+    if run_args.use_wandb:
+        wandb_callback = WandbCallback(
+            model_save_path=model_dir,
+            model_save_freq=1000,
+            verbose=2,
+        )
+    if run_args.algo_name == 'dqn':
         agent = DQN(
             policy=DQNMlp,
             env=env,
@@ -386,18 +394,23 @@ def main() -> None:
     # Train the agent
     print('args.max_timesteps:', args.max_timesteps)
     # import pdb; pdb.set_trace()
+    if run_args.use_wandb:
+        callbacks = [eval_callback, wandb_callback]
+    else:
+        callbacks = [eval_callback]
     agent.learn(
         total_timesteps=args.max_timesteps,
-        callback=[eval_callback, wandb_callback],
+        callback=callbacks,
         log_interval=args.train_log_interval,
         progress_bar=True,
     )
     evaluate_policy(agent, env, n_eval_episodes=args.eval_episodes)
     # save the trained-converged model
     agent.save(model_name)
-    run.finish()
+    if run_args.use_wandb:
+        run.finish()
     # visualize the trained-converged model
-    loop = ActionLoop(env, agent, episode_count=5)
+    loop = ActionLoop(env, agent, episode_count=3)
     loop.gif_action_loop(
         save_gif=True,
         render_network=True,

@@ -97,7 +97,13 @@ python examples/cyberattacksim/run_random_nodes_env.py
 python cyber/CyberAttackSimulator/examples/cyberattacksim/run_random_connected_graph_env.py
 ```
 
-3. 运行一个 18 节点网络自动攻防（DQN， A2C， PPO）
+3. 运行超大网络节点环境的自动攻防（可选节点数量 1000， 5000， 10000， 100000, 150000）
+
+```shell
+python examples/cyberattacksim/run_massive_nodes_network.py --massive_node_size 1000
+```
+
+4. 运行一个 18 节点网络自动攻防（DQN， A2C， PPO）
 
 ```python
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqn --env_id default_18_node_network
@@ -107,6 +113,7 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name ppo --env
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name sac --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network
+
 # python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqfd --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mc --env_id default_18_node_network
 # python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name br --env_id default_18_node_network
@@ -116,7 +123,8 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cnnppo --
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name rnnppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env_id default_18_node_network
 ```
-4.启发式算法GAIL和AIRL的运行脚本
+
+5. 启发式算法GAIL和AIRL的运行脚本
 
 ```python
 python algorithms/GAIL_and_AIRL/train_imitation_discrete.py -algo gail --env_id default_18_node_network

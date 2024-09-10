@@ -14,7 +14,7 @@ import sys
 import time
 from copy import deepcopy
 from importlib.resources import files
-
+import argparse
 import gymnasium as gym
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
@@ -105,9 +105,20 @@ def create_massive_node_env(network_size: int = 10):
     return env
 
 
-def main():
+def main() -> None:
     """Run the custom config."""
-    env = create_massive_node_env(network_size=150000)
+    # Initialize ArgumentParser
+    parser = argparse.ArgumentParser(description="Cyber Attack Sim")
+    parser.add_argument(
+        "--massive_node_size",
+        type=int,
+        choices=[1000, 5000, 10000, 100000, 150000],
+        default=1000,
+        help="Number of the massive network node size. Defaults to 1000",
+    )
+    args = parser.parse_args()
+
+    env = create_massive_node_env(network_size=args.massive_node_size)
     # get the current directory
     current_dir = os.getcwd()
     # directories

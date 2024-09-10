@@ -85,25 +85,20 @@ pip install numpy==1.24.0
 
 要运行任何 CyberAttackSimulator 脚本，请进入 `cybersim` 虚拟环境. 所有运行的例子都在 `examples` 文件夹下。
 
-1. `随机节点数量网络` 环境创建，模型训练, 这里，你可以尝试不同的网络结构和修改网络节点数量。
 
-```python
-python examples/cyberattacksim/run_random_nodes_env.py
-```
-
-2. `随机连接网络` 环境创建，模型训练
+1. `随机连接网络` 环境创建，模型训练
 
 ```python
 python examples/cyberattacksim/run_random_connected_graph_env.py
 ```
 
-3. 运行超大网络节点环境的自动攻防（可选节点数量 1000， 5000， 10000， 100000, 150000）
+2. 运行超大网络节点环境的自动攻防（可选节点数量 1000， 5000， 10000， 100000, 150000）
 
 ```shell
 python examples/cyberattacksim/run_massive_nodes_network.py --massive_node_size 1000
 ```
 
-4. 运行一个 18 节点网络自动攻防（DQN， A2C， PPO）
+3. 运行一个 18 节点网络自动攻防（DQN， A2C， PPO）
 
 ```python
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqn --env_id default_18_node_network
@@ -124,14 +119,14 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name rnnppo --
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env_id default_18_node_network
 ```
 
-5. 启发式算法GAIL和AIRL的运行脚本
+4. 启发式算法GAIL和AIRL的运行脚本
 
 ```python
 python algorithms/GAIL_and_AIRL/train_imitation_discrete.py --algo gail --env_id default_18_node_network
 python algorithms/GAIL_and_AIRL/train_imitation_discrete.py --algo airl --env_id default_18_node_network
 ```
 
-6. 在 mindspore 框架中运行网络攻防引擎
+5. 在 mindspore 框架中运行网络攻防引擎
 ```shell
 cd algorithms/mindrl/example/dqn_cybersim
 

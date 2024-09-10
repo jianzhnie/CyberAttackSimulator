@@ -31,6 +31,7 @@ from cyberattacksim.envs.generic.core.action_loops import ActionLoop
 from cyberattacksim.utils.env_utils import create_env
 from cyberattacksim.utils.file_utils import (load_yaml_config,
                                              update_dataclass_from_dict)
+from cyberattacksim.utils.setup_app_dirs import setup_app_dirs
 from examples.configs.rl_args import (A2CArguments, DQNArguments, 
                                         MCArguments, BRArguments, PPOArguments)
 
@@ -85,6 +86,7 @@ def main() -> None:
         default=False,
         help="Will use wandb or not",
     )
+    setup_app_dirs()
     # directories
     curr_path = os.getcwd()
     # Load YAML configuration

@@ -8,7 +8,7 @@ from cyberattacksim import (_CAS_USER_DIRS, AGENTS_DIR, AGENTS_LOGS_DIR,
 _LOGGER = getLogger(__name__)
 
 
-def run():
+def setup_app_dirs():
     """Handles creation of application directories and user directories.
 
     Uses `platformdirs.PlatformDirs` and `pathlib.Path` to create the required
@@ -35,4 +35,4 @@ def run():
 
 
 if __name__ == '__main__':
-    run()
+    setup_app_dirs()

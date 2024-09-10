@@ -4,7 +4,7 @@ import yaml
 
 from importlib.resources import files
 from typing import Dict, List
-from gym import Space
+from gymnasium import Space
 
 from cyberwheel.blue_agents.blue_agent import BlueAgent, BlueAgentResult
 from cyberwheel.reward.reward_base import RewardMap

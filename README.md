@@ -131,6 +131,16 @@ python algorithms/GAIL_and_AIRL/train_imitation_discrete.py -algo gail --env_id 
 python algorithms/GAIL_and_AIRL/train_imitation_discrete.py -algo airl --env_id default_18_node_network
 ```
 
+6. 在 mindspore 框架中运行网络攻防引擎
+```shell
+cd algorithms/mindrl/example/dqn_cybersim
+
+python train.py
+```
+
+
+
+
 ## CyberAttackSimulator GUI
 
 ### CyberAttackSimulator GUI 是如何构建的

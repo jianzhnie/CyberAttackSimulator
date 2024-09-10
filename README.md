@@ -94,7 +94,7 @@ python examples/cyberattacksim/run_random_nodes_env.py
 2. `随机连接网络` 环境创建，模型训练
 
 ```python
-python cyber/CyberAttackSimulator/examples/cyberattacksim/run_random_connected_graph_env.py
+python examples/cyberattacksim/run_random_connected_graph_env.py
 ```
 
 3. 运行超大网络节点环境的自动攻防（可选节点数量 1000， 5000， 10000， 100000, 150000）

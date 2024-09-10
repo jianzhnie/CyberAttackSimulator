@@ -8,13 +8,13 @@ be collected during the simulation.
 
 import copy
 import json
+import random
 from collections import Counter
 from typing import Dict, Tuple
 
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-from stable_baselines3.common.utils import set_random_seed
 
 import cyberattacksim.envs.generic.core.reward_functions as reward_functions
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
@@ -93,6 +93,24 @@ class GenericNetworkEnv(gym.Env):
 
         self.collect_data = collect_additional_per_ts_data
         self.env_observation = self.network_interface.get_current_observation()
+        self.state_dim = (self.network_interface.get_observation_size(), )
+        self.action_dim = self.action_space.n
+
+    def seed(self, seed: int = None):
+        """设置随机种子以控制环境的随机性。
+
+        Args:
+            seed (int): 随机种子。如果为 None，使用系统时间生成随机种子。
+
+        Returns:
+            List[int]: 包含实际使用的随机种子值。
+        """
+        # 如果提供了种子，则设置 NumPy 和 random 模块的种子
+        self.np_random = np.random.RandomState(seed)
+        random.seed(seed)
+
+        # 返回使用的种子，通常用于确认种子设置成功
+        return [seed]
 
     def reset(self, seed: int = 0) -> np.array:
         """Reset the environment to the default state.
@@ -101,8 +119,8 @@ class GenericNetworkEnv(gym.Env):
 
         :return: A new starting observation (numpy array).
         """
-        if self.random_seed is not None:  # conditionally set random_seed
-            set_random_seed(self.random_seed, True)
+        # if self.random_seed is not None:  # conditionally set random_seed
+        #     set_random_seed(self.random_seed, True)
         self.network_interface.reset()
         self.RED.reset()
         self.current_duration = 0

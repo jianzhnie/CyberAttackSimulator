@@ -161,7 +161,6 @@ def main() -> None:
     # define callback to stop the trainingX
     stop_train_callback = StopTrainingOnNoModelImprovement(
         max_no_improvement_evals=5, min_evals=10, verbose=1)
-    print(stop_train_callback)
     eval_callback = EvalCallback(
         env,
         n_eval_episodes=10,

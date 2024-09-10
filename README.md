@@ -127,8 +127,8 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env
 5. 启发式算法GAIL和AIRL的运行脚本
 
 ```python
-python algorithms/GAIL_and_AIRL/train_imitation_discrete.py -algo gail --env_id default_18_node_network
-python algorithms/GAIL_and_AIRL/train_imitation_discrete.py -algo airl --env_id default_18_node_network
+python algorithms/GAIL_and_AIRL/train_imitation_discrete.py --algo gail --env_id default_18_node_network
+python algorithms/GAIL_and_AIRL/train_imitation_discrete.py --algo airl --env_id default_18_node_network
 ```
 
 6. 在 mindspore 框架中运行网络攻防引擎

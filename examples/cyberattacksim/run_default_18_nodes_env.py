@@ -178,7 +178,7 @@ def main() -> None:
             model_save_freq=1000,
             verbose=2,
         )
-    if run_args.algo_name == 'dqn':
+    if args.algo_name == 'dqn':
         agent = DQN(
             policy=DQNMlp,
             env=env,

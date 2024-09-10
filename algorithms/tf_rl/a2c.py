@@ -16,6 +16,7 @@ import keras
 import numpy as np
 import tensorflow as tf
 from keras import layers, ops
+from cyberattacksim.utils.env_utils import create_env
 
 
 def actor_critc(input_dim: int = 4,
@@ -45,7 +46,8 @@ def main() -> None:
         np.float32).eps.item()  # Smallest number such that 1.0 + eps != 1.0
 
     # Create the environment
-    env = gym.make('CartPole-v0')  # Create the environment
+    # env = gym.make('CartPole-v0')
+    env = create_env(env_id="default_18_node_network")
 
     obs_dim = env.observation_space.shape[0]
     num_actions = env.action_space.n

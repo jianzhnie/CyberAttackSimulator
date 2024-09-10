@@ -6,6 +6,7 @@ import numpy as np
 import scipy.signal
 import tensorflow as tf
 from keras import layers
+from cyberattacksim.utils.env_utils import create_env
 
 os.environ['KERAS_BACKEND'] = 'tensorflow'
 """
@@ -171,7 +172,7 @@ render = False
 
 # Initialize the environment and get the dimensionality of the
 # observation space and the number of possible actions
-env = gym.make('CartPole-v1')
+env = create_env(env_id="default_18_node_network")
 observation_dimensions = env.observation_space.shape[0]
 num_actions = env.action_space.n
 

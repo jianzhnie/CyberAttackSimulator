@@ -8,6 +8,7 @@ import numpy as np
 import tensorflow as tf
 from gymnasium.wrappers import AtariPreprocessing, FrameStack
 from keras import layers
+from cyberattacksim.utils.env_utils import create_env
 
 # Configuration parameters for the whole setup
 seed = 42
@@ -20,37 +21,19 @@ epsilon_interval = (
 )  # Rate at which to reduce chance of random action being taken
 batch_size = 32  # Size of batch taken from replay buffer
 max_steps_per_episode = 10000
-max_episodes = 10  # Limit training episodes, will run until solved if smaller than 1
+max_episodes = 100  # Limit training episodes, will run until solved if smaller than 1
 
 # Use the Atari environment
 # Specify the `render_mode` parameter to show the attempts of the agent in a pop up window.
-env = gym.make('BreakoutNoFrameskip-v4')  # , render_mode="human")
-# Environment preprocessing
-env = AtariPreprocessing(env)
-# Stack four frames
-env = FrameStack(env, 4)
-env.seed(seed)
-
-num_actions = 4
-
+# env = gym.make('BreakoutNoFrameskip-v4')  # , render_mode="human")
+env = create_env(env_id="default_18_node_network")
+obs_dim = env.observation_space.shape[0]
+num_actions = env.action_space.n
 
 def create_q_model():
     # Network defined by the Deepmind paper
     return keras.Sequential([
-        layers.Lambda(
-            lambda tensor: keras.ops.transpose(tensor, [0, 2, 3, 1]),
-            output_shape=(84, 84, 4),
-            input_shape=(4, 84, 84),
-        ),
-        # Convolutions on the frames on the screen
-        layers.Conv2D(32,
-                      8,
-                      strides=4,
-                      activation='relu',
-                      input_shape=(4, 84, 84)),
-        layers.Conv2D(64, 4, strides=2, activation='relu'),
-        layers.Conv2D(64, 3, strides=1, activation='relu'),
-        layers.Flatten(),
+        layers.Dense(543, activation='relu'),
         layers.Dense(512, activation='relu'),
         layers.Dense(num_actions, activation='linear'),
     ])

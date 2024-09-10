@@ -5,7 +5,6 @@ import random
 from abc import ABC, abstractmethod
 from typing import Type, List, Tuple, Any
 
-from ray import init
 from cyberwheel.red_actions.red_base import ARTAction
 from cyberwheel.network.network_base import Host, Subnet
 from cyberwheel.network.service import Service

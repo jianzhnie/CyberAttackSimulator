@@ -1,4 +1,4 @@
-from importlib.resources import files
+from pathlib import Path
 import ipaddress as ipa
 import json
 import matplotlib.pyplot as plt
@@ -162,7 +162,7 @@ class Network:
         except KeyError:
             return None  # return None if host not found
 
-    def check_compromised_status(self, host_name: str) -> bool | None:
+    def check_compromised_status(self, host_name: str) -> Union[bool, None]:
         try:
             host_obj = self.get_node_from_name(host_name)
             return host_obj.is_compromised
@@ -294,7 +294,7 @@ class Network:
     @classmethod
     def create_network_from_yaml(cls, network_config=None, host_config="host_defs_services.yaml"):  # type: ignore
         if network_config is None:
-            config_dir = files("cyberwheel.resources.configs.network")
+            config_dir = Path("cyberwheel/resources/configs/network")
             network_config: PosixPath = config_dir.joinpath(
                 "example_config.yaml"
             )  # type:ignore
@@ -311,7 +311,7 @@ class Network:
         # Create an instance of the Network class
         network = cls(name=config["network"].get("name"))
 
-        conf_dir = files("cyberwheel.resources.configs.host_definitions")
+        conf_dir = Path("cyberwheel/resources/configs/host_definitions")
         conf_file = conf_dir.joinpath(host_config)
         with open(conf_file) as f:
             type_config = yaml.safe_load(f)
@@ -425,7 +425,7 @@ class Network:
         network.initialize_interfacing()
         return network
 
-    def get_node_from_name(self, node: str) -> NetworkObject | Host | Subnet | Router:
+    def get_node_from_name(self, node: str) -> Union[NetworkObject, Host, Subnet,Router]:
         """
         Return network object by name
 
@@ -629,7 +629,7 @@ class Network:
         return False
 
     def add_host_to_subnet(
-        self, name: str, subnet: Subnet, host_type: HostType | None, **kwargs
+        self, name: str, subnet: Subnet, host_type: Union[HostType, None], **kwargs
     ) -> Host:
         """
         Create host and add it to parent subnet and self.graph
@@ -673,7 +673,7 @@ class Network:
     def remove_host_from_subnet(self, host: Host) -> None:
         # release DHCP lease
         if host.ip_address is not None:
-            ip: ipa.IPv4Address | ipa.IPv6Address = host.ip_address
+            ip: Union[ipa.IPv4Address, ipa.IPv6Address] = host.ip_address
             host.subnet.available_ips.append(ip)
         if host in self.get_hosts():
             self.remove_node(host)
@@ -793,7 +793,7 @@ class Network:
         services_list = host_type.get("services", [])
 
         windows_services = {}
-        config_dir = files("cyberwheel.resources.configs.services")
+        config_dir = Path("cyberwheel/resources/configs/services")
         config_file_path: PosixPath = config_dir.joinpath(
             "windows_exploitable_services.yaml"
         )  # type:ignore

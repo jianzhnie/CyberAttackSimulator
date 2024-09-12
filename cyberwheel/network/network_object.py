@@ -1,11 +1,11 @@
 import ipaddress as ipa
 from pydantic import BaseModel
 from typing import Generator, List
-
+from typing import Union
 
 class Route(BaseModel):
-    dest: ipa.IPv4Network | ipa.IPv6Network
-    via: ipa.IPv4Address | ipa.IPv6Address
+    dest: Union[ipa.IPv4Network, ipa.IPv6Network]
+    via: Union[ipa.IPv4Address, ipa.IPv6Address]
 
     def __hash__(self):
         return hash((self.dest, self.via))
@@ -29,9 +29,9 @@ class RoutingTable(BaseModel):
 class FirewallRule(BaseModel):
     name: str = 'allow all'
     src: str = 'all'
-    port: int | str = 'all'
+    port: Union[int, str]= 'all'
     proto: str = 'tcp'
-    desc: str | None = None
+    desc: Union[str, None]= None
 
 
     def __eq__(self, other) -> bool:
@@ -47,7 +47,7 @@ class NetworkObject:
     """
     Base class for host, subnet, and router objects
     """
-    def __init__(self, name, firewall_rules: list[FirewallRule | None] = []):
+    def __init__(self, name, firewall_rules: list[Union[FirewallRule, None]] = []):
         self.name = name
         # default to 'allow all' if no rules defined
         ### this is antithetical to how firewalls work in the real world,
@@ -97,7 +97,7 @@ class NetworkObject:
         self.firewall_rules = updated_rules
 
 
-    def generate_ip_object(self, ip: str) -> ipa.IPv4Address | ipa.IPv6Address:
+    def generate_ip_object(self, ip: str) -> Union[ipa.IPv4Address, ipa.IPv6Address]:
         try:
             return ipa.ip_address(ip)
         except ValueError as e:
@@ -105,7 +105,7 @@ class NetworkObject:
             raise e
 
 
-    def generate_ip_network_object(self, net: str) -> ipa.IPv4Network | ipa.IPv6Network:
+    def generate_ip_network_object(self, net: str) -> Union[ipa.IPv4Network, ipa.IPv6Network]:
         try:
             return ipa.ip_network(net)
         except ValueError as e:
@@ -114,8 +114,8 @@ class NetworkObject:
 
 
     def generate_route(self,
-                       dest_net: ipa.IPv4Network | ipa.IPv6Network,
-                       via_ip: ipa.IPv4Address | ipa.IPv6Address) -> Route:
+                       dest_net: Union[ipa.IPv4Network, ipa.IPv6Network],
+                       via_ip: Union[ipa.IPv4Address, ipa.IPv6Address]) -> Route:
         '''
         Generate a Route object from dest network and nexthop IP
 
@@ -135,8 +135,8 @@ class NetworkObject:
         :raises ValueError:
         '''
         try:
-            dest: ipa.IPv4Network | ipa.IPv6Network = ipa.ip_network(dest_net)
-            via: ipa.IPv4Address | ipa.IPv6Address = ipa.ip_address(via_ip)
+            dest: Union[ipa.IPv4Network, ipa.IPv6Network] = ipa.ip_network(dest_net)
+            via: Union[ipa.IPv4Address, ipa.IPv6Address] = ipa.ip_address(via_ip)
         except ValueError as e:
             # TODO: raise custom exception?
             raise e
@@ -182,7 +182,7 @@ class NetworkObject:
 
 
     def get_nexthop_from_routes(self,
-                                dest_ip: ipa.IPv4Address | ipa.IPv6Address):
+                                dest_ip: Union[ipa.IPv4Address, ipa.IPv6Address]):
         '''
         Return most specific route that matches dest_ip
 

@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from cyberwheel.reward.reward_base import (
     Reward,
@@ -43,7 +43,7 @@ class DecoyReward(Reward):
         red_success: str,
         blue_success: bool,
         red_action_alerted: bool,
-    ) -> int | float:
+    ) -> Union[int, float]:
         if red_action_alerted:
             r = abs(self.red_rewards[red_action][0]) * self.scaling_factor * 10
         elif red_success:
@@ -58,7 +58,7 @@ class DecoyReward(Reward):
             b = -100 * self.scaling_factor
         return r + b + self.sum_recurring_blue() + self.sum_recurring_red()
 
-    def sum_recurring_blue(self) -> int | float:
+    def sum_recurring_blue(self) -> Union[int, float]:
         sum = 0
         for ra in self.blue_recurring_actions:
             sum += self.blue_rewards[ra.action][1]
@@ -84,7 +84,7 @@ class DecoyReward(Reward):
                 self.blue_recurring_actions.pop(i)
                 break
 
-    def sum_recurring_red(self) -> int | float:
+    def sum_recurring_red(self) -> Union[int, float]:
         sum = 0
         for ra in self.red_recurring_actions:
             if ra[1]:

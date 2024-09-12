@@ -1,5 +1,5 @@
 import copy
-from importlib.resources import files
+from pathlib import Path
 from gymnasium import spaces
 import gymnasium as gym
 from typing import Dict, Iterable, List
@@ -125,14 +125,12 @@ class DynamicCyberwheel(gym.Env, Cyberwheel):
             - If not passed, it will build the mapping when defining the red agent.
             - Default: {}
         """
-        network_conf_file = files("cyberwheel.resources.configs.network").joinpath(
-            network_config
-        )
-        decoy_conf_file = files("cyberwheel.resources.configs.decoy_hosts").joinpath(
+        network_conf_file = Path("cyberwheel/resources/configs/network").joinpath(network_config)
+        decoy_conf_file = Path("cyberwheel/resources/configs/decoy_hosts").joinpath(
             decoy_host_file
         )
-        host_conf_file = files(
-            "cyberwheel.resources.configs.host_definitions"
+        host_conf_file = Path(
+            "cyberwheel/resources/configs/host_definitions"
         ).joinpath(host_def_file)
         super().__init__(config_file_path=network_conf_file, network=network)
         self.total = 0
@@ -167,14 +165,14 @@ class DynamicCyberwheel(gym.Env, Cyberwheel):
             red_strategy=self.red_strategy,
         )
 
-        self.blue_conf_file = files("cyberwheel.resources.configs.blue_agent").joinpath(
+        self.blue_conf_file = Path("cyberwheel/resources/configs/blue_agent").joinpath(
             blue_config
         )
         self.blue_agent = DynamicBlueAgent(self.blue_conf_file, self.network)
         self.action_space = self.blue_agent.create_action_space()
         # self.blue_agent = DecoyBlueAgent(self.network, self.decoy_info, self.host_defs)
 
-        detector_conf_file = files("cyberwheel.resources.configs.detector").joinpath(
+        detector_conf_file = Path("cyberwheel/resources/configs/detector").joinpath(
             detector_config
         )
         self.detector = DetectorHandler(detector_conf_file)

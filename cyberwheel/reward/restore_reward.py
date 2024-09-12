@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 from cyberwheel.reward.reward_base import Reward, RewardMap, RecurringAction, calc_quadratic
 
@@ -16,7 +16,7 @@ class RestoreReward(Reward):
         blue_action: str,
         red_success: str,
         blue_success: bool,
-    ) -> int | float:
+    ) -> Union[int,float]:
         if red_success:
             r = self.red_rewards[red_action][0]
         else:

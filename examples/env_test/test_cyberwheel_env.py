@@ -1,8 +1,7 @@
 import os
 import sys
 from copy import deepcopy
-from importlib.resources import files
-
+from pathlib import Path
 import gymnasium as gym
 
 sys.path.append(os.getcwd())
@@ -29,7 +28,7 @@ def create_cyberwheel_env(
     """Creates a DynamicCyberwheel environment."""
 
     # Load network from yaml here
-    network_config = files('cyberwheel.resources.configs.network').joinpath(
+    network_config = Path('cyberwheel/resources/configs/network').joinpath(
         network_config)
     print(f'Building network: {network_config} ...')
     network = Network.create_network_from_yaml(network_config)
@@ -91,7 +90,7 @@ def create_massive_node_env(network_size: int = 10):
 
 if __name__ == '__main__':
     # Load network from yaml here
-    env = create_massive_node_env(network_size=100000)
+    env = create_massive_node_env(network_size=1000)
 
     done = False
     steps = 0
@@ -99,6 +98,6 @@ if __name__ == '__main__':
     while not done:
         action = env.action_space.sample()
         obs, reward, done, truncated, info = env.step(action)
-        print(reward, done, truncated, info)
+        print(obs.shape, reward, done, truncated, info)
         steps += 1
     print(f'Env finished after {steps} steps')

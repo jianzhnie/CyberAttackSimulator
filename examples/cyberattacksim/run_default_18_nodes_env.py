@@ -78,7 +78,8 @@ def main() -> None:
         '--env_id',
         type=str,
         default='default_18_node_network',
-        help="The environment name. Defaults to 'CartPole-v0'",
+        choices=['default_18_node_network', 'dcbo_base_network', 'random_connected_network'],
+        help="The environment name. Defaults to 'default_18_node_network'",
     )
     parser.add_argument(
         '--use_wandb',

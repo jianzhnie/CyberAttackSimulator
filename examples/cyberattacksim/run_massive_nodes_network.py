@@ -14,6 +14,7 @@ import sys
 import time
 from copy import deepcopy
 from importlib.resources import files
+from pathlib import Path
 import argparse
 import gymnasium as gym
 import torch_npu
@@ -47,7 +48,7 @@ def create_cyberwheel_env(
     """Creates a DynamicCyberwheel environment."""
 
     # Load network from yaml here
-    network_config = files('cyberwheel.resources.configs.network').joinpath(
+    network_config = Path('cyberwheel/resources/configs/network').joinpath(
         network_config)
     print(f'Building network: {network_config} ...')
     network = Network.create_network_from_yaml(network_config)

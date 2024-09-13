@@ -106,15 +106,11 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name a2c --env
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name ppo --env_id default_18_node_network
 
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name sac --env_id default_18_node_network
-python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network
 
-# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqfd --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mc --env_id default_18_node_network
-# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name br --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name snnppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cnnppo --env_id default_18_node_network
-# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mlpppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name rnnppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env_id default_18_node_network
 ```

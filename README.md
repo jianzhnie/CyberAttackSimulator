@@ -251,6 +251,29 @@ docker kill container_id
 
 - 当前的卡挂载到容器时是以独占的方式， 所以如果启动 Docker 时尽量选择一张空的卡
 
+
+### 在 910C上启动 Docker
+
+```shell
+# PyTorch2.1.0-cann7.0.0.alpha003_py_3.9-euler_2.8.3-64GB
+docker_images=cybersim:910C
+model_dir=/root/work_dir/
+docker run -it  -u root  --ipc=host --net=host \
+        --device=/dev/davinci0 \
+        --device=/dev/davinci1 \
+        --device=/dev/davinci_manager  \
+        --device=/dev/devmm_svm  \
+        --device=/dev/hisi_hdc  \
+        -v /usr/local/Ascend/driver:/usr/local/Ascend/driver   \
+        -v /usr/local/dcmi:/usr/local/dcmi  \
+        -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi  \
+        -v /usr/local/Ascend/firmware:/usr/local/Ascend/firmware  \
+        -v /usr/local/sbin/npu-smi:/usr/local/sbin/npu-smi  \
+        -v ${model_dir}:${model_dir} \
+        --entrypoint=/bin/bash   \
+        ${docker_images} 
+```
+
 ### 关于当前镜像
 
 - CANN版本：8.0

@@ -1,7 +1,9 @@
 # Change `device` upon your resources
 docker_images=cybersim:v2
 model_dir=/home/niejz/work_dir
+
 docker run -it -u root --ipc=host --net=host \
+        --name niejzh_PleaseDontStop \
         --device=/dev/davinci6 \
         --device=/dev/davinci_manager \
         --device=/dev/devmm_svm \

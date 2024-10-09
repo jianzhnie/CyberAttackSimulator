@@ -1,11 +1,15 @@
 import os
+import sys
 import time
 
 import gymnasium as gym
 import networkx as nx
 
+sys.path.append(os.getcwd())
+
 from cyberattacksim.envs.generic.core.blue_interface import BlueInterface
-from cyberattacksim.envs.generic.core.network_interface import NetworkInterface
+from cyberattacksim.envs.generic.core.network_interface_pro import \
+    NetworkInterface
 from cyberattacksim.envs.generic.core.red_interface import RedInterface
 from cyberattacksim.envs.generic.generic_env import GenericNetworkEnv
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
@@ -117,7 +121,9 @@ def creat_massive_env(network: Network) -> gym.Env:
 
 if __name__ == '__main__':
     start_time = time.time()
-    network = creat_massive_network(graph_name='path_graph', num_nodes=100000)
+    network = creat_massive_network(graph_name='path_graph',
+                                    data_dir='work_dir/networks',
+                                    num_nodes=100000)
     end_time = time.time()
     print(f'Time to create network: {end_time - start_time}')
     start_time = time.time()
@@ -126,12 +132,13 @@ if __name__ == '__main__':
     print(f'Time to create env: {end_time - start_time}')
     done = False
     steps = 0
-    obs = env.reset()
+    obs, _ = env.reset()
     start_time = time.time()
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
-        print(reward)
+        obs, reward, done, truncated, info = env.step(action)
+        print(obs)
+        print(reward, done, truncated)
         steps += 1
     end_time = time.time()
     print(f'Env finished after {steps} steps, time: {end_time - start_time}')

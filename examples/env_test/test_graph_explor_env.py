@@ -16,7 +16,7 @@ if __name__ == '__main__':
     start_time = time.time()
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
+        obs, reward, done, truncated, info = env.step(action)
         print('reward:', reward)
         steps += 1
     end_time = time.time()

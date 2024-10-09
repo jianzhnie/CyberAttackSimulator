@@ -8,6 +8,7 @@ be collected during the simulation.
 import random
 import copy
 import json
+import random
 from collections import Counter
 from typing import Dict, Tuple
 

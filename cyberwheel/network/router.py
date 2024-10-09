@@ -1,6 +1,6 @@
 import ipaddress as ipa
 from .network_object import NetworkObject
-
+from typing import Union
 
 class Router(NetworkObject):
     def __init__(self, name, firewall_rules=[], **kwargs):
@@ -48,11 +48,11 @@ class Router(NetworkObject):
     def get_default_route(self):
         return self.default_route
     
-    def set_interface_ip(self, interface_name: str, ip: ipa.IPv4Address |ipa.IPv6Address):
+    def set_interface_ip(self, interface_name: str, ip: Union[ipa.IPv4Address, ipa.IPv6Address]):
         self.interfaces.update({interface_name: ip})
 
 
-    def get_interface_ip(self, interface_name: str) -> ipa.IPv4Address | ipa.IPv6Address | None:
+    def get_interface_ip(self, interface_name: str) -> Union[ipa.IPv4Address, ipa.IPv6Address, None]:
         return self.interfaces.get(interface_name)
 
 

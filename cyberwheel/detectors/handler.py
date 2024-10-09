@@ -2,7 +2,7 @@ import importlib
 import matplotlib.pyplot as plt
 import networkx as nx
 import yaml
-from typing import Iterator
+from typing import Iterator, Union
 
 from cyberwheel.detectors.detector_base import Detector
 from cyberwheel.detectors.alert import Alert
@@ -107,7 +107,7 @@ class DetectorHandler:
         plt.savefig(filename)
 
 
-def import_detector(module: str, class_: str, config: str | None) -> Detector:
+def import_detector(module: str, class_: str, config: Union[str, None]) -> Detector:
     """
     Imports the specifed detector.
     

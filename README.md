@@ -85,25 +85,20 @@ pip install numpy==1.24.0
 
 要运行任何 CyberAttackSimulator 脚本，请进入 `cybersim` 虚拟环境. 所有运行的例子都在 `examples` 文件夹下。
 
-1. `随机节点数量网络` 环境创建，模型训练, 这里，你可以尝试不同的网络结构和修改网络节点数量。
 
-```python
-python examples/cyberattacksim/run_random_nodes_env.py
-```
-
-2. `随机连接网络` 环境创建，模型训练
+1. `随机连接网络` 环境创建，模型训练
 
 ```python
 python examples/cyberattacksim/run_random_connected_graph_env.py
 ```
 
-3. 运行超大网络节点环境的自动攻防（可选节点数量 1000， 5000， 10000， 100000, 150000）
+2. 运行超大网络节点环境的自动攻防（可选节点数量 1000， 5000， 10000， 100000, 150000）
 
 ```shell
 python examples/cyberattacksim/run_massive_nodes_network.py --massive_node_size 1000
 ```
 
-4. 运行一个 18 节点网络自动攻防（DQN， A2C， PPO）
+3. 运行一个 18 节点网络自动攻防（DQN， A2C， PPO）
 
 ```python
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqn --env_id default_18_node_network
@@ -111,27 +106,23 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name a2c --env
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name ppo --env_id default_18_node_network
 
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name sac --env_id default_18_node_network
-python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network
 
-# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqfd --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mc --env_id default_18_node_network
-# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name br --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name snnppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cnnppo --env_id default_18_node_network
-# python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name mlpppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name rnnppo --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name her --env_id default_18_node_network
 ```
 
-5. 启发式算法GAIL和AIRL的运行脚本
+4. 启发式算法GAIL和AIRL的运行脚本
 
 ```python
 python algorithms/GAIL_and_AIRL/train_imitation_discrete.py --algo gail --env_id default_18_node_network
 python algorithms/GAIL_and_AIRL/train_imitation_discrete.py --algo airl --env_id default_18_node_network
 ```
 
-6. 在 mindspore 框架中运行网络攻防引擎
+5. 在 mindspore 框架中运行网络攻防引擎
 ```shell
 cd algorithms/mindrl/example/dqn_cybersim
 
@@ -255,6 +246,29 @@ docker kill container_id
 - `model_dir` 需要挂载到容器使用的代码目录， 如果需要挂载其他路径，可以参考这种方式
 
 - 当前的卡挂载到容器时是以独占的方式， 所以如果启动 Docker 时尽量选择一张空的卡
+
+
+### 在 910C上启动 Docker
+
+```shell
+# PyTorch2.1.0-cann7.0.0.alpha003_py_3.9-euler_2.8.3-64GB
+docker_images=cybersim:910C
+model_dir=/root/work_dir/
+docker run -it  -u root  --ipc=host --net=host \
+        --device=/dev/davinci0 \
+        --device=/dev/davinci1 \
+        --device=/dev/davinci_manager  \
+        --device=/dev/devmm_svm  \
+        --device=/dev/hisi_hdc  \
+        -v /usr/local/Ascend/driver:/usr/local/Ascend/driver   \
+        -v /usr/local/dcmi:/usr/local/dcmi  \
+        -v /usr/local/bin/npu-smi:/usr/local/bin/npu-smi  \
+        -v /usr/local/Ascend/firmware:/usr/local/Ascend/firmware  \
+        -v /usr/local/sbin/npu-smi:/usr/local/sbin/npu-smi  \
+        -v ${model_dir}:${model_dir} \
+        --entrypoint=/bin/bash   \
+        ${docker_images} 
+```
 
 ### 关于当前镜像
 

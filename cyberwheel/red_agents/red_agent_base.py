@@ -3,9 +3,8 @@ import networkx as nx
 import numpy as np
 import random
 from abc import ABC, abstractmethod
-from typing import Type, List, Tuple, Any
+from typing import Type, List, Tuple, Any, Union
 
-from ray import init
 from cyberwheel.red_actions.red_base import ARTAction
 from cyberwheel.network.network_base import Host, Subnet
 from cyberwheel.network.service import Service
@@ -30,7 +29,7 @@ class RedAgent(ABC):
         pass
 
     @abstractmethod
-    def select_next_target(self) -> tuple[Host | None, bool]:
+    def select_next_target(self) -> tuple[Union[Host, None], bool]:
         pass
 
     @abstractmethod
@@ -67,7 +66,7 @@ class KnownHostInfo:
         last_step: int = -1,
         scanned: bool = False,
         sweeped: bool = False,
-        ip_address: IPv4Address | IPv6Address | None = None,
+        ip_address: Union[IPv4Address, IPv6Address, None] = None,
         type: str = "Unknown",
         services: List[Service] = [],
         vulnerabilities: List[str] = [],

@@ -13,7 +13,7 @@ from .command import Command
 
 
 class HostType(BaseModel):
-    name: str | None = None
+    name: Union[str, None] = None
     services: set[Service] = set()
     processes: list[Process] = []
     cve_list: set[str] = set()
@@ -24,7 +24,7 @@ class HostType(BaseModel):
 # not using this yet
 class ArpEntry(BaseModel):
     mac: str
-    ip: ipa.IPv4Network | ipa.IPv6Network
+    ip: Union[ipa.IPv4Network, ipa.IPv6Network]
 
 
 # not using this yet
@@ -33,7 +33,7 @@ class ArpTable(BaseModel):
 
 
 class Host(NetworkObject):
-    def __init__(self, name: str, subnet: Subnet, host_type: HostType | None, **kwargs):
+    def __init__(self, name: str, subnet: Subnet, host_type: Union[HostType, None], **kwargs):
         """
         :param str name: name of host
         :param Subnet subnet: subnet to be connected to
@@ -43,7 +43,7 @@ class Host(NetworkObject):
         """
         super().__init__(name, kwargs.get("firewall_rules", []))
         self.subnet: Subnet = subnet
-        self.host_type: HostType | None = host_type
+        self.host_type: Union[HostType, None] = host_type
         self.services: list[Service] = kwargs.get("services", [])
         self.is_compromised: bool = False  # Default to not compromised
         self.mac_address = self._generate_mac_address()
@@ -129,7 +129,7 @@ class Host(NetworkObject):
             _generate_hextet(), _generate_hextet(), _generate_hextet()
         )
 
-    def set_ip(self, ip: ipa.IPv4Address | ipa.IPv6Address):
+    def set_ip(self, ip: Union[ipa.IPv4Address, ipa.IPv6Address]):
         """
         Manually set IP address of host
 
@@ -147,7 +147,7 @@ class Host(NetworkObject):
         ip_obj = self.generate_ip_object(ip)
         self.ip_address = ip_obj
 
-    def set_dns(self, ip: ipa.IPv4Address | ipa.IPv6Address):
+    def set_dns(self, ip: Union[ipa.IPv4Address, ipa.IPv6Address]):
         """
         Manually set DNS IP address of host
 

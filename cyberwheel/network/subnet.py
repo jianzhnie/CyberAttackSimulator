@@ -87,7 +87,7 @@ class Subnet(NetworkObject):
                                        via=default_route_via) # type: ignore
 
 
-    def set_dns_server(self, ip: ipa.IPv4Address | ipa.IPv6Address):
+    def set_dns_server(self, ip: Union[ipa.IPv4Address, ipa.IPv6Address]):
         self.dns_server = ip
 
     def get_network_address(self) -> str:

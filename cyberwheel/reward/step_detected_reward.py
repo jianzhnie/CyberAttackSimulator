@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 
 from cyberwheel.reward.reward_base import Reward, RewardMap
 from cyberwheel.reward.recurring_reward import RecurringReward
@@ -28,7 +28,7 @@ class StepDetectedReward(RecurringReward):
         self,
         red_action_alerted: bool,
         step_detected: int,
-    ) -> int | float:
+    ) -> Union[int, float]:
         step_detected_reward = 0
         if red_action_alerted and step_detected < self.step_detected:
             self.step_detected = step_detected

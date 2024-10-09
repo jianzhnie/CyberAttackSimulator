@@ -1,5 +1,5 @@
 from pydantic import BaseModel, validator, PositiveInt
-from typing import Any, TypeVar, Type
+from typing import Any, TypeVar, Type, Union
 
 # this allows return type hints to work with @classmethods
 # https://stackoverflow.com/a/44644576
@@ -37,10 +37,10 @@ class Service(BaseModel):
     name: str
     port: PositiveInt = 1  # default value so we can omit port for ICMP
     protocol: str = "tcp"
-    version: str | None = None
+    version: Union[str, None] = None
     vulns: set[str] = set()
-    description: str | None = None
-    decoy: bool | None = False
+    description: Union[str, None] = None
+    decoy: Union[bool, None] = False
 
     def __key(self):
         return (

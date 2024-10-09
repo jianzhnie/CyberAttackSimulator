@@ -79,7 +79,8 @@ def main() -> None:
         '--env_id',
         type=str,
         default='default_18_node_network',
-        help="The environment name. Defaults to 'CartPole-v0'",
+        choices=['default_18_node_network', 'dcbo_base_network', 'random_connected_network'],
+        help="The environment name. Defaults to 'default_18_node_network'",
     )
     parser.add_argument(
         '--use_wandb',
@@ -163,7 +164,6 @@ def main() -> None:
     # define callback to stop the trainingX
     stop_train_callback = StopTrainingOnNoModelImprovement(
         max_no_improvement_evals=5, min_evals=10, verbose=1)
-    print(stop_train_callback)
     eval_callback = EvalCallback(
         env,
         n_eval_episodes=10,

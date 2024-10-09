@@ -1,8 +1,6 @@
 # Change `device` upon your resources
 docker_images=swr.cn-east-317.qdrgznjszx.com/donggang/llama-factory-ascend910b:cann8-py310-torch2.2.0-ubuntu18.04
-
-# model_dir=/home/niejz/work_dir/CyberAttackSimulator
-
+model_dir=/home/niejz/work_dir/CyberAttackSimulator
 docker run -it -u root --ipc=host --net=host \
         --device=/dev/davinci7 \
         --device=/dev/davinci_manager \

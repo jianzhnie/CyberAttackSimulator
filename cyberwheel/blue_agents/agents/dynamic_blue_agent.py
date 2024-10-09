@@ -1,8 +1,7 @@
 import builtins
 import importlib
 import yaml
-
-from importlib.resources import files
+from pathlib import Path
 from typing import Dict, List
 from gymnasium import Space
 
@@ -134,7 +133,7 @@ class DynamicBlueAgent(BlueAgent):
             for name, config in action_info.configs.items():
                 # Skip configs that have already been seen
                 if not config in self.configs:
-                    conf_file = files(f"cyberwheel.resources.configs.{name}").joinpath(
+                    conf_file = Path(f"cyberwheel/resources/configs/{name}").joinpath(
                         config
                     )
                     with open(conf_file, "r") as f:

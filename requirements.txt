@@ -17,3 +17,4 @@ tinydb==4.7.0
 torch==2.2
 tyro==0.8.5
 wandb==0.17.6
+astor

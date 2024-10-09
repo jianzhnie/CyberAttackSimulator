@@ -5,7 +5,7 @@ such as how the red agent behaves, what the red team and blue team objectives
 are, the size and topology of the network being defended and what data should
 be collected during the simulation.
 """
-
+import random
 import copy
 import json
 import random
@@ -94,10 +94,12 @@ class GenericNetworkEnv(gym.Env):
         self.collect_data = collect_additional_per_ts_data
         self.env_observation = self.network_interface.get_current_observation()
         self.state_dim = (self.network_interface.get_observation_size(), )
-        self.action_dim = self.action_space.n
+        self.action_dim  = self.action_space.n
+
 
     def seed(self, seed: int = None):
-        """设置随机种子以控制环境的随机性。
+        """
+        设置随机种子以控制环境的随机性。
 
         Args:
             seed (int): 随机种子。如果为 None，使用系统时间生成随机种子。
@@ -108,9 +110,10 @@ class GenericNetworkEnv(gym.Env):
         # 如果提供了种子，则设置 NumPy 和 random 模块的种子
         self.np_random = np.random.RandomState(seed)
         random.seed(seed)
-
+        
         # 返回使用的种子，通常用于确认种子设置成功
         return [seed]
+
 
     def reset(self, seed: int = 0) -> np.array:
         """Reset the environment to the default state.

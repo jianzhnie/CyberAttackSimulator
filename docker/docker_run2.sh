@@ -1,7 +1,6 @@
 # Change `device` upon your resources
 docker_images=cybersim:v2
-
-model_dir=/home/niejz/work_dir/
+model_dir=/home/niejz/work_dir
 
 docker run -it -u root --ipc=host --net=host \
         --name niejzh_PleaseDontStop \

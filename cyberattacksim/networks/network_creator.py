@@ -110,8 +110,9 @@ def get_network_from_matrix_and_positions(
 def get_network_from_dict(
     matrix: np.ndarray,
     positions: Dict[str, List[int]],
-    entry_nodes: Union[Dict[str, List[int]], List[str | int]],
+    entry_nodes: Union[Dict[str, List[int]], List[Union[str, int]]],
 ) -> Network:
+
     network = Network()
     edges = []
     # Create all Nodes

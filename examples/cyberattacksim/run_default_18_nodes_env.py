@@ -47,6 +47,7 @@ from algorithms.DQfD.DQfDMlp import DQfDPolicy as DQfDMlp
 from algorithms.CFR.CFRAgent import CFR
 from algorithms.CFR.CFRMlp import CFRPolicy as CFRMlp
 from examples.configs.rl_args import DQfDArguments, CFRArguments, SACArguments, TD3Arguments
+import time
 
 
 def main() -> None:
@@ -94,6 +95,7 @@ def main() -> None:
     config = load_yaml_config(config_file)
     # Parse arguments
     run_args = parser.parse_args()
+
     if run_args.algo_name == 'dqn':
         algo_args: DQNArguments = tyro.cli(DQNArguments)
     elif run_args.algo_name == 'a2c':
@@ -178,7 +180,7 @@ def main() -> None:
             model_save_freq=1000,
             verbose=2,
         )
-    if run_args.algo_name == 'dqn':
+    if args.algo_name == 'dqn':
         agent = DQN(
             policy=DQNMlp,
             env=env,
@@ -193,7 +195,6 @@ def main() -> None:
             tensorboard_log=tf_log_dir,
             verbose=1,
         )
-
     elif args.algo_name == 'a2c':
         agent = A2C(
             policy=A2CMlp,
@@ -394,18 +395,24 @@ def main() -> None:
         )
 
     # Train the agent
-    print('args.max_timesteps:', args.max_timesteps)
+    # print('args.max_timesteps:', args.max_timesteps)
     # import pdb; pdb.set_trace()
     if run_args.use_wandb:
         callbacks = [eval_callback, wandb_callback]
     else:
         callbacks = [eval_callback]
+
+    start_time = time.perf_counter()
     agent.learn(
-        total_timesteps=args.max_timesteps,
+        total_timesteps=10000,
         callback=callbacks,
         log_interval=args.train_log_interval,
         progress_bar=True,
     )
+    end_time = time.perf_counter()
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time: {elapsed_time} seconds")
+
     evaluate_policy(agent, env, n_eval_episodes=args.eval_episodes)
     # save the trained-converged model
     agent.save(model_name)

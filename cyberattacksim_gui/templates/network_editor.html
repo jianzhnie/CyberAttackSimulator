@@ -3,17 +3,18 @@
 {% load tags %}
 
 {% block scripts %}
-
+<!-- 包含网络编辑器导入的包装器 -->
 {% include 'wrappers/network_editor_imports.html' %}
-
 {% endblock %}
 
 {% block top-buttons %}
+<!-- 返回按钮，链接到网络管理页面 -->
 <a id="back" href="{% url 'Manage networks' %}"><i class="bi bi-arrow-90deg-left"></i></a>
 {% endblock %}
 
 {% block main %}
 <div data-cy="network-sidenav" class="network-sidenav" id="network-sidenav">
+  <!-- 标签导航 -->
   <div class="tab-navigation">
     <button class="btn network-sidenav-navigation-btn" id="network-details-nav-button" data-item="#network-details"
       data-toggle="tooltip" data-placement="bottom" title="Network Settings" data-cy="network-details-nav-button">
@@ -24,18 +25,22 @@
       <i class="bi bi-three-dots-vertical"></i>
     </button>
   </div>
+  <!-- 标签内容 -->
   <div class="tab-content">
+    <!-- 网络设置标签 -->
     <div id="network-details" class="tab-container">
       <div class="toolbar-tab-title">
         <h2>Network Settings</h2>
         <p>Set the details and behaviour of the network</p>
       </div>
       <div class="toolbar-content">
+        <!-- 文档元数据表单 -->
         <div class="toolbar-form-container doc-metadata-form">
           <form id="doc-meta-form" data-id="doc-meta">
             {% include 'elements/el_form_fields.html' with fields=doc_metadata_form.visible_fields protected=False %}
           </form>
         </div>
+        <!-- 随机元素表单 -->
         <div class="toolbar-form-container doc-metadata-form">
           <form id="random-elements-form" class="config-form">
             {% include 'elements/el_form_fields.html' with fields=form.visible_fields protected=protected %}
@@ -43,7 +48,7 @@
         </div>
       </div>
     </div>
-
+    <!-- 节点列表标签 -->
     <div id="node-list" class="tab-container">
       <div class="toolbar-tab-title">
         <h3>Node List</h3>
@@ -55,14 +60,13 @@
     </div>
   </div>
 </div>
+<!-- Angular 应用根元素 -->
 <app-root></app-root>
-
-</div>
-
 {% endblock %}
 
 {% block style %}
 <style>
+  /* 引入 Material Icons 字体 */
   @font-face {
     font-family: 'Material Icons';
     font-style: normal;
@@ -70,12 +74,14 @@
     src: url(https://fonts.gstatic.com/s/materialicons/v139/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
   }
 
+  /* 主要内容区域的样式 */
   #main {
     padding: 0 !important;
     display: flex;
     flex-direction: row;
   }
 
+  /* 工具栏按钮的样式 */
   #toolbar-buttons {
     position: absolute;
     top: 10px;
@@ -116,6 +122,7 @@
     text-align: left;
   }
 
+  /* 网络设置和节点列表标签的样式 */
   #network-details,
   #node-list {
     padding: var(--increment);
@@ -125,6 +132,7 @@
     display: none;
   }
 
+  /* 网络侧边导航的样式 */
   .network-sidenav {
     display: flex;
     flex-direction: column;
@@ -139,6 +147,7 @@
     overflow: hidden;
   }
 
+  /* 标签导航的样式 */
   .tab-navigation {
     display: flex;
     flex-direction: row;
@@ -164,10 +173,12 @@
     box-shadow: none;
   }
 
+  /* Angular 应用根元素的样式 */
   app-root {
     height: 100%;
   }
 
+  /* Material Icons 的样式 */
   .material-icons {
     font-family: 'Material Icons';
     font-weight: normal;
@@ -184,20 +195,24 @@
     -webkit-font-smoothing: antialiased;
   }
 
+  /* HTML 的样式 */
   html {
     display: flex;
     flex: 1;
     height: 100%
   }
 
+  /* 表单开关的样式 */
   .field-container:has(.form-switch) {
     max-width: 100px;
   }
 
+  /* 帮助文本的样式 */
   .help-text {
     color: var(--text-dark);
   }
 
+  /* 网络标签的样式 */
   #network-tabs {
     width: 100%;
     border-bottom: 1px solid var(--text-superlight);
@@ -211,14 +226,7 @@
     background-color: var(--light);
   }
 
-  .field-container:has(.form-switch) {
-    max-width: 100px;
-  }
-
-  .help-text {
-    color: var(--text-dark);
-  }
-
+  /* 工具栏标签标题的样式 */
   .toolbar-tab-title {
     margin-bottom: 30px;
     margin-top: 10px;
@@ -226,6 +234,7 @@
     flex-shrink: 1;
   }
 
+  /* 标签内容和容器的样式 */
   .tab-content,
   .tab-container {
     display: flex;
@@ -234,10 +243,12 @@
     overflow: hidden;
   }
 
+  /* 工具栏内容的样式 */
   .toolbar-content {
     overflow-y: auto;
   }
 
+  /* 工具栏表单容器的样式 */
   .toolbar-form-container {
     padding-right: 5px;
   }

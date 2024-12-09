@@ -1,469 +1,732 @@
-:root{
+/* 定义根元素的CSS变量 */
+:root {
     --primary: #00A86B;
+    /* 主色调 */
     --primary-light: #A8E4A0;
+    /* 主色调的浅色版本 */
     --primary-background: rgba(0, 168, 106, 0.10);
+    /* 主色调的背景色，带有透明度 */
     --superlight: #636363;
+    /* 超浅色 */
     --lighter: #535353;
+    /* 较浅色 */
     --light: #323233;
+    /* 浅色 */
     --mid: #252526;
+    /* 中间色 */
     --dark: #1e1e1e;
+    /* 深色 */
     --super-dark: #000;
+    /* 超深色 */
 
     --text-superlight: #fff;
+    /* 超浅文本色 */
     --text-light: #999;
+    /* 浅文本色 */
     --text-mid: #888;
+    /* 中间文本色 */
     --text-dark: #000000;
+    /* 深文本色 */
 
     --increment: 5px;
+    /* 增量值，用于布局中的间距 */
     --padding: 50px;
+    /* 内边距值 */
 }
 
-/* scrollbar styling */
+/* 滚动条样式 */
 ::-webkit-scrollbar {
     width: 10px;
+    /* 滚动条宽度 */
 }
 
 ::-webkit-scrollbar-track {
     background-color: var(--mid);
+    /* 滚动条轨道背景色 */
     -webkit-border-radius: 10px;
+    /* 滚动条轨道圆角 */
     border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
     -webkit-border-radius: 10px;
+    /* 滚动条滑块圆角 */
     border-radius: 10px;
     background: var(--text-light);
+    /* 滚动条滑块背景色 */
 }
 
-/* base elements */
-body{
+/* 基础元素样式 */
+body {
     width: 100vw;
+    /* 宽度占满视口 */
     height: 100vh;
+    /* 高度占满视口 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     background-color: var(--light);
+    /* 背景色 */
     color: #666;
+    /* 文本颜色 */
     line-height: auto;
+    /* 行高自动 */
     position: relative;
+    /* 相对定位 */
 }
-h2{
+h2 {
     color: var(--text-light);
+    /* 二级标题颜色 */
 }
-a,button,div,form { /* linkable elements */
+a,
+button,
+div,
+form {
+    /* 可点击元素的样式 */
     color: var(--text-mid);
-
+    /* 文本颜色 */
 }
-p{
+p {
     margin: 0;
+    /* 段落无外边距 */
 }
 
-/* input elements */
-input{
+/* 输入元素样式 */
+input {
     border: none !important;
+    /* 输入框无边框 */
 }
-input,select{
+input,
+select {
     background-color: var(--light) !important;
+    /* 输入框和选择框背景色 */
     color: var(--text-light) !important;
+    /* 文本颜色 */
     border: none !important;
+    /* 无边框 */
 }
-input:checked{
+input:checked {
     background-color: var(--primary) !important;
+    /* 选中状态的背景色 */
 }
-input[type="checkbox"]:focus:checked{
+input[type="checkbox"]:focus:checked {
     background-color: var(--primary) !important;
+    /* 选中并聚焦状态的背景色 */
 }
-input:focus{
+input:focus {
     background-color: var(--dark) !important;
+    /* 聚焦状态的背景色 */
     color: var(--text-light) !important;
+    /* 文本颜色 */
 }
-input[type='search']{
+input[type='search'] {
     background-color: var(--mid);
+    /* 搜索框背景色 */
     color: var(--text-light);
+    /* 文本颜色 */
 }
-input[type='search']:focus{
+input[type='search']:focus {
     background-color: var(--mid);
+    /* 搜索框聚焦状态的背景色 */
     color: var(--text-light);
+    /* 文本颜色 */
 }
-input[type='search'].rounded{
-    border-top-right-radius:0 !important;
-    border-bottom-right-radius:0 !important;
+input[type='search'].rounded {
+    border-top-right-radius: 0 !important;
+    /* 搜索框右上角圆角为0 */
+    border-bottom-right-radius: 0 !important;
+    /* 搜索框右下角圆角为0 */
 }
-option:hover{
+option:hover {
     background-color: var(--primary-light);
+    /* 选项悬停时的背景色 */
 }
 
-/* specific elements */
-#back{
+/* 特定元素样式 */
+#back {
     margin-right: calc(2 * var(--increment));
+    /* 右侧外边距 */
     font-size: 1.5rem;
+    /* 字体大小 */
 }
-#top-nav{
+#top-nav {
     width: 100%;
+    /* 宽度占满父元素 */
     height: var(--padding);
+    /* 高度为定义的内边距值 */
     display: flex;
+    /* 使用Flexbox布局 */
     align-items: center;
+    /* 垂直居中对齐 */
     justify-content: flex-start;
+    /* 水平靠左对齐 */
     background-color: var(--light);
+    /* 背景色 */
 }
-#window-container{
+#window-container {
     flex: 1;
+    /* 占据剩余空间 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
     width: 100%;
+    /* 宽度占满父元素 */
 }
 
-#window{
+#window {
     position: relative;
+    /* 相对定位 */
     flex: 1;
+    /* 占据剩余空间 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
     width: 100%;
+    /* 宽度占满父元素 */
     min-height: 0;
+    /* 最小高度为0 */
     max-height: calc(100vh - var(--padding));
+    /* 最大高度为视口高度减去内边距值 */
     overflow: hidden;
+    /* 溢出隐藏 */
 }
-#main{
+#main {
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     position: relative;
+    /* 相对定位 */
     flex: 1;
+    /* 占据剩余空间 */
     min-width: 0;
+    /* 最小宽度为0 */
     max-width: 100%;
+    /* 最大宽度占满父元素 */
     height: 100%;
+    /* 高度占满父元素 */
     background-color: var(--mid);
+    /* 背景色 */
 }
-#center-container{
+#center-container {
     position: absolute;
+    /* 绝对定位 */
     top: 50%;
+    /* 上边缘居中 */
     left: 50%;
+    /* 左边缘居中 */
     padding: 30px;
+    /* 内边距 */
     background-color: var(--mid);
+    /* 背景色 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     justify-content: flex-start;
+    /* 垂直靠上对齐 */
     border: 1px solid var(--text-light);
+    /* 边框 */
     border-radius: .25rem;
+    /* 圆角 */
     transform: translate(-50%, -50%);
+    /* 居中 */
 }
-#center-container.small{
+#center-container.small {
     width: 500px;
+    /* 小尺寸宽度 */
 }
-#center-container.stretch{
+#center-container.stretch {
     width: 1000px;
+    /* 拉伸宽度 */
     min-height: 60%;
+    /* 最小高度 */
     max-height: 90%;
+    /* 最大高度 */
 }
-#bottom-buttons{
+#bottom-buttons {
     position: fixed;
+    /* 固定定位 */
     bottom: var(--padding);
+    /* 底部距离为内边距值 */
     left: var(--padding);
+    /* 左侧距离为内边距值 */
     width: calc(100% - 100px);
+    /* 宽度为视口宽度减去100px */
     padding: var(--increment);
+    /* 内边距 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
     justify-content: flex-end;
+    /* 水平靠右对齐 */
     align-items: center;
+    /* 垂直居中对齐 */
 }
-#bottom-buttons>button:not(:last-child){
+#bottom-buttons>button:not(:last-child) {
     margin-right: var(--increment);
+    /* 按钮之间的右侧外边距 */
 }
 
-
-/* Search */
-#search-container{
+/* 搜索框样式 */
+#search-container {
     padding-bottom: calc(var(--increment) * 3);
+    /* 底部内边距 */
     margin-bottom: calc(var(--increment) * 2);
+    /* 底部外边距 */
 }
-#search-container span{
+#search-container span {
     background-color: var(--primary);
+    /* 背景色 */
     color: var(--text-superlight);
+    /* 文本颜色 */
 }
-#search-accordion{
-    margin-top: calc(var(--increment)*4);
+#search-accordion {
+    margin-top: calc(var(--increment) * 4);
+    /* 顶部外边距 */
 }
 
-/* base classes */
-.icon{
+/* 基础类样式 */
+.icon {
     border-radius: 50%;
+    /* 圆形 */
     background-color: var(--light);
+    /* 背景色 */
     margin-left: var(--increment);
+    /* 左侧外边距 */
     padding: .5rem;
+    /* 内边距 */
     cursor: pointer;
+    /* 鼠标指针样式 */
 }
-.icon:hover{
+.icon:hover {
     background-color: var(--superlight);
+    /* 悬停时的背景色 */
     color: var(--primary-light);
+    /* 悬停时的文本颜色 */
 }
-.flex-row{
+.flex-row {
     width: 100%;
+    /* 宽度占满父元素 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
     align-items: center;
+    /* 垂直居中对齐 */
 }
 
-
-/* dialogue boxes */
-#mask{
+/* 对话框样式 */
+#mask {
     position: absolute;
+    /* 绝对定位 */
     top: 50%;
+    /* 上边缘居中 */
     left: 50%;
+    /* 左边缘居中 */
     height: 100%;
+    /* 高度占满父元素 */
     width: 100%;
-    transform: translate(-50%,-50%);
+    /* 宽度占满父元素 */
+        transform: translate(-50%, -50%);
+        /* 居中 */
 }
-.dialogue-center{
+.dialogue-center {
     position: absolute;
+    /* 绝对定位 */
     top: 50%;
+    /* 上边缘居中 */
     left: 50%;
+    /* 左边缘居中 */
     width: 500px;
+    /* 宽度 */
     height: 250px;
-    padding: calc(2*var(--increment));
+    /* 高度 */
+        padding: calc(2 * var(--increment));
+        /* 内边距 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     justify-content: space-between;
+    /* 垂直两端对齐 */
     background-color: var(--dark);
+    /* 背景色 */
     border-radius: .5rem;
-    transform: translate(-50%,-50%);
+    /* 圆角 */
+        transform: translate(-50%, -50%);
+        /* 居中 */
     color: var(--text-superlight);
+    /* 文本颜色 */
 }
-.dialogue-center>p{
+.dialogue-center>p {
     flex: 1;
+    /* 占据剩余空间 */
     vertical-align: middle;
+    /* 垂直居中对齐 */
 }
-.dialogue-center>input{
+.dialogue-center>input {
     margin-bottom: var(--padding);
+    /* 底部外边距 */
     background-color: var(--mid);
+    /* 背景色 */
     border: none;
+    /* 无边框 */
 }
-.dialogue-center>h3{
+.dialogue-center>h3 {
     color: var(--text-superlight);
+    /* 文本颜色 */
 }
 
-/* toolbar */
-#toolbar{
+/* 工具栏样式 */
+#toolbar {
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
     background-color: var(--light);
+    /* 背景色 */
     border-right: 1px solid var(--text-mid);
+    /* 右侧边框 */
 }
-#toolbar{
+#toolbar {
     /* width: var(--padding); */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     justify-content: flex-start;
+    /* 垂直靠上对齐 */
     align-items: center;
+    /* 水平居中对齐 */
     max-width: 250px;
+    /* 最大宽度 */
     max-height: 100vh;
+    /* 最大高度占满视口 */
 }
-#toolbar .toolbar-button{
+#toolbar .toolbar-button {
     padding: var(--increment);
+    /* 内边距 */
     margin: var(--increment);
+    /* 外边距 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     align-items: center;
+    /* 水平居中对齐 */
     border-radius: .5rem;
+    /* 圆角 */
     text-decoration: none;
+    /* 无文本装饰 */
     overflow: hidden;
+    /* 溢出隐藏 */
     cursor: pointer;
+    /* 鼠标指针样式 */
     min-width: 0;
-    width: calc(100% - 2*var(--increment));
+    /* 最小宽度为0 */
+        width: calc(100% - 2 * var(--increment));
+        /* 宽度 */
     max-width: 100%;
+    /* 最大宽度占满父元素 */
 }
-#toolbar .toolbar-links{
+#toolbar .toolbar-links {
     display: none;
+    /* 默认隐藏 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     justify-content: flex-start;
+    /* 垂直靠上对齐 */
     min-width: 0;
+    /* 最小宽度为0 */
     width: 100%;
+    /* 宽度占满父元素 */
     max-width: 100%;
-    margin-left: calc(2*var(--increment));
+    /* 最大宽度占满父元素 */
+        margin-left: calc(2 * var(--increment));
+        /* 左侧外边距 */
     background-color: var(--mid);
+    /* 背景色 */
 }
-#toolbar .toolbar-button .icon-text{
+#toolbar .toolbar-button .icon-text {
     width: 0;
+    /* 宽度为0 */
     overflow: hidden;
+    /* 溢出隐藏 */
     margin-left: var(--increment);
+    /* 左侧外边距 */
     transition: all .8s ease;
+    /* 过渡效果 */
 }
-#toolbar .toolbar-button:hover .icon-text{
+#toolbar .toolbar-button:hover .icon-text {
     color: var(--primary-light);
+    /* 悬停时的文本颜色 */
 }
-#toolbar .toolbar-button .icon-text>span{
+#toolbar .toolbar-button .icon-text>span {
     display: none;
+    /* 默认隐藏 */
 }
-.icon-container{
+.icon-container {
     font-size: 1.5rem;
-    margin-top: calc(var(--increment)*3);
-    margin-bottom: calc(var(--increment)*3);
+    /* 字体大小 */
+        margin-top: calc(var(--increment) * 3);
+        /* 顶部外边距 */
+        margin-bottom: calc(var(--increment) * 3);
+        /* 底部外边距 */
     color: var(--text-light);
+    /* 文本颜色 */
     padding: var(--increment);
+    /* 内边距 */
     border-radius: .25rem;
+    /* 圆角 */
 }
-.icon-container>i:last-child{
+.icon-container>i:last-child {
     display: none;
+    /* 默认隐藏 */
 }
-.icon-container>i:first-child{
+.icon-container>i:first-child {
     display: block;
+    /* 默认显示 */
 }
-.toolbar-button.active .icon-container>i:last-child{
+.toolbar-button.active .icon-container>i:last-child {
     display: block !important;
+    /* 激活状态显示 */
 }
-.toolbar-button.active .icon-container,.toolbar-button:hover .icon-container{
+.toolbar-button.active .icon-container,
+.toolbar-button:hover .icon-container {
     background-color: var(--dark);
+    /* 激活或悬停时的背景色 */
     color: var(--primary) !important;
+    /* 激活或悬停时的文本颜色 */
 }
-.toolbar-button.active .icon-container>i:first-child{
+.toolbar-button.active .icon-container>i:first-child {
     display: none;
+    /* 激活状态隐藏 */
 }
-.icon-container{
+.icon-container {
     background: none;
+    /* 无背景 */
     border: none;
+    /* 无边框 */
     padding: var(--increment);
-    margin-right: calc((-1*var(--increment))-1);
+    /* 内边距 */
+        margin-right: calc((-1 * var(--increment)) - 1);
+        /* 右侧外边距 */
     color: var(--text-superlight);
+    /* 文本颜色 */
 }
-/* toolbar open */
-#toolbar.open{
+/* 工具栏展开样式 */
+#toolbar.open {
     width: 250px;
+    /* 展开宽度 */
 }
-#toolbar.open .toolbar-button .icon-text>span{
+#toolbar.open .toolbar-button .icon-text>span {
     display: block;
+    /* 展开时显示 */
 }
-#toolbar.open .toolbar-button .icon-text{
+#toolbar.open .toolbar-button .icon-text {
     width: auto;
-    flex:1;
+    /* 宽度自动 */
+        flex: 1;
+        /* 占据剩余空间 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
 }
-#toolbar.open .toolbar-button.show .toolbar-links{
+#toolbar.open .toolbar-button.show .toolbar-links {
     display: flex;
+    /* 展开时显示 */
     padding-top: var(--increment);
+    /* 顶部内边距 */
     border-top: 1px solid var(--text-light);
+    /* 顶部边框 */
 }
-#toolbar.open .toolbar-button.show{
+#toolbar.open .toolbar-button.show {
     background-color: var(--mid);
+    /* 展开时的背景色 */
 }
-#toolbar.open .toolbar-button.show .icon-text{
+#toolbar.open .toolbar-button.show .icon-text {
     color: var(--primary-light) !important;
+    /* 展开时的文本颜色 */
 }
-#toolbar .toolbar-link{
+#toolbar .toolbar-link {
     text-decoration: none;
+    /* 无文本装饰 */
 }
-#toolbar .toolbar-collapse{
+#toolbar .toolbar-collapse {
     display: none;
+    /* 默认隐藏 */
     font-size: 2rem;
+    /* 字体大小 */
 }
-#toolbar.open .toolbar-collapse{
+#toolbar.open .toolbar-collapse {
     display: inline-block;
+    /* 展开时显示 */
 }
-#toolbar.open .toolbar-button.show .toolbar-collapse>i:first-child,#toolbar.open .toolbar-button:not(.show) .toolbar-collapse>i:last-child{
+#toolbar.open .toolbar-button.show .toolbar-collapse>i:first-child,
+#toolbar.open .toolbar-button:not(.show) .toolbar-collapse>i:last-child {
     display: none;
+    /* 展开时隐藏 */
 }
-#toolbar.open .toolbar-button.show .toolbar-collapse>i:last-child, #toolbar.open .toolbar-button:not(.show) .toolbar-collapse>i:first-child{
+#toolbar.open .toolbar-button.show .toolbar-collapse>i:last-child,
+#toolbar.open .toolbar-button:not(.show) .toolbar-collapse>i:first-child {
     display: block;
+    /* 展开时显示 */
 }
 
-
-
-/* accordion */
-.accordion{
-    width:100%;
+/* 手风琴样式 */
+.accordion {
+    width: 100%;
+    /* 宽度占满父元素 */
     max-height: 100%;
+    /* 最大高度占满父元素 */
     margin: var(--increment);
+    /* 外边距 */
 }
-.accordion-item,.accordion-header,.accordion-button{
+.accordion-item,
+.accordion-header,
+.accordion-button {
     background-color: var(--mid);
+    /* 背景色 */
     color: var(--text-light);
+    /* 文本颜色 */
     border: none;
+    /* 无边框 */
 }
-.accordion-button:not(.collapsed){
+.accordion-button:not(.collapsed) {
     background-color: var(--primary);
+    /* 展开时的背景色 */
     color: var(--text-superlight);
+    /* 展开时的文本颜色 */
 }
+
 .accordion-button.collapsed::after {
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23888'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+    /* 折叠时的图标 */
 }
-.accordion-body{
+.accordion-body {
     background-color: var(--dark);
+    /* 背景色 */
 }
 
-/* style helpers */
-.hidden{
+/* 样式辅助类 */
+.hidden {
     display: none !important;
+    /* 隐藏 */
 }
-.disabled{
+.disabled {
     pointer-events: none;
+    /* 禁用点击事件 */
 }
-.clear{
+.clear {
     background-color: transparent !important;
+    /* 透明背景 */
     border: none !important;
+    /* 无边框 */
 }
-.blur{
+.blur {
     filter: blur(5px);
+    /* 模糊效果 */
 }
+
 .preload * {
     -webkit-transition: none !important;
+    /* 无过渡效果 */
     -moz-transition: none !important;
     -ms-transition: none !important;
     -o-transition: none !important;
 }
-.btn-primary{
+.btn-primary {
     background-color: var(--primary) !important;
+    /* 主按钮背景色 */
     border-color: var(--primary) !important;
+    /* 主按钮边框色 */
     color: var(--text-superlight) !important;
+    /* 主按钮文本颜色 */
 }
-.btn{
+.btn {
     color: var(--text-light);
+    /* 按钮文本颜色 */
 }
-.btn:hover{
+.btn:hover {
     color: var(--text-superlight);
+    /* 按钮悬停时的文本颜色 */
 }
-.border-bottom{
+.border-bottom {
     border-bottom: 1px solid var(--text-mid);
+    /* 底部边框 */
 }
 
-/* text styling */
-.head{
+/* 文本样式 */
+.head {
     font-size: 2.25rem;
+    /* 字体大小 */
     color: var(--primary);
+    /* 文本颜色 */
     text-decoration: none;
+    /* 无文本装饰 */
     margin-bottom: .25rem;
+    /* 底部外边距 */
 }
-.head:hover{
+.head:hover {
     color: var(--primary);
+    /* 悬停时的文本颜色 */
 }
-.subhead{
+.subhead {
     color: var(--text-light);
+    /* 副标题文本颜色 */
 }
-.description{
+.description {
     color: var(--text-mid);
+    /* 描述文本颜色 */
 }
 
-/* layout helpers */
-.list{
+/* 布局辅助类 */
+.list {
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: column;
+    /* 主轴方向为垂直 */
     justify-content: flex-start;
+    /* 垂直靠上对齐 */
 }
-.list>a{
+.list>a {
     text-decoration: none;
+    /* 无文本装饰 */
     color: var(--text-mid);
+    /* 文本颜色 */
     cursor: pointer;
+    /* 鼠标指针样式 */
     font-size: 1rem;
+    /* 字体大小 */
     height: 2rem;
+    /* 高度 */
 }
-.list>a:hover{
+.list>a:hover {
     border-bottom: 1px solid var(--text-mid);
+    /* 悬停时的底部边框 */
     color: var(--primary-light);
+    /* 悬停时的文本颜色 */
 }
-.el-row{
+.el-row {
     width: 100%;
+    /* 宽度占满父元素 */
     display: flex;
+    /* 使用Flexbox布局 */
     flex-direction: row;
+    /* 主轴方向为水平 */
     justify-content: space-between;
+    /* 水平两端对齐 */
     align-items: center;
+    /* 垂直居中对齐 */
 }
 
-.flex-break{
-    flex:1;
+.flex-break {
+    flex: 1;
+    /* 占据剩余空间 */
 }

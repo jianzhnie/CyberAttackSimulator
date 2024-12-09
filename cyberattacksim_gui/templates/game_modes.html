@@ -1,10 +1,11 @@
 {% extends "item-manager.html" %}
 {% load static %}
 {% load tags %}
-<!-- <!DOCTYPE html> -->
 
 {% block scripts %}
+<!-- 引入自定义的 JavaScript 文件 -->
 <script src="{% static 'js/item_manager.js' %}"></script>
+<!-- 定义 JavaScript 变量 -->
 <script type="text/javascript">
     const DB_MANAGER_URL = "{% url 'db manager' %}";
     const ITEM_TYPE = "{{item_type}}";
@@ -12,19 +13,22 @@
 {% endblock %}
 
 {% block items %}
-    {% for game_mode in game_modes %}
-        {% include 'elements/el_game_mode.html' with game_mode=game_mode show_icons=True %}
-    {% endfor %}
+<!-- 遍历 game_modes 列表，并包含游戏模式元素 -->
+{% for game_mode in game_modes %}
+{% include 'elements/el_game_mode.html' with game_mode=game_mode show_icons=True %}
+{% endfor %}
 {% endblock %}
 
 {% block bottom-buttons %}
+<!-- 删除选中的游戏模式按钮 -->
 <button data-cy="delete-selected-game-mode-button" id="delete-all" class="btn hidden">Delete selected</button>
+<!-- 创建新的游戏模式按钮 -->
 <button data-cy="create-game-mode-button" id="create" class="btn btn-primary">New game mode</button>
 {% endblock %}
 
-
 {% block dialogues %}
-    {% for dialogue_info in dialogue_boxes %}
-        {% include 'elements/el_dialogue_center.html' with info=dialogue_info %}
-    {% endfor %}
+<!-- 遍历 dialogue_boxes 列表，并包含对话框元素 -->
+{% for dialogue_info in dialogue_boxes %}
+{% include 'elements/el_dialogue_center.html' with info=dialogue_info %}
+{% endfor %}
 {% endblock %}

@@ -2,52 +2,66 @@
 {% load tags %}
 
 <head>
+    <!-- 引入 Bootstrap 图标样式 -->
     <link rel="stylesheet" href="{% static 'lib/bootstrap-icons.css' %}">
+    <!-- 引入 Bootstrap 核心样式 -->
     <link rel="stylesheet" href="{% static 'lib/bootstrap.min.css' %}">
 
+    <!-- 引入 Bootstrap 和 jQuery 的 JavaScript 库 -->
     <script src="{% static 'lib/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'lib/jquery.js' %}"></script>
 
+    <!-- 定义 CSRF 令牌变量 -->
     <script type="text/javascript">
         const CSRF_TOKEN = "{{ csrf_token }}";
     </script>
 
+    <!-- 引入自定义的 JavaScript 文件 -->
     <script src="{% static 'js/app.js' %}"></script>
 
+    <!-- 引入自定义的 CSS 文件 -->
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'css/multi-range.css' %}">
     <link rel="stylesheet" href="{% static 'css/list-item.css' %}">
     <link rel="stylesheet" href="{% static 'css/forms.css' %}">
     <link rel="stylesheet" href="{% static 'css/sandwich-icon.css' %}">
     <link rel="stylesheet" href="{% static 'css/form-range.css' %}">
-
     <link rel="stylesheet" href="{% static 'css/nested-dropdown.css' %}">
 
-
+    <!-- 定义脚本块，子模板可以扩展 -->
     {% block scripts %}
-
     {% endblock %}
 </head>
 
 <body class="preload">
+    <!-- 顶部导航栏 -->
     <nav id="top-nav" class="border-bottom">
+        <!-- 三明治图标，点击时展开工具栏 -->
         <div id="sandwich-icon" data-toolbar="#toolbar">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
         </div>
+        <!-- 页面标题 -->
         <h2 class="head">CyberAttackSim</h2>
+        <!-- 用于分隔的空白区域 -->
         <div class="flex-break"></div>
+        <!-- 定义顶部按钮块，子模板可以扩展 -->
         {% block top-buttons %}
         {% endblock %}
     </nav>
+
+    <!-- 页面内容容器 -->
     <div id="window-container">
+        <!-- 工具栏 -->
         <div toolbar="" id="toolbar">
+            <!-- 遍历 toolbar 字典的键值对 -->
             {% for id, el in toolbar.items %}
             <div class="toolbar-button{% if el.active %} active{% endif %}" id="toolbar-button-{{el.title|to_id}}"
                 data-href="{{el.title|get_url}}" data-cy="{{el.cypressRefToolbar}}">
                 <div class="flex-row">
+                    <!-- 图标容器 -->
                     <div id="{{id}}-icon" class="icon-container {{id}}">
                         {% if el.active and el.fillable_icon %}
                         <i class="bi {{el.icon}}-fill"></i>
@@ -55,9 +69,11 @@
                         <i class="bi {{el.icon}}"></i>
                         {% endif %}
                     </div>
+                    <!-- 图标文本 -->
                     <div class="icon-text">
                         <span>{{el.title}}</span>
                     </div>
+                    <!-- 如果有链接，显示展开/折叠图标 -->
                     {%if el.links %}
                     <div class="toolbar-collapse">
                         <i class="bi bi-plus"></i>
@@ -65,12 +81,14 @@
                     </div>
                     {% endif %}
                 </div>
+                <!-- 如果有链接，显示链接列表 -->
                 {%if el.links %}
                 <div class="toolbar-links">
                     {% for link in el.links %}
                     <a class="toolbar-link" href="{{link.href}}"
                         target="{% if link.new_tab %}_blank{% endif %}">{{link.name|format_text}}</a>
                     {% endfor %}
+                    <!-- 显示信息 -->
                     {% for i in el.info %}
                     <p>{{i}}</p>
                     {% endfor %}
@@ -79,21 +97,28 @@
             </div>
             {% endfor %}
         </div>
+
+        <!-- 主要内容区域 -->
         <div id="window">
             <div id="main">
+                <!-- 定义主要内容块，子模板可以扩展 -->
                 {% block main %}
-
                 {% endblock %}
             </div>
         </div>
     </div>
-    <div id="mask" class="hidden">
-        {% block dialogues %}
 
+    <!-- 遮罩层，用于显示对话框 -->
+    <div id="mask" class="hidden">
+        <!-- 定义对话框块，子模板可以扩展 -->
+        {% block dialogues %}
         {% endblock %}
     </div>
+
+    <!-- 空的脚本标签，用于防止某些浏览器在 body 末尾自动插入脚本 -->
     <script> </script>
 </body>
 
+<!-- 定义样式块，子模板可以扩展 -->
 {% block style %}
 {% endblock %}

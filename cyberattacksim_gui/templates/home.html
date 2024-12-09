@@ -2,32 +2,65 @@
 {% load static %}
 {% load tags %}
 
+
 {% block scripts %}
-    <script text="text/javascript">
-        $(document).ready(function(){
-            $("#about").click(function(e){
+<!-- 引入 jQuery 或其他 JavaScript 库 -->
+<script text="text/javascript">
+            $(document).ready(function () {
+                // 当页面加载完成后执行以下代码
+                $("#about").click(function (e) {
+            // 当点击 id 为 "about" 的元素时，阻止默认行为
                 e.preventDefault();
+                // 切换 id 为 "sandwich-icon" 的元素的 "open" 类
                 $("#sandwich-icon").toggleClass('open');
+                // 获取 "sandwich-icon" 元素的 data-toolbar 属性值，并切换对应元素的 "open" 类
                 $($("#sandwich-icon").data("toolbar")).toggleClass("open");
+                // 移除所有 class 为 "toolbar-button" 的元素的 "show" 类
                 $(".toolbar-button").removeClass("show");
+                // 切换 id 为 "toolbar-button-about" 的元素的 "show" 类
                 $("#toolbar-button-about").toggleClass("show");
             });
         });
-    </script>
-
+            </script>
 {% endblock %}
 
 {% block main %}
 <div id="center-container" class="small">
+    <!-- 遍历 toolbar 字典的键值对 -->
     {% for id, el in toolbar.items %}
-        <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}"><i class="bi {{el.icon}}"></i>{{el.title}}</a>
+    <!-- 生成链接，使用自定义模板标签 get_url 和 to_id 处理 title 和 id -->
+    <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}"><i
+            class="bi {{el.icon}}"></i>{{el.title}}</a>
     {% endfor %}
 </div>
+<div id="center-container" class="small">
+    <!-- 重复的 toolbar 链接生成部分 -->
+    {% for id, el in toolbar.items %}
+    <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}"><i
+            class="bi {{el.icon}}"></i>{{el.title}}</a>
+    {% endfor %}
+    <!-- 添加文本内容 -->
+    <h2>Welcome to Our Home Page</h2>
+    <p>This is a paragraph of text that you can customize to provide more information about your website or application.
+    </p>
+
+    <!-- 添加图片 -->
+    <img src="{% static 'images/results.png' %}" alt="Home Image" style="width: 100%; max-width: 600px; height: auto;">
+
+    <!-- 添加视频 -->
+    <video width="100%" controls>
+        <source src="{% static 'videos/CAS_2024-12-03-10-06-08_1.mp4' %}" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+</div>
+
 {% endblock %}
 
 {% block style %}
 <style>
-    #center-container>a,#center-container>button{
+    /* 设置 center-container 内链接和按钮的样式 */
+    #center-container>a,
+    #center-container>button {
         position: relative;
         margin: var(--increment);
         margin-top: calc((var(--increment)*3));
@@ -41,10 +74,15 @@
         text-decoration: none;
         cursor: pointer;
     }
-    #center-container>a:hover,#center-container>button:hover{
+
+    /* 设置 center-container 内链接和按钮的悬停样式 */
+    #center-container>a:hover,
+    #center-container>button:hover {
         color: var(--primary-light);
     }
-    #center-container i{
+
+    /* 设置 center-container 内图标的样式 */
+    #center-container i {
         display: block;
         top: -1rem;
         left: -1rem;

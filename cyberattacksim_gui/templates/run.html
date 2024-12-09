@@ -1,11 +1,12 @@
 {% extends "base.html" %}
 {% load static %}
 {% load tags %}
-<!-- <!DOCTYPE html> -->
 
 {% block scripts %}
+<!-- 引入自定义的 JavaScript 文件 -->
 <!-- <script src="{% static 'js/game_mode.js' %}"></script> -->
 <script src="{% static 'js/run.js' %}"></script>
+<!-- 定义 JavaScript 变量 -->
 <script type="text/javascript">
     const FILE_MANAGER_URL = "{% url 'db manager' %}";
     const OUTPUT_URL = "{% url 'stderr' %}";
@@ -14,6 +15,7 @@
 
 {% block main %}
 <div id="grid-container" class="stretch clear">
+    <!-- 网络容器 -->
     <div id="networks-container" data-type="network" class="grid-item list-container">
         <div id="search-container">
             <div class="input-group rounded">
@@ -30,6 +32,7 @@
             {% endfor %}
         </div>
     </div>
+    <!-- 游戏模式容器 -->
     <div id="game-modes-container" data-type="game_mode" class="grid-item list-container">
         <div id="search-container">
             <div class="input-group rounded">
@@ -46,6 +49,7 @@
             {% endfor %}
         </div>
     </div>
+    <!-- 运行配置容器 -->
     <div id="run-config" class="grid-item">
         <div id="field-menu" class="flex-row">
             <button type="button" id="training-fields-button" data-form="#training-fields"
@@ -64,14 +68,17 @@
             <button type="submit" id="run" class="btn btn-primary" data-cy="run-yt-button">Run</button>
         </form>
     </div>
+    <!-- 日志视图容器 -->
     <div id="log-view" class="grid-item">
         <h3>Training Logs</h3>
         <div class="inner logs-container" data-cy="training-logs-output"></div>
     </div>
+    <!-- 指标视图容器 -->
     <div id="metric-view" class="grid-item">
         <h3>Output metrics</h3>
         <div class="inner logs-container"></div>
     </div>
+    <!-- 动作循环视图容器 -->
     <div id="action-loop-view" class="grid-item">
         <div id="action-loop-view-container">
             <div id="preview-spinner-container" class="spinner-container">
@@ -93,6 +100,7 @@
 
 {% block style %}
 <style>
+    /* 网格容器的样式 */
     #grid-container {
         display: flex;
         flex-wrap: wrap;
@@ -104,6 +112,7 @@
         overflow-y: auto;
     }
 
+    /* 网格项的样式 */
     .grid-item {
         flex: 1;
         display: flex;
@@ -121,15 +130,18 @@
         overflow: hidden;
     }
 
+    /* 网格项内部容器的样式 */
     .grid-item>.inner {
         flex: 1;
     }
 
+    /* 项目列表和日志容器的样式 */
     .item-list,
     .logs-container {
         overflow: auto;
     }
 
+    /* 日志视图和指标视图内部容器的样式 */
     #log-view .inner,
     #metric-view .inner {
         font-family: 'Courier New';
@@ -137,26 +149,31 @@
         color: var(--text-superlight);
     }
 
+    /* 字段菜单的样式 */
     #field-menu {
         border-bottom: 1px solid var(--text-superlight);
         margin-bottom: var(--increment);
     }
 
+    /* 字段菜单按钮的样式 */
     #field-menu .btn {
         border-radius: .25rem .25rem 0 0;
         background-color: var(--mid);
         border: 1px solid var(--text-superlight);
     }
 
+    /* 字段菜单按钮之间的间距 */
     #field-menu button:not(:last-child) {
         margin-right: var(--increment);
     }
 
+    /* 运行按钮的样式 */
     #run {
         margin-top: var(--increment);
         width: 100%;
     }
 
+    /* 运行视图的样式 */
     #run-view {
         flex: 1;
         width: 100%;
@@ -165,6 +182,7 @@
         overflow-y: auto;
     }
 
+    /* 运行配置容器的样式 */
     #run-config-container {
         display: flex;
         flex-direction: column;
@@ -172,6 +190,7 @@
         min-height: 0;
     }
 
+    /* 运行表单的样式 */
     #run-form {
         min-height: 0;
         max-height: 100%;
@@ -182,12 +201,14 @@
         justify-content: flex-start;
     }
 
+    /* 运行表单内部容器的样式 */
     #run-form>div {
         width: 100%;
         max-height: 100%;
         overflow-y: auto;
     }
 
+    /* 视图容器的样式 */
     #view-container {
         flex: 1;
         width: 100%;
@@ -196,20 +217,19 @@
         min-height: 0;
     }
 
-    #view-container>div {
-        display: none;
-    }
-
+    /* 视图按钮的样式 */
     #view-buttons button.selected {
         border: 1px solid var(--text-mid);
     }
 
+    /* 输出容器的样式 */
     #output-container {
         display: flex;
         flex-direction: column;
         align-items: center;
     }
 
+    /* 运行子部分的样式 */
     .run-subsection {
         border: 1px solid var(--text-mid);
         min-height: 0;
@@ -219,38 +239,42 @@
         padding: var(--increment);
     }
 
-
-    /* Search */
+    /* 搜索容器的样式 */
     #search-container {
         padding-bottom: calc(var(--increment) * 3);
         border-bottom: 1px solid var(--text-mid);
         margin-bottom: calc(var(--increment) * 2);
     }
 
+    /* 搜索容器内部元素的样式 */
     #search-container span {
         background-color: var(--primary);
         color: var(--text-superlight);
     }
 
+    /* 选中列表项的样式 */
     .list-item.selected {
         border: 1px solid var(--primary) !important;
         background-color: var(--primary-background);
     }
 
+    /* 不兼容列表项的样式 */
     .list-item.incompatible {
         cursor: default;
         background-color: transparent;
     }
 
-    /* overrides */
+    /* 字段容器的样式 */
     .field-container {
         max-width: 75px;
     }
 
+    /* 有效列表项的样式 */
     .list-item.valid {
         border: 1px solid var(--text-light);
     }
 
+    /* 加载中的样式 */
     .spinner-container {
         display: flex;
         flex-direction: column;
@@ -258,6 +282,7 @@
         align-items: center;
     }
 
+    /* 动作循环视图的样式 */
     #action-loop-view {
         display: flex;
         flex-direction: column;
@@ -265,6 +290,7 @@
         align-items: center;
     }
 
+    /* 动作循环视图容器的样式 */
     #action-loop-view-container {
         display: inherit;
         flex-direction: column;
@@ -274,6 +300,7 @@
         width: 100%;
     }
 
+    /* 预览动作按钮容器的样式 */
     .preview-action-buttons-container {
         display: flex;
         flex-direction: row;
@@ -281,16 +308,19 @@
         justify-content: center;
     }
 
+    /* 打开 GIF 和视频按钮的样式 */
     #open-gif,
     #open-video {
         margin: 15px 5px 5px 5px;
     }
 
+    /* 预览输出的样式 */
     #preview-output {
         width: 100%;
         height: auto;
     }
 
+    /* 未生成信息的样式 */
     .not-generated-info {
         padding: 10px;
         display: flex;

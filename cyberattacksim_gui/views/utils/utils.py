@@ -18,7 +18,7 @@ run_config = {}
 def get_output(request: HttpRequest):
     """Get the output of a :class:
 
-    `~cyberattacksimmmmmmm.cyberattacksim_run.CyberAttackRun`.
+    `~cyberattacksim.cyberattacksim_run.CyberAttackRun`.
     """
     if request.method == 'GET':
         return JsonResponse(RunManager.get_output())
@@ -46,8 +46,6 @@ def db_manager(request: HttpRequest) -> JsonResponse:
         item_ids = request.POST.getlist('item_ids[]')
 
         item_name = item_names[0] if item_names else None
-
-        # item_id = item_ids[0] if item_ids else None
 
         def create_game_mode():
             game_mode = GameMode()

@@ -10,6 +10,7 @@ from typing import Any, Dict, List
 
 from django.urls import reverse
 
+# 导入 CyberAttackSimulator 模块
 from cyberattacksim import _CAS_HOME_DIR, IMAGES_DIR, NOTEBOOKS_DIR, VIDEOS_DIR
 from cyberattacksim.cyberattacksim_run import CyberAttackRun
 from cyberattacksim.envs.generic.core.action_loops import ActionLoop
@@ -21,63 +22,66 @@ from cyberattacksim_server.settings.base import DOCS_ROOT, STATIC_URL
 
 
 class RunManager:
-    """Wrapper over an instance of :class:
+    """管理运行 CyberAttackSimulator 的工具类。
 
-    `~cyberattacksim.cyberattacksim_run.CyberAttackRun` to provide helper
-    functions to the GUI.
+    提供静态方法和类方法来管理模拟运行，包括启动进程、生成 GIF 和 WebM 输出。
     """
 
-    process = None
-    counter = 0
-    gif_count = len(list(IMAGES_DIR.iterdir()))
-    webm_count = len(list(VIDEOS_DIR.iterdir()))
-    run_args = None
-    run_started = False
+    process = None  # 存储当前运行的多进程对象
+    counter = 0  # 用于跟踪运行的次数
+    gif_count = len(list(IMAGES_DIR.iterdir()))  # 当前 GIF 文件计数
+    webm_count = len(list(VIDEOS_DIR.iterdir()))  # 当前 WebM 文件计数
+    run_args = None  # 存储运行参数
+    run_started = False  # 标记是否已启动运行
 
-    gif_path = ''
-    webm_path = ''
+    gif_path = ''  # 当前生成的 GIF 路径
+    webm_path = ''  # 当前生成的 WebM 路径
 
     @staticmethod
-    def format_file(path):
-        """Format a text reference file as a html object."""
-        with open(path, 'r') as f:
-            try:
+    def format_file(path: Path) -> str:
+        """格式化文本文件内容为 HTML 格式，供 GUI 显示。
+
+        :param path: 文件路径
+        :return: 格式化的 HTML 文本
+        """
+        try:
+            with open(path, 'r') as f:
                 lines = [line.replace(' ', '&nbsp;') for line in f.readlines()]
-                text = '<br>'.join(lines)
-                return text
-            except Exception:
-                return ''
+                return '<br>'.join(lines)
+        except Exception:
+            return ''
 
     @classmethod
-    def run_yt(cls, *args, **kwargs):
-        """Run an instance of :class:
+    def run_yt(cls, **kwargs):
+        """执行 CyberAttackSimulator 运行，包括训练、评估和导出结果。
 
-        `~cyberattacksimm.cyberattacksimmm_run.CyberAttackRun`.
+        :param kwargs: 运行参数，例如是否保存模型、生成 GIF 等。
         """
         if CAS_GUI_RUN_LOG.exists():
-            CAS_GUI_RUN_LOG.unlink()
+            CAS_GUI_RUN_LOG.unlink()  # 删除旧的运行日志
         logger = logging.getLogger('cas_run')
         logger.setLevel(logging.DEBUG)
 
-        # create file handler which logs even debug messages
+        # 设置文件日志记录
         fh = logging.FileHandler(CAS_GUI_RUN_LOG.as_posix())
         fh.setLevel(logging.DEBUG)
         logger.addHandler(fh)
 
+        # 捕获 stdout 输出
         with open(CAS_GUI_STDOUT, 'w+') as sys.stdout:
             run = CyberAttackRun(**kwargs, auto=False, logger=logger)
+            run.setup()  # 配置运行环境
+            run.train()  # 训练模型
+            run.evaluate()  # 评估模型
 
-            run.setup()
-            run.train()
-            run.evaluate()
+            if kwargs.get('save'):
+                run.save()  # 保存模型
 
-            if kwargs['save']:
-                run.save()
+            if kwargs.get('export'):
+                run.export()  # 导出模型
 
-            if kwargs['export']:
-                run.export()
-
-            if kwargs['render_gif'] or kwargs['render_webm']:
+            # 如果需要生成 GIF 或 WebM
+            if kwargs.get('render_gif') or kwargs.get('render_webm'):
                 loop = ActionLoop(
                     env=run.env,
                     agent=run.agent,
@@ -85,21 +89,19 @@ class RunManager:
                     episode_count=kwargs.get('num_episodes',
                                              run.total_timesteps),
                 )
-
                 loop.gif_action_loop(
                     gif_output_directory=IMAGES_DIR,
                     webm_output_directory=VIDEOS_DIR,
                     save_gif=kwargs['render_gif'],
                     save_webm=kwargs['render_webm'],
-                    render_network=True,
-                    # TODO: fix bug where network must be rendered to get gif to be produced
+                    render_network=True,  # 强制渲染网络以解决生成 GIF 的问题
                 )
 
     @classmethod
-    def get_output(cls):
-        """Get the output of a :class:
+    def get_output(cls) -> Dict[str, Any]:
+        """获取运行输出，包括日志和生成的 GIF/WebM 文件路径。
 
-        `~cyberattacksim.cyberattacksim_run.CyberAttackRun`.
+        :return: 包含输出信息的字典
         """
         cls.counter += 1
         output = {
@@ -111,56 +113,41 @@ class RunManager:
             'request_count': cls.counter,
         }
 
-        if (cls.run_args['render_gif']
-                or cls.run_args['render_webm']) and cls.process.is_alive():
+        # 检查是否有新生成的 GIF 或 WebM
+        if cls.process and cls.process.is_alive():
             gif_dir = glob.glob(f'{IMAGES_DIR.as_posix()}/*.gif')
             webm_dir = glob.glob(f'{VIDEOS_DIR.as_posix()}/*.webm')
 
-            # only update gif path if a new GIF was generated
             if len(gif_dir) > cls.gif_count:
                 cls.gif_count = len(gif_dir)
-                gif_path = max(gif_dir, key=os.path.getctime)
-                output['gif'] = f'/{STATIC_URL}{Path(gif_path).name}'.replace(
-                    '\\', '/')
-                cls.gif_path = output['gif']
+                cls.gif_path = max(gif_dir, key=os.path.getctime)
+                output[
+                    'gif'] = f'/{STATIC_URL}{Path(cls.gif_path).name}'.replace(
+                        '\\', '/')
 
             if len(webm_dir) > cls.webm_count:
                 cls.webm_count = len(webm_dir)
-                webm_path = max(webm_dir, key=os.path.getctime)
+                cls.webm_path = max(webm_dir, key=os.path.getctime)
                 output[
-                    'webm'] = f'/{STATIC_URL}{Path(webm_path).name}'.replace(
+                    'webm'] = f'/{STATIC_URL}{Path(cls.webm_path).name}'.replace(
                         '\\', '/')
-                cls.webm_path = output['webm']
 
         return output
 
     @classmethod
     def start_process(cls, fkwargs: dict):
-        """Spawn a subprocess to run the instance of :class:
+        """启动一个新进程来运行模拟。
 
-        `~cyberattacksim.cyberattacksimmm_run.CyberAttackRun` with the given
-        arguments.
+        :param fkwargs: 运行参数
         """
         cls.run_started = True
         cls.run_args = fkwargs
         cls.counter = 0
-
-        # clear gif path
         cls.gif_path = ''
-
-        # clear webm path
         cls.webm_path = ''
 
-        # reset counts
-        RunManager.gif_count = len(list(IMAGES_DIR.iterdir()))
-        RunManager.webm_count = len(list(VIDEOS_DIR.iterdir()))
-        RunManager.gif_path = ''
-        RunManager.webm_path = ''
-
-        cls.process = multiprocessing.Process(
-            target=RunManager.run_yt,
-            kwargs=fkwargs,
-        )
+        cls.process = multiprocessing.Process(target=cls.run_yt,
+                                              kwargs=fkwargs)
         cls.process.start()
 
 
@@ -282,92 +269,108 @@ class GameModeManager:
 
 
 def next_key(_dict: dict, key: int) -> Any:
-    """Get the next key in a dictionary.
+    """获取字典中指定键的下一个键。
 
-    Use key_index + 1 if there is a subsequent key
-    otherwise return first key.
+    如果当前键是字典中最后一个键，则返回字典的第一个键。
 
-    :param: _dict: a dictionary object
-    :param: key: the current key
+    参数:
+    _dict (dict): 要操作的字典。
+    key (int): 当前键。
 
-    :return: the subsequent key in the dictionary after `key`
+    返回:
+    Any: 下一个键或字典的第一个键。
     """
-    keys = list(_dict.keys())
-    key_index = keys.index(key)
-    if key_index < (len(keys) - 1):
-        return keys[key_index + 1]
-    return keys[0]
+    keys = list(_dict.keys())  # 获取字典的键列表
+    key_index = keys.index(key)  # 找到当前键的位置
+    if key_index < (len(keys) - 1):  # 如果不是最后一个键
+        return keys[key_index + 1]  # 返回下一个键
+    return keys[0]  # 否则返回第一个键
 
 
 def uniquify(path: Path) -> Path:
-    """Create a unique file path from a proposed path by adding a numeral to
-    the filename.
+    """通过在文件名后添加编号生成唯一的文件路径。
 
-    Transforms the input `Path` object by iteratively adding numerals to the end
-    of the filename until the proposed path does not exist.
+    如果指定路径已存在，则在文件名后添加 (1)、(2) 等直到路径唯一。
 
-    :param path: a `pathlib.Path` object to convert to a unique path
+    参数:
+    path (Path): 提供的初始路径。
 
-    :return: The transformed path object.
-
-    :Example:
-
-    >>> test.txt -> exists
-    >>> test(1).txt -> exists
-    >>> test(2).txt -> new path
+    返回:
+    Path: 唯一化后的路径。
     """
-    filename = path.stem
-    extension = path.suffix
-    parent = path.parent
-    counter = 1
+    filename = path.stem  # 获取文件名（不含扩展名）
+    extension = path.suffix  # 获取文件扩展名
+    parent = path.parent  # 获取路径的父目录
+    counter = 1  # 初始化计数器
 
-    while path.exists():
-        path = parent / f'{filename}({counter}){extension}'
-        counter += 1
-    return path
+    while path.exists():  # 如果路径已存在
+        path = parent / f'{filename}({counter}){extension}'  # 在文件名后加编号
+        counter += 1  # 计数器递增
+    return path  # 返回唯一路径
 
 
 def get_docs_sections():
-    """Return names of each section of the sphinx documentation."""
-    docs_dir = DOCS_ROOT / 'source'
+    """获取 Sphinx 文档的所有部分名称。
+
+    返回:
+    List[str]: 文档部分的名称列表。
+    """
+    docs_dir = DOCS_ROOT / 'source'  # 定位到文档的源目录
     docs_sections = []
-    if docs_dir.exists():
-        sections = [p.stem for p in docs_dir.iterdir() if p.suffix == '.html']
-        docs_sections = docs_sections + sections
-    docs_dir = docs_dir / '_autosummary'
-    if docs_dir.exists():
+    if docs_dir.exists():  # 如果目录存在
+        sections = [p.stem for p in docs_dir.iterdir()
+                    if p.suffix == '.html']  # 提取 HTML 文件名
+        docs_sections += sections
+    docs_dir = docs_dir / '_autosummary'  # 进入自动摘要目录
+    if docs_dir.exists():  # 如果目录存在
         sections = [
             f'_autosummary/{p.stem}' for p in docs_dir.iterdir()
             if p.suffix == '.html'
         ]
-        docs_sections = docs_sections + sections
+        docs_sections += sections
     return docs_sections
 
 
 def get_url(url_name: str, *args, **kwargs):
-    """Wrapped implementation of Django's reverse url.
+    """封装 Django 的 reverse 函数，用于 URL 反向解析。
 
-    A lookup that returns the url by name
-    or empty string when the url does not exist.
+    参数:
+    url_name (str): URL 名称。
+    *args: 位置参数。
+    **kwargs: 关键字参数。
 
-    :param url_name: The name of the url string as defined in `urls.py`.
-
-    :return: The full url string as defined in `urls.py`
+    返回:
+    str: 反向解析后的 URL 或 None（如果解析失败）。
     """
     try:
-        return reverse(url_name, args=args, kwargs=kwargs)
+        return reverse(url_name, args=args, kwargs=kwargs)  # 尝试反向解析 URL
     except Exception:
-        return None
+        return None  # 如果失败则返回 None
 
 
 def get_url_dict(name: str, href: str, new_tab: bool = False):
-    """Return a dictionary with keys `name` and `href` to describe a url link
-    element."""
+    """创建一个描述 URL 链接的字典。
+
+    参数:
+    name (str): 链接名称。
+    href (str): 链接地址。
+    new_tab (bool): 是否在新标签页中打开。
+
+    返回:
+    dict: 描述链接的字典。
+    """
     return {'name': name, 'href': href, 'new_tab': new_tab}
 
 
 def get_toolbar(current_page_title: str = None):
-    """Get toolbar information for the current page title."""
+    """生成包含工具栏项的字典。
+
+    参数:
+    current_page_title (str): 当前页面的标题。
+
+    返回:
+    dict: 工具栏项信息的字典。
+    """
     default_toolbar = {
         'home': {
             'icon': 'bi-house-door',
@@ -375,20 +378,6 @@ def get_toolbar(current_page_title: str = None):
             'cypressRefToolbar': 'toolbar-home',
             'cypressRefMenu': 'menu-home',
         },
-        # 'doc': {
-        #     'icon': 'bi-file-earmark',
-        #     'title': 'Documentation',
-        #     'cypressRefToolbar': 'toolbar-documentation',
-        #     'cypressRefMenu': 'menu-documentation',
-        # },
-        # Not comfortable with this yet. Causing issues in test and
-        # currently only works on Windows. Will release in later version.
-        # "jupyter": {
-        #     "icon": "bi-book",
-        #     "title": "Jupyter Notebooks",
-        #     "cypressRefToolbar": "toolbar-jupyter-notebooks",
-        #     "cypressRefMenu": "menu-jupyter-notebooks",
-        # },
         'manage-game_modes': {
             'icon': 'bi-gear',
             'title': 'Manage game modes',
@@ -433,7 +422,7 @@ def get_toolbar(current_page_title: str = None):
             'menu-about',
         },
     }
-    for id, info in default_toolbar.items():
+    for id, info in default_toolbar.items():  # 标记当前页面为活动状态
         default_toolbar[id]['active'] = info['title'] == current_page_title
     return default_toolbar
 

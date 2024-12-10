@@ -25,33 +25,13 @@
 {% endblock %}
 
 {% block main %}
-<div id="center-container" class="small">
+<div id="center-container" class="small" style="background-color: brown;">
     <!-- 遍历 toolbar 字典的键值对 -->
     {% for id, el in toolbar.items %}
     <!-- 生成链接，使用自定义模板标签 get_url 和 to_id 处理 title 和 id -->
     <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}"><i
             class="bi {{el.icon}}"></i>{{el.title}}</a>
     {% endfor %}
-</div>
-<div id="center-container" class="small">
-    <!-- 重复的 toolbar 链接生成部分 -->
-    {% for id, el in toolbar.items %}
-    <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}"><i
-            class="bi {{el.icon}}"></i>{{el.title}}</a>
-    {% endfor %}
-    <!-- 添加文本内容 -->
-    <h2>Welcome to Our Home Page</h2>
-    <p>This is a paragraph of text that you can customize to provide more information about your website or application.
-    </p>
-
-    <!-- 添加图片 -->
-    <img src="{% static 'images/results.png' %}" alt="Home Image" style="width: 100%; max-width: 600px; height: auto;">
-
-    <!-- 添加视频 -->
-    <video width="100%" controls>
-        <source src="{% static 'videos/CAS_2024-12-03-10-06-08_1.mp4' %}" type="video/mp4">
-        Your browser does not support the video tag.
-    </video>
 </div>
 
 {% endblock %}

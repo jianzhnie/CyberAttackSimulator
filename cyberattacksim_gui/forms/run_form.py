@@ -7,7 +7,7 @@ from cyberattacksim_gui.forms import RangeInput
 class RunForm(django_forms.Form):
     """Django form to represent options required by the :class:
 
-    `~cyberattacksimmmmmm.cyberattacksim_run.CyberAttackRun`.
+    `~cyberattacksim.cyberattacksim_run.CyberAttackRun`.
     """
 
     deterministic = django_forms.BooleanField(

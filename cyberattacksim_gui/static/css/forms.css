@@ -1,257 +1,170 @@
-/* 文本区域样式 */
 textarea {
     background-color: var(--light) !important;
-    /* 背景色 */
     border: none !important;
-    /* 无边框 */
     color: var(--text-light) !important;
-    /* 文本颜色 */
 }
 
-/* 表单控件区域样式 */
 #section-controls {
     justify-content: center;
-    /* 水平居中对齐 */
 }
 #section-controls>* {
     margin: var(--increment);
-    /* 外边距 */
 }
 
-/* 表单标签样式 */
 .form-label {
     color: var(--text-superlight);
-    /* 文本颜色 */
 }
-/* 开关样式 */
 .form-switch {
     text-align: center;
-    /* 文本居中对齐 */
 }
-/* 选择框样式 */
+
+/* .form-range{
+    display: flex;
+    flex-direction: row;
+} */
 .form-select {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e");
-    /* 背景图标 */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='white' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2 5l6 6 6-6'/%3e%3c/svg%3e")
 }
-/* 滑块容器样式 */
 .form-range-container {
     display: flex;
-    /* 使用Flexbox布局 */
     align-items: center;
-    /* 垂直居中对齐 */
     flex-direction: row;
-    /* 主轴方向为水平 */
 }
-/* 滑块进度条样式（Firefox） */
+
 .form-range::-moz-range-progress {
     background-color: var(--primary);
-    /* 背景色 */
     height: .5rem;
-    /* 高度 */
-        border-radius: .25rem 0% 0% .25rem;
-        /* 圆角 */
+    border-radius: .25rem 0% 0% .25rem;
 }
-/* 滑块设置器样式 */
 .form-range>.range-setter {
     width: 50px;
-    /* 宽度 */
     margin-left: var(--increment);
-    /* 左侧外边距 */
 }
-/* 滑块设置器样式 */
 .range-setter {
     background-color: var(--light);
-    /* 背景色 */
     border: 1px solid var(--text-light);
-    /* 边框 */
     color: var(--text-light);
-    /* 文本颜色 */
     border-radius: .25rem;
-    /* 圆角 */
     width: 4rem;
-    /* 宽度 */
 }
-/* 滑块设置器数字输入样式（WebKit） */
 .range-setter::-webkit-inner-spin-button,
 .form-range>.range-setter::-webkit-outer-spin-button {
     -webkit-appearance: none;
-    /* 移除默认样式 */
     margin: 0;
-    /* 外边距 */
 }
 
-/* 错误列表样式 */
+/* config form elements */
 .error-list {
     font-size: .75rem;
-    /* 字体大小 */
-        color: red;
-        /* 文本颜色 */
+    color: red
 }
-/* 表单控件样式 */
 .form-control {
     padding: 0;
-    /* 内边距 */
     padding-left: .2rem;
-    /* 左侧内边距 */
     padding-right: .2rem;
-    /* 右侧内边距 */
     margin-right: var(--increment);
-    /* 右侧外边距 */
     max-width: calc(100% - .5rem);
-    /* 最大宽度 */
 }
-/* 表单容器样式 */
 .form-container {
     display: flex;
-    /* 使用Flexbox布局 */
     flex-direction: column;
-    /* 主轴方向为垂直 */
     justify-content: flex-start;
-    /* 垂直靠上对齐 */
     align-items: center;
-    /* 水平居中对齐 */
     flex: 1;
-    /* 占据剩余空间 */
     min-height: 0;
-    /* 最小高度为0 */
     max-height: 100%;
-    /* 最大高度占满父元素 */
 }
 .form-container div,
 .form-container form {
     min-height: 0;
-    /* 最小高度为0 */
+    /* max-height: 100%; */
     min-width: 0;
-    /* 最小宽度为0 */
     width: 100%;
-    /* 宽度占满父元素 */
     overflow: hidden;
-    /* 溢出隐藏 */
 }
-/* 配置表单样式 */
 .config-form {
     display: flex;
-    /* 使用Flexbox布局 */
     flex-direction: column;
-    /* 主轴方向为垂直 */
-        margin-top: calc(var(--increment) * 4);
-        /* 顶部外边距 */
-        margin-bottom: calc(var(--increment) * 4);
-        /* 底部外边距 */
+    margin-top: calc(var(--increment)*4);
+    margin-bottom: calc(var(--increment)*4);
+    /* flex: 1; */
 }
 .fields {
     width: 100%;
-    /* 宽度占满父元素 */
 }
 .config-form>.fields {
     overflow-y: auto;
-    /* 垂直溢出时显示滚动条 */
     padding-right: var(--increment);
-    /* 右侧内边距 */
 }
 .config-form .info {
     margin-right: var(--increment);
-    /* 右侧外边距 */
 }
 .title {
     font-size: 1.25rem;
-    /* 字体大小 */
 }
 
-/* 表单布局样式 */
+/* form layouts */
 .mb-3 {
     position: relative;
-    /* 相对定位 */
     display: block;
-    /* 块级元素 */
     flex-wrap: wrap;
-    /* 允许换行 */
     min-height: 5rem;
-    /* 最小高度 */
     margin: var(--increment);
-    /* 外边距 */
     margin-top: calc(var(--increment) * 3) !important;
-    /* 顶部外边距 */
     margin-bottom: calc(var(--increment) * 3) !important;
-    /* 底部外边距 */
 }
 .mb-3:has(.inline) {
     display: flex;
-    /* 使用Flexbox布局 */
 }
 .mb-3:has(.hidden) {
     display: none;
-    /* 隐藏 */
 }
 .mb-3 label {
     display: flex;
-    /* 使用Flexbox布局 */
     align-items: center;
-    /* 垂直居中对齐 */
     margin: 0;
-    /* 外边距 */
 }
 .mb-3 input {
     height: 25px;
-    /* 高度 */
 }
 .mb-3>div {
     flex: 1;
-    /* 占据剩余空间 */
 }
 
 .mb-3:has(.grouped.child) .info {
     margin-left: var(--padding);
-    /* 左侧外边距 */
+    /*calc(var(--increment)*3);*/
 }
 
-/* 搜索表单删除按钮样式 */
+/* search form delete */
 #search-form .mb-3 .delete {
     position: absolute;
-    /* 绝对定位 */
     top: 5px;
-    /* 顶部位置 */
     right: 5px;
-    /* 右侧位置 */
 }
 #search-form {
     min-height: 0;
-    /* 最小高度为0 */
     max-height: 500px;
-    /* 最大高度 */
     overflow-y: auto;
-    /* 垂直溢出时显示滚动条 */
 }
 
-/* 帮助文本样式 */
+
 .help-text {
     font-size: .8rem;
-    /* 字体大小 */
     color: #888;
-    /* 文本颜色 */
     flex-basis: 100%;
-    /* 占据剩余空间 */
     margin: 0;
-    /* 外边距 */
 }
-/* 字段容器样式 */
 .field-container {
     display: flex;
-    /* 使用Flexbox布局 */
     flex-direction: column;
-    /* 主轴方向为垂直 */
     align-items: center;
-    /* 水平居中对齐 */
     justify-content: center;
-    /* 垂直居中对齐 */
 }
 .field-container:has(.inline) {
     max-width: 400px;
-    /* 最大宽度 */
 }
 .field-container>* {
     width: 100%;
-    /* 宽度占满父元素 */
     margin: 0;
-    /* 外边距 */
 }

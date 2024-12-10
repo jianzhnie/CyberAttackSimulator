@@ -2,76 +2,62 @@
 <html lang="en">
 
 <head>
-  <!-- 预连接到 Google Fonts 以提高性能 -->
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
-
-  <!-- 设置字符编码为 UTF-8 -->
   <meta charset="utf-8">
-<!-- 设置页面标题 -->
   <title>NetworkEditor</title>
-<!-- 设置基础路径 -->
   <base href="/">
-<!-- 设置视口以适应不同设备的屏幕宽度 -->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- 引入 Material Icons 字体 -->
-<style type="text/css">
-  @font-face {
-    font-family: 'Material Icons';
-    font-style: normal;
-    font-weight: 400;
-    src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
-  }
-
-  .material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: 'liga';
-    -webkit-font-smoothing: antialiased;
-  }
-</style>
-
-<!-- 设置 HTML 和 body 的样式 -->
-<style>
-  html {
-    display: flex;
-    flex: 1;
-    height: 100%
-  }
-
-  body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    font-family: Arial, Helvetica, sans-serif
-  }
-</style>
-
-<!-- 引入 Angular 应用的样式文件 -->
-<link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'">
-<noscript>
-  <link rel="stylesheet" href="styles.css">
-</noscript>
-</head>
+  <style type="text/css">
+    @font-face {
+      font-family: 'Material Icons';
+      font-style: normal;
+      font-weight: 400;
+      src: url(https://fonts.gstatic.com/s/materialicons/v140/flUhRq6tzZclQEJ-Vdg-IuiaDsNcIhQ8tQ.woff2) format('woff2');
+    }
+  
+    .material-icons {
+      font-family: 'Material Icons';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+  </style>
+  <style>
+    html {
+      display: flex;
+      flex: 1;
+      height: 100%
+    }
+  
+    body {
+      height: 100%;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      font-family: Arial, Helvetica, sans-serif
+    }
+  </style>
+  <link rel="stylesheet" href="styles.css" media="print" onload="this.media='all'"><noscript>
+    <link rel="stylesheet" href="styles.css">
+  </noscript>
+  </head>
 
 <body>
-  <!-- Angular 应用的根元素 -->
   <app-root></app-root>
-
-  <!-- 引入 Angular 应用的脚本文件 -->
   <script src="runtime.js" type="module"></script>
   <script src="polyfills.js" type="module"></script>
   <script src="main.js" type="module"></script>
-  </body>
+
+</body>
 
 </html>

@@ -1,5 +1,8 @@
+import os
+import sys
 from logging import getLogger
 
+sys.path.append(os.getcwd())
 from cyberattacksim import (_CAS_USER_DIRS, AGENTS_DIR, AGENTS_LOGS_DIR,
                             APP_IMAGES_DIR, DB_DIR, GAME_MODES_DIR, IMAGES_DIR,
                             LOG_DIR, NOTEBOOKS_DIR, PPO_TENSORBOARD_LOGS_DIR,

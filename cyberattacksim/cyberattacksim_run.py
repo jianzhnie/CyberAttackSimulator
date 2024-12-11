@@ -166,7 +166,7 @@ class CyberAttackRun:
         self.device = device
 
         self.logger = _LOGGER if logger is None else logger
-        self.logger.debug(f'CyberAttackSim Run  {self.uuid}: Run initialised')
+        self.logger.info(f'CyberAttackSim Run  {self.uuid}: Run initialised')
 
         self.output_dir = output_dir
 
@@ -251,15 +251,14 @@ class CyberAttackRun:
 
         self.network_interface = NetworkInterface(game_mode=self.game_mode,
                                                   network=self.network)
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Network interface created')
 
         self.red = self._red_agent_class(self.network_interface)
-        self.logger.debug(
-            f'CyberAttackSim Run  {self.uuid}: Red agent created')
+        self.logger.info(f'CyberAttackSim Run  {self.uuid}: Red agent created')
 
         self.blue = self._blue_agent_class(self.network_interface)
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Blue agent created')
 
         self.env = GenericNetworkEnv(
@@ -270,26 +269,26 @@ class CyberAttackRun:
             show_metrics_every=self.show_metrics_every,
             collect_additional_per_ts_data=self.collect_additional_per_ts_data,
         )
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: GenericNetworkEnv created')
 
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Performing env check')
         # check_env(self.env, warn=self.warn)
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Env checking complete')
 
         self.env.reset()
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: GenericNetworkEnv reset')
 
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Instantiating agent')
         if new:
             self.agent = self._get_new_ppo()
         else:
             self.agent = self._load_existing_ppo(ppo_zip_path)
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Agent instantiated')
 
         self.eval_callback = EvalCallback(
@@ -300,8 +299,7 @@ class CyberAttackRun:
             render=self.render,
             verbose=self.verbose,
         )
-        self.logger.debug(
-            f'CyberAttackSim Run  {self.uuid}: Eval callback set')
+        self.logger.info(f'CyberAttackSim Run  {self.uuid}: Eval callback set')
 
     def train(self) -> Union[PPO, None]:
         """Trains the agent.
@@ -309,23 +307,23 @@ class CyberAttackRun:
         :return: The trained instance of ``stable_baselines3.ppo.ppo.PPO``.
         """
         if self.env and self.agent and self.eval_callback:
-            self.logger.debug(
+            self.logger.info(
                 f'CyberAttackSim Run  {self.uuid}: Performing agent training')
             for i in range(self.training_runs):
                 self.agent.learn(
                     total_timesteps=self.total_timesteps,
                     callback=self.eval_callback,
                 )
-                self.logger.debug(
+                self.logger.info(
                     f'CyberAttackSim Run  {self.uuid}: Training run {i + 1} complete'
                 )
 
                 self.env.reset()
-                self.logger.debug(
+                self.logger.info(
                     f'CyberAttackSim Run  {self.uuid}: GenericNetworkEnv reset'
                 )
 
-            self.logger.debug(
+            self.logger.info(
                 f'CyberAttackSim Run  {self.uuid}: Agent training complete')
             return self.agent
         else:
@@ -378,7 +376,7 @@ class CyberAttackRun:
             with open(uuid_path, 'w') as file:
                 file.write(self.uuid)
 
-            self.logger.debug(
+            self.logger.info(
                 f'CyberAttackSim Run  {self.uuid}: Saved trained agent (Stable Baselines3 PPO) to: {agent_path}'
             )
             return str(agent_path)
@@ -393,7 +391,7 @@ class CyberAttackRun:
         inventory_path = os.path.join(self.output_dir, 'INVENTORY')
         if os.path.isfile(inventory_path):
             os.remove(inventory_path)
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Building INVENTORY file {inventory_path}.'
         )
 
@@ -409,10 +407,10 @@ class CyberAttackRun:
                         file_stat = os.stat(file_path)
                         inventory.write(f'{dir_path}, {file_stat.st_size}')
                         inventory.write('\n')
-                        self.logger.debug(
+                        self.logger.info(
                             f'CyberAttackSim Run  {self.uuid}: File added to inventory: {dir_path}.'
                         )
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Finished building INVENTORY file.'
         )
 
@@ -426,7 +424,7 @@ class CyberAttackRun:
 
         :return: The exported filepath as a str.
         """
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Performing export.')
         self.save()
 
@@ -437,12 +435,11 @@ class CyberAttackRun:
         exported_root.mkdir(parents=True, exist_ok=True)
         export_path = os.path.join(exported_root,
                                    f'EXPORTED_cas_runner_{self.uuid}')
-        self.logger.debug(
+        self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Making a zip archive of {self.output_dir} and writing to {export_path}.zip.'
         )
         shutil.make_archive(export_path, 'zip', self.output_dir)
-        self.logger.debug(
-            f'CyberAttackSim Run  {self.uuid}: Export completed.')
+        self.logger.info(f'CyberAttackSim Run  {self.uuid}: Export completed.')
         return f'{export_path}.zip'
 
     # TODO: Remove once proper AgentClass sub-classes have been created and mapped as a function in the main module.

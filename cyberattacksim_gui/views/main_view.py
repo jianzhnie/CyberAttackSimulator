@@ -5,7 +5,7 @@ from django.views import View
 from cyberattacksim_gui.views.utils.helpers import get_toolbar
 
 
-class HomeMainView(View):
+class MainView(View):
     """Django page template for landing page."""
 
     def get(self, request: HttpRequest, *args, **kwargs):
@@ -26,6 +26,6 @@ class HomeMainView(View):
         """Process pythonic tags in home.html and return formatted page."""
         return render(
             request,
-            "home_main.html",
-            {"toolbar": get_toolbar("Home")},
+            'main.html',
+            {'toolbar': get_toolbar('Home')},
         )

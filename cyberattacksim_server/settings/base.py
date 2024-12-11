@@ -138,7 +138,6 @@ STATIC_URL = '_static/'
 STATICFILES_DIRS = (
     BASE_DIR / 'cyberattacksim_gui' / 'static',
     DOCS_ROOT / '_static',
-    DOCS_ROOT / '_images',
     IMAGES_DIR,
     VIDEOS_DIR,
 )

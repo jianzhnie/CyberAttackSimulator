@@ -35,7 +35,7 @@
 
 <body class="preload">
     <!-- 顶部导航栏 -->
-    <nav id="top-nav" class="border-bottom">
+    <nav id="top-nav" class="border-bottom" , style="background-color:black ;">
         <!-- 三明治图标，点击时展开工具栏 -->
         <div id="sandwich-icon" data-toolbar="#toolbar">
             <span></span>
@@ -44,7 +44,7 @@
             <span></span>
         </div>
         <!-- 页面标题 -->
-        <h2 class="head">CyberAttackSim</h2>
+        <h2 class="head" style="color:whitesmoke;">自动化网络攻防对抗模拟仿真</h2>
         <!-- 用于分隔的空白区域 -->
         <div class="flex-break"></div>
         <!-- 定义顶部按钮块，子模板可以扩展 -->
@@ -55,7 +55,7 @@
     <!-- 页面内容容器 -->
     <div id="window-container">
         <!-- 工具栏 -->
-        <div toolbar="" id="toolbar">
+        <div toolbar="" id="toolbar" , style="background-color: black;">
             <!-- 遍历 toolbar 字典的键值对 -->
             {% for id, el in toolbar.items %}
             <div class="toolbar-button{% if el.active %} active{% endif %}" id="toolbar-button-{{el.title|to_id}}"
@@ -71,7 +71,7 @@
                     </div>
                     <!-- 图标文本 -->
                     <div class="icon-text">
-                        <span>{{el.title}}</span>
+                        <span style="font-size: 20px; color: white;">{{el.title_zh}}</span>
                     </div>
                     <!-- 如果有链接，显示展开/折叠图标 -->
                     {%if el.links %}

@@ -375,24 +375,28 @@ def get_toolbar(current_page_title: str = None):
         'home': {
             'icon': 'bi-house-door',
             'title': 'Home',
+            'title_zh': '主页',
             'cypressRefToolbar': 'toolbar-home',
             'cypressRefMenu': 'menu-home',
         },
         'manage-game_modes': {
             'icon': 'bi-gear',
             'title': 'Manage game modes',
+            'title_zh': '仿真配置',
             'cypressRefToolbar': 'toolbar-manage-game-modes',
             'cypressRefMenu': 'menu-manage-game-modes',
         },
         'manage-networks': {
             'icon': 'bi-diagram-2',
             'title': 'Manage networks',
+            'title_zh': '网络配置',
             'cypressRefToolbar': 'toolbar-manage-networks',
             'cypressRefMenu': 'menu-manage-networks',
         },
         'run-view': {
             'icon': 'bi-play',
             'title': 'Run session',
+            'title_zh': '仿真训练',
             'cypressRefToolbar': 'toolbar-run-yt',
             'cypressRefMenu': 'menu-run-yt',
         },
@@ -401,6 +405,8 @@ def get_toolbar(current_page_title: str = None):
             'bi-question-lg',
             'title':
             'About',
+            'title_zh':
+            '关于',
             'links': [
                 get_url_dict(n, href, True) for n, href in zip(
                     [
@@ -408,10 +414,10 @@ def get_toolbar(current_page_title: str = None):
                         'Feature request'
                     ],
                     [
-                        'https://github.com/jianzhnie/CyberAttackSimulator/graphs/contributors',
-                        'https://github.com/jianzhnie/CyberAttackSimulator/discussions',
-                        'https://github.com/jianzhnie/CyberAttackSimulator/issues/new?assignees=&labels=bug&template=bug_report.md&title=[BUG]',
-                        'https://github.com/jianzhnie/CyberAttackSimulator/issues/new?assignees=&labels=feature_request&template=feature_request.md&title=[REQUEST]',
+                        'https://git.pcl.ac.cn/niejzh/CyberAttackSimulator/graphs/contributors',
+                        'https://git.pcl.ac.cn/niejzh/CyberAttackSimulator/discussions',
+                        'https://git.pcl.ac.cn/niejzh/CyberAttackSimulator/issues/new?assignees=&labels=bug&template=bug_report.md&title=[BUG]',
+                        'https://git.pcl.ac.cn/niejzh/CyberAttackSimulator/issues/new?assignees=&labels=feature_request&template=feature_request.md&title=[REQUEST]',
                     ],
                 )
             ],

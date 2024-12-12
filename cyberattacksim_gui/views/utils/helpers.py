@@ -372,10 +372,10 @@ def get_toolbar(current_page_title: str = None):
     dict: 工具栏项信息的字典。
     """
     default_toolbar = {
-        'home': {
+        'platform': {
             'icon': 'bi-house-door',
-            'title': 'Home',
-            'title_zh': '主页',
+            'title': 'PlatForm',
+            'title_zh': '平台主页',
             'cypressRefToolbar': 'toolbar-home',
             'cypressRefMenu': 'menu-home',
         },

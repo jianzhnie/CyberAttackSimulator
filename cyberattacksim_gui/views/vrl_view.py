@@ -3,7 +3,7 @@ from django.shortcuts import render
 from django.views import View
 
 
-class HomeView(View):
+class VrlView(View):
     """Django page template for landing page."""
 
     def get(self, request: HttpRequest, *args, **kwargs):
@@ -22,4 +22,4 @@ class HomeView(View):
 
     def render_page(self, request: HttpRequest):
         """Process pythonic tags in home.html and return formatted page."""
-        return render(request, 'home.html')
+        return render(request, 'vrl.html')

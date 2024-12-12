@@ -2,10 +2,8 @@ from django.http import HttpRequest
 from django.shortcuts import render
 from django.views import View
 
-from cyberattacksim_gui.views.utils.helpers import get_toolbar
 
-
-class MainView(View):
+class AppView(View):
     """Django page template for landing page."""
 
     def get(self, request: HttpRequest, *args, **kwargs):
@@ -24,8 +22,4 @@ class MainView(View):
 
     def render_page(self, request: HttpRequest):
         """Process pythonic tags in home.html and return formatted page."""
-        return render(
-            request,
-            'main.html',
-            {'toolbar': get_toolbar('Home')},
-        )
+        return render(request, 'app.html')

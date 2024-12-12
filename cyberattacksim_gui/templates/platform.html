@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+{% load static %}
+{% load tags %}
+
+
+{% block scripts %}
+<!-- 引入 jQuery 或其他 JavaScript 库 -->
+<script text="text/javascript">
+    $(document).ready(function () {
+        // 当页面加载完成后执行以下代码
+        $("#about").click(function (e) {
+            // 当点击 id 为 "about" 的元素时，阻止默认行为
+            e.preventDefault();
+            // 切换 id 为 "sandwich-icon" 的元素的 "open" 类
+            $("#sandwich-icon").toggleClass('open');
+            // 获取 "sandwich-icon" 元素的 data-toolbar 属性值，并切换对应元素的 "open" 类
+            $($("#sandwich-icon").data("toolbar")).toggleClass("open");
+            // 移除所有 class 为 "toolbar-button" 的元素的 "show" 类
+            $(".toolbar-button").removeClass("show");
+            // 切换 id 为 "toolbar-button-about" 的元素的 "show" 类
+            $("#toolbar-button-about").toggleClass("show");
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="center-container" class="small" , style="background-color: white;">
+    <!-- 遍历 toolbar 字典的键值对 -->
+    {% for id, el in toolbar.items %}
+    <!-- 生成链接，使用自定义模板标签 get_url 和 to_id 处理 title 和 id -->
+    <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}" ,
+        style="background-color: #1890FF; opacity: 0.8;"><i class="bi {{el.icon}}"></i><span
+            style="font-size: 24px; color: white;">{{el.title_zh}}</span></a>
+    {% endfor %}
+</div>
+
+{% endblock %}
+
+{% block style %}
+<style>
+    /* 设置页面背景图片覆盖整个页面 */
+    body {
+        background-image: url("{% static 'img/background.jpg' %}");
+        background-size: cover;
+        /* 确保图片覆盖整个页面 */
+        background-position: center;
+        /* 图片居中显示 */
+        background-repeat: no-repeat;
+        /* 防止图片重复 */
+        margin: 0;
+        /* 清除默认外边距 */
+        padding: 0;
+        height: 100vh;
+        /* 确保背景图片高度覆盖视口 */
+    }
+
+    #center-container {
+        background-color: rgba(255, 255, 255, 0.8);
+        /* 添加白色半透明背景以提高对比度 */
+        border-radius: 10px;
+        /* 圆角效果 */
+        padding: 20px;
+        /* 内边距调整 */
+        margin: auto;
+        /* 居中对齐 */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 80%;
+        /* 控制容器宽度 */
+        max-width: 600px;
+        /* 最大宽度限制 */
+    }
+
+    #center-container>a {
+        /*color: #FFFFFF; /* 链接字体颜色设置为白色 */
+        width: 100%;
+    }
+
+    /* 设置 center-container 内链接和按钮的样式 */
+    #center-container>a,
+    #center-container>button {
+        position: relative;
+        margin: var(--increment);
+        margin-top: calc((var(--increment)*3));
+        padding: 2px;
+        background-color: transparent;
+        color: var(--text-light);
+        font-size: 1.5rem;
+        border: 3px solid var(--text-light);
+        border-radius: .25rem;
+        text-align: center;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    /* 设置 center-container 内链接和按钮的悬停样式 */
+    #center-container>a:hover,
+    #center-container>button:hover {
+        color: var(--primary-light);
+    }
+
+    /* 设置 center-container 内图标的样式 */
+    #center-container i {
+        display: block;
+        top: -1rem;
+        left: -1rem;
+        position: absolute;
+        background-color: var(--mid);
+        border-radius: 50%;
+        border: 3px solid var(--primary);
+        padding: var(--increment);
+        box-shadow: 0 0 0 var(--increment) var(--mid);
+    }
+</style>
+{% endblock %}

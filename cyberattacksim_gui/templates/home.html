@@ -1,105 +1,276 @@
-{% extends "base.html" %}
 {% load static %}
-{% load tags %}
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>cyberattacksim</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+  <!-- font awesome style -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}" />
+
+  <!-- Custom styles for this template -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <!-- responsive style -->
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+
+  </head>
+
+  <body>
+    <div class="hero_area">
+      <!-- header section strats -->
+      <header class="header_section">
+        <div class="header_top">
+          <div class="container-fluid">
+            <div class="contact_nav">
+              <a href="">
+                <span>
+                  网络空间
+                  博弈对抗仿真平台
+                </span>
+              </a>
+              <a href="https://www.pcl.ac.cn/">
+                <i class="fa fa-send" aria-hidden="true"></i>
+                <span>
+                  鹏城实验室
+                </span>
+              </a>
+            </div>
+          </div>
+          </div>
+          <div class="header_bottom">
+            <div class="container-fluid">
+              <nav class="navbar navbar-expand-lg custom_nav-container ">
+                <a class="navbar-brand" href="index.html">
+                  <!-- <span>
+                                                                                                                                                                                                                                                                                                                              Inance
+                                                                                                                                                                                                                                                                                                                            </span> -->
+                </a>
+
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ">
+                  <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'Home' %}">主页 <span class="sr-only">(current)</span></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="{% url 'Vrl' %}"> 视觉强化学习</a>
+                  </li>
+                  <li class=" nav-item">
+                    <a class="nav-link" href="{% url 'Marl' %}"> 多智能体博弈</a>
+                  </li>
+                  <li class=" nav-item">
+                    <a class="nav-link" href="{% url 'Network' %}"> 网络架构设计</a>
+                  </li>
+                  <li class=" nav-item">
+                    <a class="nav-link" href="{% url 'App' %}"> 典型应用</a>
+                  </li>
+                </ul>
+              </div>
+              </nav>
+              </div>
+              </div>
+              </header>
+              <!-- end header section -->
+              <!-- slider section -->
+              <section class="slider_section ">
+                <div class="container ">
+                  <!-- <video autoplay="" loop="" muted="" class="custom-video" poster="">
+                                                                                                                                                                                                                                                                                                                                                                                                                                <source src="videos/video.mp4" type="video/mp4">
+                                                                                                                                                                                                                                                                                                                                                                                                                                  Your browser does not support the video tag.
+                                                                                                                                                                                                                                                                                                                                                                                                                              </video> -->
+                  <div class="row">
+                    <div class="col-lg-5 col-md-6">
+                      <div class="detail-box">
+                        <h1>
+                          网络空间
+                          <br>
+                          博弈对抗仿真平台
+                        </h1>
+                        <p>
+                          本平台CyberAttackSim从推演引擎、算法库、学习引擎和模型库四个方面实现网络空间博弈对抗和态势推演模拟，具备基于15万+节点网络环境的仿真能力，形成规划类求解方法、单智能体学习算法、多智能体学习算法和启发式学习算法共计十余种算法的算法库；支持主流学习引擎；支持各类主流神经网络模型，包括卷积神经网络、序列神经网络、图神经网络、脉冲神经网络。
+                        </p>
+                        <a href="platform/">
+                          探索本平台
+                        </a>
+                      </div>
+                    </div>
+                    <div class="col-lg-7 col-md-6">
+                      <div class="img-box">
+                        <img src="{% static 'images/network.png' %}" style="width: 80%; height: auto;" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <!-- end slider section -->
+              </div>
+              <!-- about section -->
+              <section class="about_section layout_padding-bottom">
+                <div class="container">
+                  <div class="row">
+                    <div class="col-lg-5 col-md-6">
+                      <div class="detail-box">
+                        <h2>
+                          设计宗旨
+                        </h2>
+                        <p>
+                          CyberAttackSim
+                          专注于对网络攻击的后入侵横向移动阶段进行威胁建模。该环境由计算机节点网络组成。它由固定的网络拓扑和一组预定义的漏洞参数化，智能体可以利用这些漏洞在网络中横向移动。模拟攻击者的目标是通过利用这些植入的漏洞来控制网络的某些部分。当模拟攻击者在网络中移动时，防御者智能体会监视网络活动以检测攻击者的存在并遏制攻击。
+                        </p>
+                        <li>
+                          可在高度可定制的配置中防御任意网络拓扑结构。
+                        </li>
+                        <li>
+                          可扩展性——允许修改和添加各种防御行动和进攻策略，而无需对代码库进行结构性更改。
+                        </li>
+                        <li>
+                          可扩展性——以最小的性能成本支持大型网络的训练
+                        </li>
+                        <!-- <a href="">
+                                                                                                                                                                                                                                                                                                                                                                                                                                        Read More
+                                                                                                                                                                                                                                                                                                                                                                                                                                      </a> -->
+                      </div>
+                    </div>
+                    <div class="col-lg-7 col-md-6">
+                      <br>
+                      <br>
+                      <div class="img-box">
+                        <img src="{% static 'images/原理.png' %}" style="width: 80%; height: auto;" alt="">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section class="service_section layout_padding-bottom">
+                <div class="container ">
+                  <div class="heading_container heading_center">
+                    <h2> 成果展示 </h2>
+                  </div>
+                  <div class="row">
+                    <div class="col-sm-6 col-md-3 mx-auto">
+                      <div class="box ">
+                        <div class="img-box">
+                          <img src="{%static 'images/s1.png' %}" alt="" />
+                        </div>
+                        <div class="detail-box">
+                          <h5>
+                            视觉强化学习
+                          </h5>
+                          <p>
+                            旨在研究单智能体与环境交互过程中在线学习，将像素级别图像和最优决策进行关联。
+                          </p>
+                        </div>
+                        <div class="btn-box">
+                          <a href="{% url 'Vrl' %}">
+                            查看细节
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3 mx-auto">
+                      <div class="box ">
+                        <div class="img-box">
+                          <img src="{%static 'images/s2.png' %}" alt="" />
+                        </div>
+                        <div class="detail-box">
+                          <h5>
+                            多智能体博弈
+                          </h5>
+                          <p>
+                            旨在研究多智能体系统中各个体间合作与竞争关系，以分布式协同方式完成指定任务。
+                          </p>
+                        </div>
+                        <div class="btn-box">
+                          <a href="{% url 'Marl' %}">
+                            查看细节
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3 mx-auto">
+                      <div class="box ">
+                        <div class="img-box">
+                          <img src="{%static 'images/s3.png' %}" alt="" />
+                        </div>
+                        <div class="detail-box">
+                          <h5>
+                            网络架构设计
+                          </h5>
+                          <p>
+                            旨在学习多智能体系统的邻域选择策略，以提高系统的表征能力和博弈性能。
+                          </p>
+                        </div>
+                        <div class="btn-box">
+                          <a href="{% url 'Network' %}">
+                            查看细节
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-sm-6 col-md-3 mx-auto">
+                      <div class="box ">
+                        <div class="img-box">
+                          <img src="{%static 'images/s3.png' %}" alt="" />
+                        </div>
+                        <div class="detail-box">
+                          <h5>
+                            典型应用
+                          </h5>
+                          <p>
+                            旨在将研究成果带到实际产业中去，充分发挥研究的价值。
+                          </p>
+                        </div>
+                        <div class="btn-box">
+                          <a href="{% url 'App' %}">
+                            查看细节
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <!-- end service section -->
 
 
-{% block scripts %}
-<!-- 引入 jQuery 或其他 JavaScript 库 -->
-<script text="text/javascript">
-            $(document).ready(function () {
-                // 当页面加载完成后执行以下代码
-                $("#about").click(function (e) {
-            // 当点击 id 为 "about" 的元素时，阻止默认行为
-                e.preventDefault();
-                // 切换 id 为 "sandwich-icon" 的元素的 "open" 类
-                $("#sandwich-icon").toggleClass('open');
-                // 获取 "sandwich-icon" 元素的 data-toolbar 属性值，并切换对应元素的 "open" 类
-                $($("#sandwich-icon").data("toolbar")).toggleClass("open");
-                // 移除所有 class 为 "toolbar-button" 的元素的 "show" 类
-                $(".toolbar-button").removeClass("show");
-                // 切换 id 为 "toolbar-button-about" 的元素的 "show" 类
-                $("#toolbar-button-about").toggleClass("show");
-            });
-        });
-            </script>
-{% endblock %}
+  <!-- footer section -->
+  <footer class="footer_section">
+    <div class="container">
+      <p>
+        &copy; <span id="displayDateYear"></span> All Rights Reserved By
+        <a href="https://html.design/">鹏城实验室</a>
+      </p>
+    </div>
+  </footer>
+  <!-- footer section -->
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <script src="{% static 'js/custom.js' %}"></script>
+  <!-- Google Map -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+  <!-- End Google Map -->
 
-{% block main %}
-<div id="center-container" class="small" , style="background-color: white;">
-    <!-- 遍历 toolbar 字典的键值对 -->
-    {% for id, el in toolbar.items %}
-    <!-- 生成链接，使用自定义模板标签 get_url 和 to_id 处理 title 和 id -->
-    <a href="{{el.title|get_url}}" id={{el.title|to_id}} data-cy="{{el.cypressRefMenu}}" ,
-        style="background-color: #1890FF; opacity: 0.8;"><i class="bi {{el.icon}}"></i><span
-            style="font-size: 24px; color: white;">{{el.title_zh}}</span></a>
-    {% endfor %}
-</div>
+</body>
 
-{% endblock %}
-
-{% block style %}
-<style>
-    /* 设置页面背景图片覆盖整个页面 */
-    body {
-        background-image: url("{% static 'img/background.jpg' %}");
-        background-size: cover; /* 确保图片覆盖整个页面 */
-        background-position: center; /* 图片居中显示 */
-        background-repeat: no-repeat; /* 防止图片重复 */
-        margin: 0; /* 清除默认外边距 */
-        padding: 0;
-        height: 100vh; /* 确保背景图片高度覆盖视口 */
-    }
-    #center-container {
-        background-color: rgba(255, 255, 255, 0.8); /* 添加白色半透明背景以提高对比度 */
-        border-radius: 10px; /* 圆角效果 */
-        padding: 20px; /* 内边距调整 */
-        margin: auto; /* 居中对齐 */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 80%; /* 控制容器宽度 */
-        max-width: 600px; /* 最大宽度限制 */
-    }
-
-    #center-container>a {
-        /*color: #FFFFFF; /* 链接字体颜色设置为白色 */
-        width: 100%;
-    }
-    /* 设置 center-container 内链接和按钮的样式 */
-    #center-container>a,
-    #center-container>button {
-        position: relative;
-        margin: var(--increment);
-        margin-top: calc((var(--increment)*3));
-        padding: 2px;
-        background-color: transparent;
-        color: var(--text-light);
-        font-size: 1.5rem;
-        border: 3px solid var(--text-light);
-        border-radius: .25rem;
-        text-align: center;
-        text-decoration: none;
-        cursor: pointer;
-    }
-
-    /* 设置 center-container 内链接和按钮的悬停样式 */
-    #center-container>a:hover,
-    #center-container>button:hover {
-        color: var(--primary-light);
-    }
-
-    /* 设置 center-container 内图标的样式 */
-    #center-container i {
-        display: block;
-        top: -1rem;
-        left: -1rem;
-        position: absolute;
-        background-color: var(--mid);
-        border-radius: 50%;
-        border: 3px solid var(--primary);
-        padding: var(--increment);
-        box-shadow: 0 0 0 var(--increment) var(--mid);
-    }
-</style>
-{% endblock %}
+</html>

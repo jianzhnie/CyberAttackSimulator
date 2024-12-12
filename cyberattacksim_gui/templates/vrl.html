@@ -1,0 +1,186 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Basic -->
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <!-- Mobile Metas -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <!-- Site Metas -->
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  <meta name="author" content="" />
+
+  <title>cyberattacksim</title>
+
+  <!-- slider stylesheet -->
+  <link rel="stylesheet" type="text/css"
+    href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" />
+  <!-- bootstrap core css -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.css' %}" />
+  <!-- font awesome style -->
+  <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}" />
+
+  <!-- Custom styles for this template -->
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <!-- responsive style -->
+  <link rel="stylesheet" href="{% static 'css/responsive.css' %}" />
+
+</head>
+
+<body>
+  <div class="hero_area">
+    <!-- header section strats -->
+    <header class="header_section">
+      <div class="header_top">
+        <div class="container-fluid">
+          <div class="contact_nav">
+            <a href="">
+              <span>
+                网络空间
+                博弈对抗仿真平台
+              </span>
+            </a>
+            <a href="https://www.pcl.ac.cn/">
+              <i class="fa fa-send" aria-hidden="true"></i>
+              <span>
+                鹏城实验室
+              </span>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="header_bottom">
+        <div class="container-fluid">
+          <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="">
+              <!-- <span>
+                Inance
+              </span> -->
+            </a>
+
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+              aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+              <span class=""> </span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+              <ul class="navbar-nav ">
+                <li class="nav-item">
+                  <a class="nav-link" href="">主页</a>
+                </li>
+                <li class="nav-item active">
+                  <a class="nav-link" href="{% url 'Vrl' %}"> 视觉强化学习 <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'Marl' %}"> 多智能体博弈</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'Network' %}"> 网络架构设计 </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="{% url 'App' %}"> 典型应用</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
+        </div>
+      </div>
+    </header>
+    <!-- end header section -->
+    <!-- slider section -->
+    <section class="slider_section ">
+      <div class="container ">
+        <!-- <video autoplay="" loop="" muted="" class="custom-video" poster="">
+          <source src="videos/video.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video> -->
+        <div class="row">
+          <div class="col-lg-12 col-md-12">
+            <div class="detail-box">
+              <h1>
+                视觉强化学习
+              </h1>
+              <h6>
+                旨在通过时域差分损失来联合学习环境表征与决策之间的映射，但联合学习会导致样本效率低下、策略次优、学习过程不稳定等问题，这种现象我们通常称为“振荡自过拟合”（oscillating
+                self-overfitting）。为此，我们从两个角度出发去解决这些挑战：
+              </h6>
+              <br>
+              <li>
+                【方案1】我们在使用轻量级的编码器来保证表征学习稳定性，并联合重量级的编码器来保证特征的区分度，两者相结合进行交替学习，从而达到稳定且更具区分度的表征，从而促进下游最优决策的学习。
+              </li>
+              <div class="img-box">
+                <img src=" {%static 'images/zhai.png' %}" style="width: 80%; height: auto;" alt="">
+              </div>
+              <a
+                href="https://openaccess.thecvf.com/content/ICCV2023/papers/Zhai_Stabilizing_Visual_Reinforcement_Learning_via_Asymmetric_Interactive_Cooperation_ICCV_2023_paper.pdf">
+                轻量级适配器稳定方案细节
+              </a>
+              <br>
+              <br>
+              <br>
+              <br>
+
+
+              <li>
+                【方案2】我们从多模态感知入手，将隐空间表征分解为“模态特有的任务不相关噪声”和“模态共有的任务相关特征”，从这个角度将各个模态的噪声剔除，从而使用精炼后的任务相关特征进行策略学习，从而促进样本效率和策略性能。
+              </li>
+              <div class="img-box">
+                <img src=" {%static 'images/dmr.png' %}" style="width: 100%; height: auto;" alt="">
+              </div>
+              <a
+                href="https://openaccess.thecvf.com/content/CVPR2024/papers/Xu_DMR_Decomposed_Multi-Modality_Representations_for_Frames_and_Events_Fusion_in_CVPR_2024_paper.pdf">
+                多模态表征解耦方案细节
+              </a>
+              <br>
+              <br>
+              <br>
+              <br>
+
+              <li>
+                我们在复杂开放的Carla自动驾驶平台上验证了我们的有效性和最优性能：
+              </li>
+              <div class="img-box">
+                <img src=" {%static 'images/zhai-results.png' %}" style="width: 25%; height: auto;" alt="">
+              </div>
+              <div class="img-box">
+                <img src=" {%static 'images/dmr-results.png' %}" style="width: 45%; height: auto;" alt="">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <!-- end slider section -->
+  </div>
+
+
+
+  <!-- footer section -->
+  <footer class="footer_section">
+    <div class="container">
+      <p>
+        &copy; <span id="displayDateYear"></span> All Rights Reserved By
+        <a href="https://html.design/">鹏城实验室</a>
+      </p>
+    </div>
+  </footer>
+  <!-- footer section -->
+
+  <script src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.js' %}"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js">
+  </script>
+  <script src="{% static 'js/custom.js' %}"></script>
+  <!-- Google Map -->
+  <script
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCh39n5U-4IoWpsVGUHWdqB6puEkhRLdmI&callback=myMap"></script>
+  <!-- End Google Map -->
+
+
+</body>
+
+</html>

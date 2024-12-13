@@ -39,46 +39,6 @@
 
 {% block style %}
 <style>
-    /* 设置页面背景图片覆盖整个页面 */
-    body {
-        background-image: url("{% static 'img/background.jpg' %}");
-        background-size: cover;
-        /* 确保图片覆盖整个页面 */
-        background-position: center;
-        /* 图片居中显示 */
-        background-repeat: no-repeat;
-        /* 防止图片重复 */
-        margin: 0;
-        /* 清除默认外边距 */
-        padding: 0;
-        height: 100vh;
-        /* 确保背景图片高度覆盖视口 */
-    }
-
-    #center-container {
-        background-color: rgba(255, 255, 255, 0.8);
-        /* 添加白色半透明背景以提高对比度 */
-        border-radius: 10px;
-        /* 圆角效果 */
-        padding: 20px;
-        /* 内边距调整 */
-        margin: auto;
-        /* 居中对齐 */
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        width: 80%;
-        /* 控制容器宽度 */
-        max-width: 600px;
-        /* 最大宽度限制 */
-    }
-
-    #center-container>a {
-        /*color: #FFFFFF; /* 链接字体颜色设置为白色 */
-        width: 100%;
-    }
-
     /* 设置 center-container 内链接和按钮的样式 */
     #center-container>a,
     #center-container>button {

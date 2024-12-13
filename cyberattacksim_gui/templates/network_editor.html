@@ -62,6 +62,8 @@
 </div>
 <!-- Angular 应用根元素 -->
 <app-root></app-root>
+</div>
+
 {% endblock %}
 
 {% block style %}
@@ -226,7 +228,14 @@
     background-color: var(--light);
   }
 
-  /* 工具栏标签标题的样式 */
+  .field-container:has(.form-switch) {
+    max-width: 100px;
+  }
+
+  .help-text {
+    color: var(--text-dark);
+  }
+
   .toolbar-tab-title {
     margin-bottom: 30px;
     margin-top: 10px;

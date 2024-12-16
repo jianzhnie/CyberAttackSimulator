@@ -14,8 +14,8 @@ if __name__ == '__main__':
     db.rebuild_db()
 
     # creat randomly connected graph
-    description = 'A randomly connected graph. With the guarantee that each node will have at least one connection.'
-    author = 'Robion/CyberAttack'
+    description = 'A randomly connected graph. With the guarantee that each node will have at least one connection.(一个随机连接的图，保证每个节点至少有一个连接。)'
+    author = 'Robin/CyberAttackSim'
     base_name = 'Randomly Connected Network'
     node_list = [30, 50, 100]
     for n_nodes in node_list:
@@ -39,9 +39,9 @@ if __name__ == '__main__':
     # creat star graph
     description = 'This is one node in the middle with groups of nodes around it. \
         There is only one connection between a group and the center node.\
-        Groups cannot connect to each other.'
+        Groups cannot connect to each other.(图中有一个中心节点，周围环绕着若干组节点。每组节点与中心节点之间仅有一条连接。各组节点之间无法相互连接。)'
 
-    author = 'Robion/CyberAttack'
+    author = 'Robin/CyberAttackSim'
     base_name = 'Star Node Network'
     network = network_creator.create_star(first_layer_size=8,
                                           group_size=5,
@@ -62,10 +62,32 @@ if __name__ == '__main__':
               locked=True)
 
     # creat star graph
-    description = 'Corporate Network'
-    author = 'Robion/CyberAttack'
+    description = 'Corporate Network(企业网络)'
+    author = 'Robin/CyberAttackSim'
     base_name = 'Corporate Network'
     network = network_creator.create_corporate_network()
+    name = base_name
+    db.upsert(network,
+              name=name,
+              description=description,
+              author=author,
+              locked=True)
+
+    description = 'Two group Network.(双组网络)'
+    author = 'Robin/CyberAttackSim'
+    base_name = 'Two group Network'
+    network = network_creator.create_p2p()
+    name = base_name
+    db.upsert(network,
+              name=name,
+              description=description,
+              author=author,
+              locked=True)
+
+    description = 'Ring Network.(环形网络)'
+    author = 'Robin/CyberAttackSim'
+    base_name = 'Ring Network'
+    network = network_creator.create_ring()
     name = base_name
     db.upsert(network,
               name=name,
@@ -96,8 +118,8 @@ if __name__ == '__main__':
     network.set_random_vulnerabilities = True
     network.reset_random_vulnerabilities()
 
-    description = 'Zachary’s Karate Club graph.'
-    author = 'Robion/CyberAttack'
+    description = 'Zachary’s Karate Club graph Network.(扎卡里空手道俱乐部关系网络)'
+    author = 'Robin/CyberAttackSim'
     base_name = 'Karate Club Network'
     name = base_name
     db.upsert(network,

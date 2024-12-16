@@ -9,20 +9,20 @@ CyberAttack.
     CyberAttack runner module in the main package.
 """
 
+import argparse
 import os
 import sys
 import time
 from copy import deepcopy
-from importlib.resources import files
 from pathlib import Path
-import argparse
+
 import gymnasium as gym
 import torch_npu
-from torch_npu.contrib import transfer_to_npu
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
+from torch_npu.contrib import transfer_to_npu
 
 sys.path.append(os.getcwd())
 from cyberwheel.cyberwheel_envs.cyberwheel_dynamic import DynamicCyberwheel
@@ -111,13 +111,13 @@ def create_massive_node_env(network_size: int = 10):
 def main() -> None:
     """Run the custom config."""
     # Initialize ArgumentParser
-    parser = argparse.ArgumentParser(description="Cyber Attack Sim")
+    parser = argparse.ArgumentParser(description='Cyber Attack Sim')
     parser.add_argument(
-        "--massive_node_size",
+        '--massive_node_size',
         type=int,
         choices=[1000, 5000, 10000, 100000, 150000],
         default=1000,
-        help="Number of the massive network node size. Defaults to 1000",
+        help='Number of the massive network node size. Defaults to 1000',
     )
     args = parser.parse_args()
 

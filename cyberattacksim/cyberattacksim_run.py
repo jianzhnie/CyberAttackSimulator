@@ -34,6 +34,8 @@ from cyberattacksim.game_modes.game_mode import GameMode
 from cyberattacksim.game_modes.game_mode_db import default_game_mode
 from cyberattacksim.networks.network import Network
 from cyberattacksim.networks.network_db import default_18_node_network
+from cyberattacksim.utils.utils import get_system_info
+
 
 _LOGGER = getLogger(__name__)
 
@@ -167,6 +169,7 @@ class CyberAttackRun:
 
         self.logger = _LOGGER if logger is None else logger
         self.logger.info(f'CyberAttackSim Run  {self.uuid}: Run initialised')
+        self.sys_info = get_system_info()
 
         self.output_dir = output_dir
 

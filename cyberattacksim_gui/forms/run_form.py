@@ -54,7 +54,7 @@ class RunForm(django_forms.Form):
         required=False,
         help_text='The number of samples (env steps) to train on',
         label='Total timesteps',
-        initial=1000,
+        initial=2000,
     )
     training_runs = django_forms.IntegerField(
         widget=widgets.NumberInput(attrs={'class': 'inline form-control'}),
@@ -107,7 +107,7 @@ class RunForm(django_forms.Form):
         required=False,
         help_text='The number of episodes to run',
         label='Number of episodes',
-        initial=1,
+        initial=2,
     )
 
     def __init__(self, *args, **kwargs) -> None:

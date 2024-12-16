@@ -146,7 +146,7 @@ class ActionLoop:
                     os.makedirs(webm_output_directory)
                 webm_path = os.path.join(
                     webm_output_directory,
-                    f'{self.filename}_{string_time}_{self.episode_count}.mp4',
+                    f"{self.filename}_{string_time}_{self.episode_count}.webm",
                 )
 
                 # video generator thread

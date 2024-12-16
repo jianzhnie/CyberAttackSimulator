@@ -36,7 +36,6 @@ from cyberattacksim.networks.network import Network
 from cyberattacksim.networks.network_db import default_18_node_network
 from cyberattacksim.utils.utils import get_system_info
 
-
 _LOGGER = getLogger(__name__)
 
 

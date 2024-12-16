@@ -5,6 +5,7 @@ import os
 import subprocess
 import sys
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -38,18 +39,15 @@ class RunManager:
     webm_path = ''  # 当前生成的 WebM 路径
 
     @staticmethod
-    def format_file(path: Path) -> str:
-        """格式化文本文件内容为 HTML 格式，供 GUI 显示。
-
-        :param path: 文件路径
-        :return: 格式化的 HTML 文本
-        """
-        try:
-            with open(path, 'r') as f:
+    def format_file(path):
+        """Format a text reference file as a html object."""
+        with open(path, 'r') as f:
+            try:
                 lines = [line.replace(' ', '&nbsp;') for line in f.readlines()]
-                return '<br>'.join(lines)
-        except Exception:
-            return ''
+                text = '<br>'.join(lines)
+                return text
+            except Exception:
+                return ''
 
     @classmethod
     def run_yt(cls, **kwargs):
@@ -113,41 +111,101 @@ class RunManager:
             'request_count': cls.counter,
         }
 
-        # 检查是否有新生成的 GIF 或 WebM
-        if cls.process and cls.process.is_alive():
+        if (cls.run_args['render_gif']
+                or cls.run_args['render_webm']) and cls.process.is_alive():
             gif_dir = glob.glob(f'{IMAGES_DIR.as_posix()}/*.gif')
             webm_dir = glob.glob(f'{VIDEOS_DIR.as_posix()}/*.webm')
 
+            # only update gif path if a new GIF was generated
             if len(gif_dir) > cls.gif_count:
                 cls.gif_count = len(gif_dir)
-                cls.gif_path = max(gif_dir, key=os.path.getctime)
-                output[
-                    'gif'] = f'/{STATIC_URL}{Path(cls.gif_path).name}'.replace(
-                        '\\', '/')
+                gif_path = max(gif_dir, key=os.path.getctime)
+                output['gif'] = f'/{STATIC_URL}{Path(gif_path).name}'.replace(
+                    '\\', '/')
+                cls.gif_path = output['gif']
 
             if len(webm_dir) > cls.webm_count:
                 cls.webm_count = len(webm_dir)
-                cls.webm_path = max(webm_dir, key=os.path.getctime)
+                webm_path = max(webm_dir, key=os.path.getctime)
                 output[
-                    'webm'] = f'/{STATIC_URL}{Path(cls.webm_path).name}'.replace(
+                    'webm'] = f'/{STATIC_URL}{Path(webm_path).name}'.replace(
                         '\\', '/')
+                cls.webm_path = output['webm']
+
+        return output
+
+    @classmethod
+    def get_output_another(cls) -> Dict[str, Any]:
+        """获取运行输出，包括日志和生成的 GIF/WebM 文件路径。
+
+        :return: 包含输出信息的字典
+        """
+        cls.counter += 1
+        output = {
+            'stderr': cls.format_file(CAS_GUI_RUN_LOG),
+            'stdout': cls.format_file(CAS_GUI_STDOUT),
+            'gif': cls.gif_path,
+            'webm': cls.webm_path,
+            'active': cls.process.is_alive() if cls.process else False,
+            'request_count': cls.counter,
+        }
+
+        # 获取目录中的文件列表
+        gif_dir = [
+            f for f in os.listdir(IMAGES_DIR)
+            if f.startswith('CAS_') and f.endswith('.gif')
+        ]
+        webm_dir = [f for f in os.listdir(VIDEOS_DIR) if f.endswith('.webm')]
+
+        # 检查是否有新的 .gif 文件生成
+        if len(gif_dir) > cls.gif_count:
+            cls.gif_count = len(gif_dir)
+            # 找到最新的 .gif 文件
+            latest_gif = max(
+                gif_dir,
+                key=lambda f: datetime.strptime(
+                    f.split('_')[1], '%Y-%m-%d-%H-%M-%S'),
+            )
+            output['gif'] = f'/{STATIC_URL}/{latest_gif}'.replace('\\', '/')
+            cls.gif_path = output['gif']
+
+        # 检查是否有新的 .webm 文件生成
+        if len(webm_dir) > cls.webm_count:
+            cls.webm_count = len(webm_dir)
+            # 找到最新的 .webm 文件
+            latest_webm = max(webm_dir, key=os.path.getctime)
+            output['webm'] = f'/{STATIC_URL}/{latest_webm}'.replace('\\', '/')
+            cls.webm_path = output['webm']
 
         return output
 
     @classmethod
     def start_process(cls, fkwargs: dict):
-        """启动一个新进程来运行模拟。
+        """Spawn a subprocess to run the instance of :class:
 
-        :param fkwargs: 运行参数
+        `~yawning_titan.yawning_titan_run.YawningTitanRun` with the given
+        arguments.
         """
         cls.run_started = True
         cls.run_args = fkwargs
         cls.counter = 0
+
+        # clear gif path
         cls.gif_path = ''
+
+        # clear webm path
         cls.webm_path = ''
 
-        cls.process = multiprocessing.Process(target=cls.run_yt,
-                                              kwargs=fkwargs)
+        # reset counts
+        RunManager.gif_count = len(list(IMAGES_DIR.iterdir()))
+        RunManager.webm_count = len(list(VIDEOS_DIR.iterdir()))
+        RunManager.gif_path = ''
+        RunManager.webm_path = ''
+
+        cls.process = multiprocessing.Process(
+            target=RunManager.run_yt,
+            kwargs=fkwargs,
+        )
         cls.process.start()
 
 

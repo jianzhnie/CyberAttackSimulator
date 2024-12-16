@@ -47,7 +47,7 @@ class GameModesView(View):
                 'item_type': 'game_mode',
                 'dialogue_boxes': dialogue_boxes,
                 'game_modes': GameModeManager.get_game_mode_data(),
-                'search_form': GameModeSearchForm(),
+                # 'search_form': GameModeSearchForm(),
                 'game_mode': GameMode(),
             },
         )

@@ -375,7 +375,7 @@ def get_toolbar(current_page_title: str = None):
         'platform': {
             'icon': 'bi-house-door',
             'title': 'PlatForm',
-            'title_zh': '平台主页',
+            'title_zh': '仿真平台',
             'cypressRefToolbar': 'toolbar-home',
             'cypressRefMenu': 'menu-home',
         },

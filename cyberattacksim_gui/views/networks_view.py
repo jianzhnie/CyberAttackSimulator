@@ -45,7 +45,7 @@ class NetworksView(View):
                 'toolbar': get_toolbar('Manage networks'),
                 'item_type': 'network',
                 'networks': [network.doc_metadata for network in networks],
-                'search_form': NetworkSearchForm(),
+                # 'search_form': NetworkSearchForm(),
                 'dialogue_boxes': dialogue_boxes,
             },
         )

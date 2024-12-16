@@ -27,5 +27,5 @@ class PlatformView(View):
         return render(
             request,
             'platform.html',
-            {'toolbar': get_toolbar('Home')},
+            {'toolbar': get_toolbar('PlatForm')},
         )

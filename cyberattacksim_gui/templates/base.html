@@ -35,7 +35,9 @@
 
 <body class="preload">
     <!-- 顶部导航栏 -->
-    <nav id="top-nav" class="border-bottom" , style="background-color:black ;">
+    <nav id="top-nav" class="border-bottom"
+        style="background-color:black ; display: flex; justify-content: space-between;
+                                                                                                                                                                                                        align-items: center;">
         <!-- 三明治图标，点击时展开工具栏 -->
         <div id="sandwich-icon" data-toolbar="#toolbar">
             <span></span>
@@ -44,7 +46,13 @@
             <span></span>
         </div>
         <!-- 页面标题 -->
-        <h2 class="head" style="color:whitesmoke;">自动化网络攻防对抗模拟仿真</h2>
+        <h2 class="head" style="color:whitesmoke; display: inline-block;">自动化网络攻防对抗模拟仿真</h2>
+        <!-- 返回首页链接 -->
+        <div style="margin-right: auto;">
+            <a href="/" class="home-link" style="color: whitesmoke;  font-size: 18; margin-left: 1850px;">
+                <i class="bi bi-house-door-fill"></i> 返回首页
+            </a>
+        </div>
         <!-- 用于分隔的空白区域 -->
         <div class="flex-break"></div>
         <!-- 定义顶部按钮块，子模板可以扩展 -->

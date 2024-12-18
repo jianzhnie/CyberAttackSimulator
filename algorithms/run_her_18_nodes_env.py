@@ -4,12 +4,12 @@ import sys
 
 import tyro
 import wandb
-from stable_baselines3 import A2C, DQN, PPO,HerReplayBuffer
+from stable_baselines3 import A2C, DQN, PPO, HerReplayBuffer
+from stable_baselines3.a2c import MlpPolicy as A2CMlp
 from stable_baselines3.common.callbacks import (
     EvalCallback, StopTrainingOnNoModelImprovement)
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
-from stable_baselines3.a2c import MlpPolicy as A2CMlp
 from stable_baselines3.dqn import MlpPolicy as DQNMlp
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 from wandb.integration.sb3 import WandbCallback
@@ -28,13 +28,7 @@ def main() -> None:
     parser.add_argument(
         '--algo_name',
         type=str,
-        choices=[
-            'dqn',
-            'a2c',
-            'ppo',
-            'her'
-
-        ],
+        choices=['dqn', 'a2c', 'ppo', 'her'],
         default='her',
         help="Name of the algorithm. Defaults to 'dqn'",
     )

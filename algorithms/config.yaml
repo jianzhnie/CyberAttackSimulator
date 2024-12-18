@@ -31,13 +31,13 @@ ppo:
     learning_rate: 0.01
     rollout_steps: 8
     batch_size: 64
-    gamma: 0.99 
+    gamma: 0.99
     gae_lambda: 0.95
     clip_range: 0.2
-    ent_coef: 0.01 
-    vf_coef: 0.5 
-    max_grad_norm: 0.5 
-    normalize_advantage: False 
+    ent_coef: 0.01
+    vf_coef: 0.5
+    max_grad_norm: 0.5
+    normalize_advantage: False
 
 her:
   default_18_node_network:
@@ -51,5 +51,3 @@ her:
     train_frequency: 100
     gradient_steps: 1
     target_update_frequency: 10000
-
-

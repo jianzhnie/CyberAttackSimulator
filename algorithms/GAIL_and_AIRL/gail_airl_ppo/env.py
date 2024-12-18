@@ -1,8 +1,10 @@
-import sys
 import os
+import sys
+
 sys.path.append(os.getcwd())
-from cyberattacksim.utils.env_utils import create_env
 import gymnasium as gym
+
+from cyberattacksim.utils.env_utils import create_env
 
 gym.logger.set_level(40)
 

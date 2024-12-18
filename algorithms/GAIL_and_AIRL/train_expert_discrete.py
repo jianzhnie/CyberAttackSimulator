@@ -8,11 +8,11 @@ import gymnasium as gym
 import torch
 import torch_npu
 import yaml
-
 from gail_airl_ppo.algo.discrete import PPO
-from gail_airl_ppo.trainer_discrete import Trainer
 from gail_airl_ppo.env import make_env
+from gail_airl_ppo.trainer_discrete import Trainer
 from torch_npu.contrib import transfer_to_npu
+
 
 def run(args):
     env = make_env(args.env_id)
@@ -22,7 +22,8 @@ def run(args):
     action_dim = env.action_space.n
     print("action_dim:", action_dim)
 
-    device = torch.device("cuda" if (torch.cuda.is_available() and args.cuda) else "cpu")
+    device = torch.device("cuda" if (
+        torch.cuda.is_available() and args.cuda) else "cpu")
     torch.cuda.empty_cache()
     kwargs = {
         "state_dim": state_dim,
@@ -43,15 +44,14 @@ def run(args):
         "entropy_coef": args.ent_coef,  # hard env needs large value
         "adv_normalization": args.adv_norm,
         "entropy_coef_decay": args.ent_coef_decay,
-        "device": device,  
+        "device": device,
     }
 
-    algo = PPO(
-        **kwargs
-    )
+    algo = PPO(**kwargs)
 
     time = datetime.now().strftime("%Y%m%d-%H%M")
-    log_dir = os.path.join('logs', args.env_id, 'ppo', f'seed{args.seed}-{time}')
+    log_dir = os.path.join('logs', args.env_id, 'ppo',
+                           f'seed{args.seed}-{time}')
 
     trainer = Trainer(
         env_id=args.env_id,
@@ -74,9 +74,18 @@ if __name__ == '__main__':
     p.add_argument('--rollout_length', type=int, default=1000)
     p.add_argument('--eval_interval', type=int, default=10000)
     p.add_argument('--save_interval', type=int, default=1e5)
-    p.add_argument('--net_width', type=int, default=64, help='Hidden net width')
-    p.add_argument('--epoch_ppo', type=int, default=80, help='PPO update times')
-    p.add_argument('--batch_size', type=int, default=64, help='lenth of sliced trajectory')
+    p.add_argument('--net_width',
+                   type=int,
+                   default=64,
+                   help='Hidden net width')
+    p.add_argument('--epoch_ppo',
+                   type=int,
+                   default=80,
+                   help='PPO update times')
+    p.add_argument('--batch_size',
+                   type=int,
+                   default=64,
+                   help='lenth of sliced trajectory')
     p.add_argument('--adv_norm', type=bool, default=False)
     p.add_argument('--gamma', type=float, default=0.99)
     p.add_argument('--lambd', type=float, default=0.95)

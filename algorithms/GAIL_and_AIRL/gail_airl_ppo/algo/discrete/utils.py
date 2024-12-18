@@ -1,14 +1,18 @@
+import numpy as np
 import torch
 import torch_npu
 from torch import nn
-import numpy as np
-from tqdm import tqdm
-from .rollout_buffer import RolloutBuffer as Buffer
 from torch_npu.contrib import transfer_to_npu
+from tqdm import tqdm
+
+from .rollout_buffer import RolloutBuffer as Buffer
 
 
-def build_mlp(input_dim, output_dim, hidden_units=[64, 64],
-            hidden_activation=nn.Tanh(), output_activation=None):
+def build_mlp(input_dim,
+              output_dim,
+              hidden_units=[64, 64],
+              hidden_activation=nn.Tanh(),
+              output_activation=None):
     layers = []
     units = input_dim
     for next_units in hidden_units:
@@ -26,14 +30,19 @@ def disable_gradient(network):
         param.requires_grad = False
 
 
-def collect_demo(env, algo, buffer_size, device, std, p_rand, seed=0, max_episode_steps=100):
+def collect_demo(env,
+                 algo,
+                 buffer_size,
+                 device,
+                 std,
+                 p_rand,
+                 seed=0,
+                 max_episode_steps=100):
     # env.seed(seed)
     # np.random.seed(seed)
     # torch.manual_seed(seed)
 
-    buffer = Buffer(
-        buffer_size=buffer_size,
-    )
+    buffer = Buffer(buffer_size=buffer_size, )
 
     total_return = 0.0
     num_episodes = 0
@@ -45,7 +54,7 @@ def collect_demo(env, algo, buffer_size, device, std, p_rand, seed=0, max_episod
     # for _ in tqdm(range(1, buffer_size + 1)):
     for _ in range(1, buffer_size + 1):
         t += 1
-        
+
         state = torch.from_numpy(state).float().to(device)
         state_val = algo.critic_old.react(state)
         # env.render()
@@ -53,12 +62,13 @@ def collect_demo(env, algo, buffer_size, device, std, p_rand, seed=0, max_episod
             action, log_probs = algo.explore(state)
         else:
             action, log_probs = algo.exploit(state)
-            
+
         action = action.clone().cpu().numpy()
 
         next_state, reward, done, _, _ = env.step(action)
         mask = False if t == max_episode_steps else done
-        buffer.put((state, action, reward, next_state, log_probs, state_val, mask))
+        buffer.put(
+            (state, action, reward, next_state, log_probs, state_val, mask))
         episode_return += reward
 
         if done:
@@ -73,4 +83,3 @@ def collect_demo(env, algo, buffer_size, device, std, p_rand, seed=0, max_episod
 
     print(f'Mean return of the expert is {total_return / num_episodes}')
     return buffer
-

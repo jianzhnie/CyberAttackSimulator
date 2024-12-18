@@ -6,6 +6,7 @@ import numpy as np
 import scipy.signal
 import tensorflow as tf
 from keras import layers
+
 from cyberattacksim.utils.env_utils import create_env
 
 os.environ['KERAS_BACKEND'] = 'tensorflow'

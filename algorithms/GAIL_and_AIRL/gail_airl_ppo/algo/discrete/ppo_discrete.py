@@ -1,62 +1,71 @@
-import torch
-import torch_npu
 import copy
 import math
 from pathlib import Path
 from time import sleep
 
 import numpy as np
+import torch
 import torch.nn as nn
 import torch.optim as optim
+import torch_npu
 from torch.distributions import Categorical
+from torch_npu.contrib import transfer_to_npu
 from tqdm import tqdm
 
 from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.base import Algorithm
-from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.discrete.network.actor_critic import Actor, Critic
-from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.discrete.rollout_buffer import RolloutBuffer
-from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.discrete.utils import disable_gradient
-from torch_npu.contrib import transfer_to_npu
+from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.discrete.network.actor_critic import (
+    Actor, Critic)
+from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.discrete.rollout_buffer import \
+    RolloutBuffer
+from algorithms.GAIL_and_AIRL.gail_airl_ppo.algo.discrete.utils import \
+    disable_gradient
 
 PACKAGE_PATH = Path(__file__).parents[2]  # Abs path of package
 
 
 class PPO(Algorithm):
+
     def __init__(
-            self,
-            state_dim,
-            action_dim,
-            gamma=0.99,
-            rollout_length=2048,
-            lambd=0.95,
-            net_width=200,
-            lr_actor=1e-4,
-            lr_critic=1e-4,
-            clip_eps=0.2,
-            epoch_ppo=10,
-            batch_size=64,
-            l2_reg=1e-3,
-            entropy_coef=1e-3,
-            adv_normalization=False,
-            entropy_coef_decay=0.99,
-            save_interval=10 ** 3,
-            eval_interval=10 ** 3,
-            num_eval_episodes=5,
-            device="cpu",
-            seed=0,
-            mix_buffer=1,
+        self,
+        state_dim,
+        action_dim,
+        gamma=0.99,
+        rollout_length=2048,
+        lambd=0.95,
+        net_width=200,
+        lr_actor=1e-4,
+        lr_critic=1e-4,
+        clip_eps=0.2,
+        epoch_ppo=10,
+        batch_size=64,
+        l2_reg=1e-3,
+        entropy_coef=1e-3,
+        adv_normalization=False,
+        entropy_coef_decay=0.99,
+        save_interval=10**3,
+        eval_interval=10**3,
+        num_eval_episodes=5,
+        device="cpu",
+        seed=0,
+        mix_buffer=1,
     ):
 
         self.device = device
-        self.actor = Actor(state_dim, action_dim, net_width).float().to(self.device)
-        self.actor_old = Actor(state_dim, action_dim, net_width).float().to(self.device)
+        self.actor = Actor(state_dim, action_dim,
+                           net_width).float().to(self.device)
+        self.actor_old = Actor(state_dim, action_dim,
+                               net_width).float().to(self.device)
 
         self.critic = Critic(state_dim, net_width).float().to(self.device)
         self.critic_old = Critic(state_dim, net_width).float().to(self.device)
 
-        self.optimizer = torch.optim.Adam([
-            {'params': self.actor.parameters(), 'lr': lr_actor},
-            {'params': self.critic.parameters(), 'lr': lr_critic}
-        ])
+        self.optimizer = torch.optim.Adam([{
+            'params': self.actor.parameters(),
+            'lr': lr_actor
+        }, {
+            'params': self.critic.parameters(),
+            'lr': lr_critic
+        }])
 
         self.MseLoss = nn.MSELoss()
 
@@ -73,7 +82,9 @@ class PPO(Algorithm):
         self.save_interval = save_interval
         self.eval_interval = eval_interval
         self.neval = num_eval_episodes
-        self.buffer = RolloutBuffer(buffer_size=rollout_length, mix=mix_buffer, device=self.device)
+        self.buffer = RolloutBuffer(buffer_size=rollout_length,
+                                    mix=mix_buffer,
+                                    device=self.device)
         self.learning_steps = 0
         self.learning_steps_ppo = 0
         self.max_grad_norm = 10
@@ -116,7 +127,8 @@ class PPO(Algorithm):
         # Monte Carlo estimate of returns
         rewards = []
         discounted_reward = 0
-        for reward, is_terminal in zip(reversed(self.buffer.rewards), reversed(self.buffer.is_terminals)):
+        for reward, is_terminal in zip(reversed(self.buffer.rewards),
+                                       reversed(self.buffer.is_terminals)):
             if is_terminal:
                 discounted_reward = 0
             discounted_reward = reward + (self.gamma * discounted_reward)
@@ -126,21 +138,29 @@ class PPO(Algorithm):
         rewards = torch.tensor(rewards, dtype=torch.float32).to(self.device)
         rewards = (rewards - rewards.mean()) / (rewards.std() + 1e-7)
         # convert list to tensor
-        old_states = torch.squeeze(torch.stack(self.buffer.states, dim=0)).detach().to(self.device)
-        old_actions = torch.squeeze(torch.stack(self.buffer.actions, dim=0)).detach().to(self.device)
-        old_logprobs = torch.squeeze(torch.stack(self.buffer.logprobs, dim=0)).detach().to(self.device)
-        old_state_values = torch.squeeze(torch.stack(self.buffer.state_values, dim=0)).detach().to(self.device)
+        old_states = torch.squeeze(torch.stack(self.buffer.states,
+                                               dim=0)).detach().to(self.device)
+        old_actions = torch.squeeze(torch.stack(
+            self.buffer.actions, dim=0)).detach().to(self.device)
+        old_logprobs = torch.squeeze(torch.stack(
+            self.buffer.logprobs, dim=0)).detach().to(self.device)
+        old_state_values = torch.squeeze(
+            torch.stack(self.buffer.state_values,
+                        dim=0)).detach().to(self.device)
 
-        return self.update_ppo(old_states, old_actions, rewards, old_logprobs, old_state_values)
+        return self.update_ppo(old_states, old_actions, rewards, old_logprobs,
+                               old_state_values)
 
-    def update_ppo(self, old_states, old_actions, rewards, old_logprobs, old_state_values):
+    def update_ppo(self, old_states, old_actions, rewards, old_logprobs,
+                   old_state_values):
         # calculate advantages
         advantages = rewards.detach() - old_state_values.detach()
 
         # Optimize policy for K epochs
         for _ in range(self.epoch_ppo):
             # Evaluating old actions and values
-            logprobs, dist_entropy = self.actor.evaluate(old_states, old_actions)
+            logprobs, dist_entropy = self.actor.evaluate(
+                old_states, old_actions)
             state_values = self.critic.evaluate(old_states)
 
             # match state_values tensor dimensions with rewards tensor
@@ -149,21 +169,25 @@ class PPO(Algorithm):
             # Finding the ratio (pi_theta / pi_theta__old)
             ratios = torch.exp(logprobs - old_logprobs.detach())
 
-            # Finding Surrogate Loss  
+            # Finding Surrogate Loss
             surr1 = ratios * advantages
-            surr2 = torch.clamp(ratios, 1 - self.clip_eps, 1 + self.clip_eps) * advantages
+            surr2 = torch.clamp(ratios, 1 - self.clip_eps,
+                                1 + self.clip_eps) * advantages
 
             # print("state_values:", state_values.shape)
             # print("rewards:", rewards.shape)
 
             # final loss of clipped objective PPO
-            loss = -torch.min(surr1, surr2) + 0.5 * self.MseLoss(state_values, rewards) - 0.01 * dist_entropy
+            loss = -torch.min(surr1, surr2) + 0.5 * self.MseLoss(
+                state_values, rewards) - 0.01 * dist_entropy
 
             # take gradient step
             self.optimizer.zero_grad()
             loss.mean().backward()
-            nn.utils.clip_grad_norm_(self.actor.parameters(), self.max_grad_norm)
-            nn.utils.clip_grad_norm_(self.critic.parameters(), self.max_grad_norm)
+            nn.utils.clip_grad_norm_(self.actor.parameters(),
+                                     self.max_grad_norm)
+            nn.utils.clip_grad_norm_(self.critic.parameters(),
+                                     self.max_grad_norm)
             self.optimizer.step()
 
         # Copy new weights into old policy
@@ -182,7 +206,8 @@ class PPO(Algorithm):
             done, ep_r, steps = False, 0, 0
             while not done:
                 # Take deterministic actions at test time
-                a, _ = self.exploit(torch.from_numpy(s).float().to(self.device))
+                a, _ = self.exploit(
+                    torch.from_numpy(s).float().to(self.device))
                 a = a.clone().cpu().numpy()
                 s_prime, r, done, _, info = env.step(a)
                 ep_r += r
@@ -191,34 +216,58 @@ class PPO(Algorithm):
                 if render:
                     env.render()
             scores += ep_r
-        print("--------------------------------------------------------------------------------------------")
+        print(
+            "--------------------------------------------------------------------------------------------"
+        )
         print(f'Epsiode: {n_episode:<6} |   '
               f'Num steps: {tsteps:<6}    |   '
               f'Return: {scores / self.neval:<5.1f} |   '
               f'Elapsed Time: {runtime}')
-        print("--------------------------------------------------------------------------------------------")
+        print(
+            "--------------------------------------------------------------------------------------------"
+        )
         return scores / self.neval, env
 
-    def save_models(self, step, env_id, save_path=f"{PACKAGE_PATH}/model", last_score=0):
+    def save_models(self,
+                    step,
+                    env_id,
+                    save_path=f"{PACKAGE_PATH}/model",
+                    last_score=0):
         critic_save_path = f"{save_path}/{env_id}/critic"
         actor_save_path = f"{save_path}/{env_id}/actor"
         Path(critic_save_path).mkdir(parents=True, exist_ok=True)
         Path(actor_save_path).mkdir(parents=True, exist_ok=True)
-        torch.save(self.critic_old.state_dict(), f"{critic_save_path}/ppo_critic_step{step}_rew{last_score}.pth")
-        torch.save(self.actor_old.state_dict(), f"{actor_save_path}/ppo_actor_step{step}_rew{last_score}.pth")
+        torch.save(
+            self.critic_old.state_dict(),
+            f"{critic_save_path}/ppo_critic_step{step}_rew{last_score}.pth")
+        torch.save(
+            self.actor_old.state_dict(),
+            f"{actor_save_path}/ppo_actor_step{step}_rew{last_score}.pth")
 
-    def load(self, step, env_id, load_path=f"{PACKAGE_PATH}/model", last_score=0):
+    def load(self,
+             step,
+             env_id,
+             load_path=f"{PACKAGE_PATH}/model",
+             last_score=0):
         critic_load_path = f"{load_path}/{env_id}/critic/ppo_critic_step{step}_rew{last_score}.pth"
         actor_load_path = f"{load_path}/{env_id}/actor/ppo_actor_step{step}_rew{last_score}.pth"
-        self.critic_old.load_state_dict(torch.load(critic_load_path, map_location=lambda storage, loc: storage))
-        self.actor_old.load_state_dict(torch.load(actor_load_path, map_location=lambda storage, loc: storage))
+        self.critic_old.load_state_dict(
+            torch.load(critic_load_path,
+                       map_location=lambda storage, loc: storage))
+        self.actor_old.load_state_dict(
+            torch.load(actor_load_path,
+                       map_location=lambda storage, loc: storage))
 
 
 class PPOExpert(PPO):
-    def __init__(self, state_dim, action_dim, net_width, device, actor_path, critic_path):
-        self.actor_old = Actor(state_dim, action_dim, net_width).float().to(device)
+
+    def __init__(self, state_dim, action_dim, net_width, device, actor_path,
+                 critic_path):
+        self.actor_old = Actor(state_dim, action_dim,
+                               net_width).float().to(device)
         self.actor_old.load_state_dict(torch.load(actor_path))
-        self.critic_old = Critic(state_dim=state_dim, net_width=net_width).float().to(device)
+        self.critic_old = Critic(state_dim=state_dim,
+                                 net_width=net_width).float().to(device)
         self.critic_old.load_state_dict(torch.load(critic_path))
         disable_gradient(self.actor_old)
         self.device = device

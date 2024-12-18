@@ -2,19 +2,18 @@ from typing import Any, Dict, List, Optional, Type
 
 import torch as th
 from gymnasium import spaces
+from stable_baselines3.common.policies import BasePolicy
+from stable_baselines3.common.torch_layers import (BaseFeaturesExtractor,
+                                                   CombinedExtractor,
+                                                   FlattenExtractor, NatureCNN,
+                                                   create_mlp)
+from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
 from torch import nn
+
 # import torch_npu
 
-from stable_baselines3.common.policies import BasePolicy
-from stable_baselines3.common.torch_layers import (
-    BaseFeaturesExtractor,
-    CombinedExtractor,
-    FlattenExtractor,
-    NatureCNN,
-    create_mlp,
-)
-from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
 # from torch_npu.contrib import transfer_to_npu
+
 
 class QNetwork(BasePolicy):
     """
@@ -54,7 +53,8 @@ class QNetwork(BasePolicy):
         self.activation_fn = activation_fn
         self.features_dim = features_dim
         action_dim = int(self.action_space.n)  # number of actions
-        q_net = create_mlp(self.features_dim, action_dim, self.net_arch, self.activation_fn)
+        q_net = create_mlp(self.features_dim, action_dim, self.net_arch,
+                           self.activation_fn)
         self.q_net = nn.Sequential(*q_net)
 
     def forward(self, obs: PyTorchObs) -> th.Tensor:
@@ -66,7 +66,9 @@ class QNetwork(BasePolicy):
         """
         return self.q_net(self.extract_features(obs, self.features_extractor))
 
-    def _predict(self, observation: PyTorchObs, deterministic: bool = True) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = True) -> th.Tensor:
         q_values = self(observation)
         # Greedy action
         action = q_values.argmax(dim=1).reshape(-1)
@@ -81,8 +83,7 @@ class QNetwork(BasePolicy):
                 features_dim=self.features_dim,
                 activation_fn=self.activation_fn,
                 features_extractor=self.features_extractor,
-            )
-        )
+            ))
         return data
 
 
@@ -116,7 +117,8 @@ class DQfDPolicy(BasePolicy):
         lr_schedule: Schedule,
         net_arch: Optional[List[int]] = None,
         activation_fn: Type[nn.Module] = nn.ReLU,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         normalize_images: bool = True,
         optimizer_class: Type[th.optim.Optimizer] = th.optim.Adam,
@@ -175,13 +177,18 @@ class DQfDPolicy(BasePolicy):
 
     def make_q_net(self) -> QNetwork:
         # Make sure we always have separate networks for features extractors etc
-        net_args = self._update_features_extractor(self.net_args, features_extractor=None)
+        net_args = self._update_features_extractor(self.net_args,
+                                                   features_extractor=None)
         return QNetwork(**net_args).to(self.device)
 
-    def forward(self, obs: PyTorchObs, deterministic: bool = True) -> th.Tensor:
+    def forward(self,
+                obs: PyTorchObs,
+                deterministic: bool = True) -> th.Tensor:
         return self._predict(obs, deterministic=deterministic)
 
-    def _predict(self, obs: PyTorchObs, deterministic: bool = True) -> th.Tensor:
+    def _predict(self,
+                 obs: PyTorchObs,
+                 deterministic: bool = True) -> th.Tensor:
         return self.q_net._predict(obs, deterministic=deterministic)
 
     def _get_constructor_parameters(self) -> Dict[str, Any]:
@@ -191,13 +198,13 @@ class DQfDPolicy(BasePolicy):
             dict(
                 net_arch=self.net_args["net_arch"],
                 activation_fn=self.net_args["activation_fn"],
-                lr_schedule=self._dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
+                lr_schedule=self.
+                _dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
                 optimizer_class=self.optimizer_class,
                 optimizer_kwargs=self.optimizer_kwargs,
                 features_extractor_class=self.features_extractor_class,
                 features_extractor_kwargs=self.features_extractor_kwargs,
-            )
-        )
+            ))
         return data
 
     def set_training_mode(self, mode: bool) -> None:
@@ -285,7 +292,8 @@ class MultiInputPolicy(DQfDPolicy):
         lr_schedule: Schedule,
         net_arch: Optional[List[int]] = None,
         activation_fn: Type[nn.Module] = nn.ReLU,
-        features_extractor_class: Type[BaseFeaturesExtractor] = CombinedExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = CombinedExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         normalize_images: bool = True,
         optimizer_class: Type[th.optim.Optimizer] = th.optim.Adam,

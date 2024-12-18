@@ -17,12 +17,12 @@ from copy import deepcopy
 from pathlib import Path
 
 import gymnasium as gym
-import torch_npu
+# import torch_npu
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
-from torch_npu.contrib import transfer_to_npu
+# from torch_npu.contrib import transfer_to_npu
 
 sys.path.append(os.getcwd())
 from cyberwheel.cyberwheel_envs.cyberwheel_dynamic import DynamicCyberwheel

@@ -3,13 +3,15 @@ from typing import Any, ClassVar, Dict, Optional, Type, TypeVar, Union
 import numpy as np
 import torch as th
 from gymnasium import spaces
-from torch.nn import functional as F
-
 from stable_baselines3.common.buffers import RolloutBuffer
 from stable_baselines3.common.on_policy_algorithm import OnPolicyAlgorithm
-from stable_baselines3.common.policies import ActorCriticCnnPolicy, ActorCriticPolicy, BasePolicy, MultiInputActorCriticPolicy
-from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
+from stable_baselines3.common.policies import (ActorCriticCnnPolicy,
+                                               ActorCriticPolicy, BasePolicy,
+                                               MultiInputActorCriticPolicy)
+from stable_baselines3.common.type_aliases import (GymEnv, MaybeCallback,
+                                                   Schedule)
 from stable_baselines3.common.utils import explained_variance
+from torch.nn import functional as F
 
 SelfMC = TypeVar("SelfBR", bound="BR")
 
@@ -121,11 +123,12 @@ class BR(OnPolicyAlgorithm):
         # (original implementation) rather than Adam
         if use_rms_prop and "optimizer_class" not in self.policy_kwargs:
             self.policy_kwargs["optimizer_class"] = th.optim.RMSprop
-            self.policy_kwargs["optimizer_kwargs"] = dict(alpha=0.99, eps=rms_prop_eps, weight_decay=0)
+            self.policy_kwargs["optimizer_kwargs"] = dict(alpha=0.99,
+                                                          eps=rms_prop_eps,
+                                                          weight_decay=0)
         self.exploration_rate = 0.4
         if _init_setup_model:
             self._setup_model()
-
 
     def predict(
         self,
@@ -148,17 +151,19 @@ class BR(OnPolicyAlgorithm):
             # random policy
             if self.policy.is_vectorized_observation(observation):
                 if isinstance(observation, dict):
-                    n_batch = observation[next(iter(observation.keys()))].shape[0]
+                    n_batch = observation[next(iter(
+                        observation.keys()))].shape[0]
                 else:
                     n_batch = observation.shape[0]
-                action = np.array([self.action_space.sample() for _ in range(n_batch)])
+                action = np.array(
+                    [self.action_space.sample() for _ in range(n_batch)])
             else:
                 action = np.array(self.action_space.sample())
         else:
             # argmax policy
-            action, state = self.policy.predict(observation, state, episode_start, deterministic)
+            action, state = self.policy.predict(observation, state,
+                                                episode_start, deterministic)
         return action, state
-
 
     def train(self) -> None:
         """
@@ -178,13 +183,15 @@ class BR(OnPolicyAlgorithm):
                 # Convert discrete action from float to long
                 actions = actions.long().flatten()
 
-            values, log_prob, entropy = self.policy.evaluate_actions(rollout_data.observations, actions)
+            values, log_prob, entropy = self.policy.evaluate_actions(
+                rollout_data.observations, actions)
             values = values.flatten()
- 
+
             # Normalize advantage (not present in the original implementation)
             advantages = rollout_data.advantages
             if self.normalize_advantage:
-                advantages = (advantages - advantages.mean()) / (advantages.std() + 1e-8)
+                advantages = (advantages -
+                              advantages.mean()) / (advantages.std() + 1e-8)
 
             # Policy gradient loss
             policy_loss = -(advantages * log_prob).mean()
@@ -206,19 +213,25 @@ class BR(OnPolicyAlgorithm):
             loss.backward()
 
             # Clip grad norm
-            th.nn.utils.clip_grad_norm_(self.policy.parameters(), self.max_grad_norm)
+            th.nn.utils.clip_grad_norm_(self.policy.parameters(),
+                                        self.max_grad_norm)
             self.policy.optimizer.step()
 
-        explained_var = explained_variance(self.rollout_buffer.values.flatten(), self.rollout_buffer.returns.flatten())
+        explained_var = explained_variance(
+            self.rollout_buffer.values.flatten(),
+            self.rollout_buffer.returns.flatten())
 
         self._n_updates += 1
-        self.logger.record("train/n_updates", self._n_updates, exclude="tensorboard")
+        self.logger.record("train/n_updates",
+                           self._n_updates,
+                           exclude="tensorboard")
         self.logger.record("train/explained_variance", explained_var)
         self.logger.record("train/entropy_loss", entropy_loss.item())
         self.logger.record("train/policy_loss", policy_loss.item())
         self.logger.record("train/value_loss", value_loss.item())
         if hasattr(self.policy, "log_std"):
-            self.logger.record("train/std", th.exp(self.policy.log_std).mean().item())
+            self.logger.record("train/std",
+                               th.exp(self.policy.log_std).mean().item())
 
     def learn(
         self: SelfMC,

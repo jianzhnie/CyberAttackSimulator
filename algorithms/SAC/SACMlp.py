@@ -2,22 +2,20 @@ from typing import Any, Dict, List, Optional, Tuple, Type, Union
 
 import torch as th
 from gymnasium import spaces
-from torch import nn
-# import torch_npu
-
-
-from stable_baselines3.common.distributions import SquashedDiagGaussianDistribution, StateDependentNoiseDistribution
+from stable_baselines3.common.distributions import (
+    SquashedDiagGaussianDistribution, StateDependentNoiseDistribution)
 from stable_baselines3.common.policies import BasePolicy, ContinuousCritic
 from stable_baselines3.common.preprocessing import get_action_dim
-from stable_baselines3.common.torch_layers import (
-    BaseFeaturesExtractor,
-    CombinedExtractor,
-    FlattenExtractor,
-    NatureCNN,
-    create_mlp,
-    get_actor_critic_arch,
-)
+from stable_baselines3.common.torch_layers import (BaseFeaturesExtractor,
+                                                   CombinedExtractor,
+                                                   FlattenExtractor, NatureCNN,
+                                                   create_mlp,
+                                                   get_actor_critic_arch)
 from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
+from torch import nn
+
+# import torch_npu
+
 # from torch_npu.contrib import transfer_to_npu
 # CAP the standard deviation of the actor
 LOG_STD_MAX = 2
@@ -90,19 +88,27 @@ class Actor(BasePolicy):
 
         if self.use_sde:
             self.action_dist = StateDependentNoiseDistribution(
-                action_dim, full_std=full_std, use_expln=use_expln, learn_features=True, squash_output=True
-            )
+                action_dim,
+                full_std=full_std,
+                use_expln=use_expln,
+                learn_features=True,
+                squash_output=True)
             self.mu, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=last_layer_dim, latent_sde_dim=last_layer_dim, log_std_init=log_std_init
-            )
+                latent_dim=last_layer_dim,
+                latent_sde_dim=last_layer_dim,
+                log_std_init=log_std_init)
             # Avoid numerical issues by limiting the mean of the Gaussian
             # to be in [-clip_mean, clip_mean]
             if clip_mean > 0.0:
-                self.mu = nn.Sequential(self.mu, nn.Hardtanh(min_val=-clip_mean, max_val=clip_mean))
+                self.mu = nn.Sequential(
+                    self.mu, nn.Hardtanh(min_val=-clip_mean,
+                                         max_val=clip_mean))
         else:
-            self.action_dist = SquashedDiagGaussianDistribution(action_dim)  # type: ignore[assignment]
+            self.action_dist = SquashedDiagGaussianDistribution(
+                action_dim)  # type: ignore[assignment]
             self.mu = nn.Linear(last_layer_dim, action_dim)
-            self.log_std = nn.Linear(last_layer_dim, action_dim)  # type: ignore[assignment]
+            self.log_std = nn.Linear(last_layer_dim,
+                                     action_dim)  # type: ignore[assignment]
 
     def _get_constructor_parameters(self) -> Dict[str, Any]:
         data = super()._get_constructor_parameters()
@@ -118,8 +124,7 @@ class Actor(BasePolicy):
                 use_expln=self.use_expln,
                 features_extractor=self.features_extractor,
                 clip_mean=self.clip_mean,
-            )
-        )
+            ))
         return data
 
     def get_std(self) -> th.Tensor:
@@ -133,7 +138,8 @@ class Actor(BasePolicy):
         :return:
         """
         msg = "get_std() is only available when using gSDE"
-        assert isinstance(self.action_dist, StateDependentNoiseDistribution), msg
+        assert isinstance(self.action_dist,
+                          StateDependentNoiseDistribution), msg
         return self.action_dist.get_std(self.log_std)
 
     def reset_noise(self, batch_size: int = 1) -> None:
@@ -143,10 +149,13 @@ class Actor(BasePolicy):
         :param batch_size:
         """
         msg = "reset_noise() is only available when using gSDE"
-        assert isinstance(self.action_dist, StateDependentNoiseDistribution), msg
+        assert isinstance(self.action_dist,
+                          StateDependentNoiseDistribution), msg
         self.action_dist.sample_weights(self.log_std, batch_size=batch_size)
 
-    def get_action_dist_params(self, obs: PyTorchObs) -> Tuple[th.Tensor, th.Tensor, Dict[str, th.Tensor]]:
+    def get_action_dist_params(
+            self, obs: PyTorchObs
+    ) -> Tuple[th.Tensor, th.Tensor, Dict[str, th.Tensor]]:
         """
         Get the parameters for the action distribution.
 
@@ -166,17 +175,23 @@ class Actor(BasePolicy):
         log_std = th.clamp(log_std, LOG_STD_MIN, LOG_STD_MAX)
         return mean_actions, log_std, {}
 
-    def forward(self, obs: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def forward(self,
+                obs: PyTorchObs,
+                deterministic: bool = False) -> th.Tensor:
         mean_actions, log_std, kwargs = self.get_action_dist_params(obs)
         # Note: the action is squashed
-        return self.action_dist.actions_from_params(mean_actions, log_std, deterministic=deterministic, **kwargs)
+        return self.action_dist.actions_from_params(
+            mean_actions, log_std, deterministic=deterministic, **kwargs)
 
     def action_log_prob(self, obs: PyTorchObs) -> Tuple[th.Tensor, th.Tensor]:
         mean_actions, log_std, kwargs = self.get_action_dist_params(obs)
         # return action and associated log prob
-        return self.action_dist.log_prob_from_params(mean_actions, log_std, **kwargs)
+        return self.action_dist.log_prob_from_params(mean_actions, log_std,
+                                                     **kwargs)
 
-    def _predict(self, observation: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = False) -> th.Tensor:
         return self(observation, deterministic)
 
 
@@ -224,7 +239,8 @@ class SACPolicy(BasePolicy):
         log_std_init: float = -3,
         use_expln: bool = False,
         clip_mean: float = 2.0,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         normalize_images: bool = True,
         optimizer_class: Type[th.optim.Optimizer] = th.optim.Adam,
@@ -267,13 +283,14 @@ class SACPolicy(BasePolicy):
         }
         self.actor_kwargs.update(sde_kwargs)
         self.critic_kwargs = self.net_args.copy()
-        self.critic_kwargs.update(
-            {
-                "n_critics": n_critics,
-                "net_arch": critic_arch,
-                "share_features_extractor": share_features_extractor,
-            }
-        )
+        self.critic_kwargs.update({
+            "n_critics":
+            n_critics,
+            "net_arch":
+            critic_arch,
+            "share_features_extractor":
+            share_features_extractor,
+        })
 
         self.share_features_extractor = share_features_extractor
 
@@ -288,10 +305,14 @@ class SACPolicy(BasePolicy):
         )
 
         if self.share_features_extractor:
-            self.critic = self.make_critic(features_extractor=self.actor.features_extractor)
+            self.critic = self.make_critic(
+                features_extractor=self.actor.features_extractor)
             # Do not optimize the shared features extractor with the critic loss
             # otherwise, there are gradient computation issues
-            critic_parameters = [param for name, param in self.critic.named_parameters() if "features_extractor" not in name]
+            critic_parameters = [
+                param for name, param in self.critic.named_parameters()
+                if "features_extractor" not in name
+            ]
         else:
             # Create a separate features extractor for the critic
             # this requires more memory and computation
@@ -323,13 +344,13 @@ class SACPolicy(BasePolicy):
                 use_expln=self.actor_kwargs["use_expln"],
                 clip_mean=self.actor_kwargs["clip_mean"],
                 n_critics=self.critic_kwargs["n_critics"],
-                lr_schedule=self._dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
+                lr_schedule=self.
+                _dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
                 optimizer_class=self.optimizer_class,
                 optimizer_kwargs=self.optimizer_kwargs,
                 features_extractor_class=self.features_extractor_class,
                 features_extractor_kwargs=self.features_extractor_kwargs,
-            )
-        )
+            ))
         return data
 
     def reset_noise(self, batch_size: int = 1) -> None:
@@ -340,18 +361,30 @@ class SACPolicy(BasePolicy):
         """
         self.actor.reset_noise(batch_size=batch_size)
 
-    def make_actor(self, features_extractor: Optional[BaseFeaturesExtractor] = None) -> Actor:
-        actor_kwargs = self._update_features_extractor(self.actor_kwargs, features_extractor)
+    def make_actor(
+            self,
+            features_extractor: Optional[BaseFeaturesExtractor] = None
+    ) -> Actor:
+        actor_kwargs = self._update_features_extractor(self.actor_kwargs,
+                                                       features_extractor)
         return Actor(**actor_kwargs).to(self.device)
 
-    def make_critic(self, features_extractor: Optional[BaseFeaturesExtractor] = None) -> ContinuousCritic:
-        critic_kwargs = self._update_features_extractor(self.critic_kwargs, features_extractor)
+    def make_critic(
+        self,
+        features_extractor: Optional[BaseFeaturesExtractor] = None
+    ) -> ContinuousCritic:
+        critic_kwargs = self._update_features_extractor(
+            self.critic_kwargs, features_extractor)
         return ContinuousCritic(**critic_kwargs).to(self.device)
 
-    def forward(self, obs: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def forward(self,
+                obs: PyTorchObs,
+                deterministic: bool = False) -> th.Tensor:
         return self._predict(obs, deterministic=deterministic)
 
-    def _predict(self, observation: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = False) -> th.Tensor:
         return self.actor(observation, deterministic)
 
     def set_training_mode(self, mode: bool) -> None:
@@ -474,7 +507,8 @@ class MultiInputPolicy(SACPolicy):
         log_std_init: float = -3,
         use_expln: bool = False,
         clip_mean: float = 2.0,
-        features_extractor_class: Type[BaseFeaturesExtractor] = CombinedExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = CombinedExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         normalize_images: bool = True,
         optimizer_class: Type[th.optim.Optimizer] = th.optim.Adam,

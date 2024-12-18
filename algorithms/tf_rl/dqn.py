@@ -8,6 +8,7 @@ import numpy as np
 import tensorflow as tf
 from gymnasium.wrappers import AtariPreprocessing, FrameStack
 from keras import layers
+
 from cyberattacksim.utils.env_utils import create_env
 
 # Configuration parameters for the whole setup
@@ -29,6 +30,7 @@ max_episodes = 100  # Limit training episodes, will run until solved if smaller 
 env = create_env(env_id="default_18_node_network")
 obs_dim = env.observation_space.shape[0]
 num_actions = env.action_space.n
+
 
 def create_q_model():
     # Network defined by the Deepmind paper

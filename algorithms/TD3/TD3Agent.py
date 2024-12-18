@@ -1,18 +1,22 @@
-from typing import Any, ClassVar, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from typing import (Any, ClassVar, Dict, List, Optional, Tuple, Type, TypeVar,
+                    Union)
 
 import numpy as np
 import torch as th
 # import torch_npu
 from gymnasium import spaces
-from torch.nn import functional as F
-
 from stable_baselines3.common.buffers import ReplayBuffer
 from stable_baselines3.common.noise import ActionNoise
 from stable_baselines3.common.off_policy_algorithm import OffPolicyAlgorithm
 from stable_baselines3.common.policies import BasePolicy, ContinuousCritic
-from stable_baselines3.common.type_aliases import GymEnv, MaybeCallback, Schedule
-from stable_baselines3.common.utils import get_parameters_by_name, polyak_update
-from stable_baselines3.td3.policies import Actor, CnnPolicy, MlpPolicy, MultiInputPolicy, TD3Policy
+from stable_baselines3.common.type_aliases import (GymEnv, MaybeCallback,
+                                                   Schedule)
+from stable_baselines3.common.utils import (get_parameters_by_name,
+                                            polyak_update)
+from stable_baselines3.td3.policies import (Actor, CnnPolicy, MlpPolicy,
+                                            MultiInputPolicy, TD3Policy)
+from torch.nn import functional as F
+
 # from torch_npu.contrib import transfer_to_npu
 
 SelfTD3 = TypeVar("SelfTD3", bound="TD3")
@@ -127,7 +131,8 @@ class TD3(OffPolicyAlgorithm):
             seed=seed,
             sde_support=False,
             optimize_memory_usage=optimize_memory_usage,
-            supported_action_spaces=(spaces.Discrete,
+            supported_action_spaces=(
+                spaces.Discrete,
                 spaces.Box,
                 spaces.Discrete,
                 spaces.MultiDiscrete,
@@ -147,10 +152,14 @@ class TD3(OffPolicyAlgorithm):
         super()._setup_model()
         self._create_aliases()
         # Running mean and running var
-        self.actor_batch_norm_stats = get_parameters_by_name(self.actor, ["running_"])
-        self.critic_batch_norm_stats = get_parameters_by_name(self.critic, ["running_"])
-        self.actor_batch_norm_stats_target = get_parameters_by_name(self.actor_target, ["running_"])
-        self.critic_batch_norm_stats_target = get_parameters_by_name(self.critic_target, ["running_"])
+        self.actor_batch_norm_stats = get_parameters_by_name(
+            self.actor, ["running_"])
+        self.critic_batch_norm_stats = get_parameters_by_name(
+            self.critic, ["running_"])
+        self.actor_batch_norm_stats_target = get_parameters_by_name(
+            self.actor_target, ["running_"])
+        self.critic_batch_norm_stats_target = get_parameters_by_name(
+            self.critic_target, ["running_"])
 
     def _create_aliases(self) -> None:
         self.actor = self.policy.actor
@@ -163,30 +172,43 @@ class TD3(OffPolicyAlgorithm):
         self.policy.set_training_mode(True)
 
         # Update learning rate according to lr schedule
-        self._update_learning_rate([self.actor.optimizer, self.critic.optimizer])
+        self._update_learning_rate(
+            [self.actor.optimizer, self.critic.optimizer])
 
         actor_losses, critic_losses = [], []
         for _ in range(gradient_steps):
             self._n_updates += 1
             # Sample replay buffer
-            replay_data = self.replay_buffer.sample(batch_size, env=self._vec_normalize_env)  # type: ignore[union-attr]
+            replay_data = self.replay_buffer.sample(
+                batch_size,
+                env=self._vec_normalize_env)  # type: ignore[union-attr]
 
             with th.no_grad():
                 # Select action according to policy and add clipped noise
-                noise = replay_data.actions.clone().data.normal_(0, self.target_policy_noise)
-                noise = noise.clamp(-self.target_noise_clip, self.target_noise_clip)
-                next_actions = (self.actor_target(replay_data.next_observations) + noise).clamp(-1, 1)
+                noise = replay_data.actions.clone().data.normal_(
+                    0, self.target_policy_noise)
+                noise = noise.clamp(-self.target_noise_clip,
+                                    self.target_noise_clip)
+                next_actions = (
+                    self.actor_target(replay_data.next_observations) +
+                    noise).clamp(-1, 1)
 
                 # Compute the next Q-values: min over all critics targets
-                next_q_values = th.cat(self.critic_target(replay_data.next_observations, next_actions), dim=1)
+                next_q_values = th.cat(self.critic_target(
+                    replay_data.next_observations, next_actions),
+                                       dim=1)
                 next_q_values, _ = th.min(next_q_values, dim=1, keepdim=True)
-                target_q_values = replay_data.rewards + (1 - replay_data.dones) * self.gamma * next_q_values
+                target_q_values = replay_data.rewards + (
+                    1 - replay_data.dones) * self.gamma * next_q_values
 
             # Get current Q-values estimates for each critic network
-            current_q_values = self.critic(replay_data.observations, replay_data.actions)
+            current_q_values = self.critic(replay_data.observations,
+                                           replay_data.actions)
 
             # Compute critic loss
-            critic_loss = sum(F.mse_loss(current_q, target_q_values) for current_q in current_q_values)
+            critic_loss = sum(
+                F.mse_loss(current_q, target_q_values)
+                for current_q in current_q_values)
             assert isinstance(critic_loss, th.Tensor)
             critic_losses.append(critic_loss.item())
 
@@ -198,7 +220,9 @@ class TD3(OffPolicyAlgorithm):
             # Delayed policy updates
             if self._n_updates % self.policy_delay == 0:
                 # Compute actor loss
-                actor_loss = -self.critic.q1_forward(replay_data.observations, self.actor(replay_data.observations)).mean()
+                actor_loss = -self.critic.q1_forward(
+                    replay_data.observations,
+                    self.actor(replay_data.observations)).mean()
                 actor_losses.append(actor_loss.item())
 
                 # Optimize the actor
@@ -206,13 +230,19 @@ class TD3(OffPolicyAlgorithm):
                 actor_loss.backward()
                 self.actor.optimizer.step()
 
-                polyak_update(self.critic.parameters(), self.critic_target.parameters(), self.tau)
-                polyak_update(self.actor.parameters(), self.actor_target.parameters(), self.tau)
+                polyak_update(self.critic.parameters(),
+                              self.critic_target.parameters(), self.tau)
+                polyak_update(self.actor.parameters(),
+                              self.actor_target.parameters(), self.tau)
                 # Copy running stats, see GH issue #996
-                polyak_update(self.critic_batch_norm_stats, self.critic_batch_norm_stats_target, 1.0)
-                polyak_update(self.actor_batch_norm_stats, self.actor_batch_norm_stats_target, 1.0)
+                polyak_update(self.critic_batch_norm_stats,
+                              self.critic_batch_norm_stats_target, 1.0)
+                polyak_update(self.actor_batch_norm_stats,
+                              self.actor_batch_norm_stats_target, 1.0)
 
-        self.logger.record("train/n_updates", self._n_updates, exclude="tensorboard")
+        self.logger.record("train/n_updates",
+                           self._n_updates,
+                           exclude="tensorboard")
         if len(actor_losses) > 0:
             self.logger.record("train/actor_loss", np.mean(actor_losses))
         self.logger.record("train/critic_loss", np.mean(critic_losses))
@@ -236,7 +266,9 @@ class TD3(OffPolicyAlgorithm):
         )
 
     def _excluded_save_params(self) -> List[str]:
-        return super()._excluded_save_params() + ["actor", "critic", "actor_target", "critic_target"]  # noqa: RUF005
+        return super()._excluded_save_params() + [
+            "actor", "critic", "actor_target", "critic_target"
+        ]  # noqa: RUF005
 
     def _get_torch_save_params(self) -> Tuple[List[str], List[str]]:
         state_dicts = ["policy", "actor.optimizer", "critic.optimizer"]

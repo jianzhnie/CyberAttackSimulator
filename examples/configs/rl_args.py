@@ -250,7 +250,6 @@ class PPOArguments(RLArguments):
     )
 
 
-
 @dataclass
 class MCArguments(RLArguments):
     learning_rate: float = field(
@@ -261,9 +260,7 @@ class MCArguments(RLArguments):
     )
     exploration_rate: float = field(
         default=0.4,
-        metadata={
-            'help': 'exploration_rate'
-        },
+        metadata={'help': 'exploration_rate'},
     )
     rollout_steps: int = field(
         default=5,
@@ -304,7 +301,6 @@ class MCArguments(RLArguments):
             'Flag indicating whether to normalize the advantages. Defaults to True'
         },
     )
-    
 
 
 @dataclass
@@ -317,9 +313,7 @@ class BRArguments(RLArguments):
     )
     exploration_rate: float = field(
         default=0.4,
-        metadata={
-            'help': 'exploration_rate'
-        },
+        metadata={'help': 'exploration_rate'},
     )
     rollout_steps: int = field(
         default=5,
@@ -361,6 +355,7 @@ class BRArguments(RLArguments):
         },
     )
 
+
 @dataclass
 class SACArguments(RLArguments):
     """SAC-specific settings."""
@@ -372,13 +367,9 @@ class SACArguments(RLArguments):
         },
     )
 
-    initialization: float = field(
-        default=1.0,
-    )
+    initialization: float = field(default=1.0, )
 
-    reward_scale: float = field(
-        default=1.0,
-    )
+    reward_scale: float = field(default=1.0, )
 
     learning_rate: float = field(
         default=1e-2,
@@ -442,7 +433,8 @@ class SACArguments(RLArguments):
             'help': 'Number of epochs to run for training. Defaults to 10'
         },
     )
-    
+
+
 @dataclass
 class TD3Arguments(RLArguments):
     """TD3-specific settings."""
@@ -511,7 +503,6 @@ class TD3Arguments(RLArguments):
     )
 
 
-
 @dataclass
 class DQfDArguments(RLArguments):
     """DQfD-specific settings."""
@@ -557,6 +548,7 @@ class DQfDArguments(RLArguments):
             'Number of times to update the learner network. Defaults to 1'
         },
     )
+
 
 @dataclass
 class CFRArguments(RLArguments):
@@ -624,5 +616,3 @@ class CFRArguments(RLArguments):
             'help': 'Number of epochs to run for training. Defaults to 10'
         },
     )
-
-    

@@ -15,7 +15,7 @@ nodes = self.network_interface.edge_map[int(edge)] # changed by ltl
 blue_action, blue_node = self.global_action_dict[int(action)]()  # changed by ltl
 ```
 
-3. `examples/configs/rl_args.py`  
+3. `examples/configs/rl_args.py`
 4. `examples/cyberattacksim/run_default_18_nodes_env.py`
 
 **算法运行（SAC， TD3， DQfD， CFR）**
@@ -26,4 +26,3 @@ python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name td3 --env
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name dqfd --env_id default_18_node_network
 python examples/cyberattacksim/run_default_18_nodes_env.py --algo_name cfr --env_id default_18_node_network
 ```
-

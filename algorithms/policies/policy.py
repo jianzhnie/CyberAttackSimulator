@@ -10,42 +10,36 @@ from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 import numpy as np
 import torch as th
 from gymnasium import spaces
-from torch import nn
-
-from stable_baselines3.common.policies import ActorCriticPolicy
-
+from spikingjelly.activation_based import functional
 from spikingjelly.activation_based import layer as snn
-from spikingjelly.activation_based import neuron, functional, surrogate
-
-
+from spikingjelly.activation_based import neuron, surrogate
 from stable_baselines3.common.distributions import (
-    BernoulliDistribution,
-    CategoricalDistribution,
-    DiagGaussianDistribution,
-    Distribution,
-    MultiCategoricalDistribution,
-    StateDependentNoiseDistribution,
-    make_proba_distribution,
-)
-from stable_baselines3.common.preprocessing import get_action_dim, is_image_space, maybe_transpose, preprocess_obs
-from stable_baselines3.common.torch_layers import (
-    BaseFeaturesExtractor,
-    CombinedExtractor,
-    FlattenExtractor,
-    MlpExtractor,
-    NatureCNN,
-    create_mlp,
-)
+    BernoulliDistribution, CategoricalDistribution, DiagGaussianDistribution,
+    Distribution, MultiCategoricalDistribution,
+    StateDependentNoiseDistribution, make_proba_distribution)
+from stable_baselines3.common.policies import ActorCriticPolicy
+from stable_baselines3.common.preprocessing import (get_action_dim,
+                                                    is_image_space,
+                                                    maybe_transpose,
+                                                    preprocess_obs)
+from stable_baselines3.common.torch_layers import (BaseFeaturesExtractor,
+                                                   CombinedExtractor,
+                                                   FlattenExtractor,
+                                                   MlpExtractor, NatureCNN,
+                                                   create_mlp)
 from stable_baselines3.common.type_aliases import PyTorchObs, Schedule
-from stable_baselines3.common.utils import get_device, is_vectorized_observation, obs_as_tensor
-from torch_geometric.nn import GCNConv
-
+from stable_baselines3.common.utils import (get_device,
+                                            is_vectorized_observation,
+                                            obs_as_tensor)
+from torch import nn
 from torch.nn import Conv1d
+from torch_geometric.nn import GCNConv
 
 SelfBaseModel = TypeVar("SelfBaseModel", bound="BaseModel")
 
 
 class Reshape1(nn.Module):
+
     def __init__(self, *args):
         super(Reshape1, self).__init__()
         self.shape = args
@@ -55,6 +49,7 @@ class Reshape1(nn.Module):
 
 
 class Reshape2(nn.Module):
+
     def __init__(self, *args):
         super(Reshape2, self).__init__()
         self.shape = args
@@ -62,7 +57,9 @@ class Reshape2(nn.Module):
     def forward(self, x):
         return x.view(1, x.size(0), -1)
 
+
 class Squeeze(nn.Module):
+
     def __init__(self, dim=None):
         super(Squeeze, self).__init__()
         self.dim = dim
@@ -72,6 +69,7 @@ class Squeeze(nn.Module):
 
 
 class OurRNN(nn.RNN):
+
     def __init__(self, *args, **kwargs):
         super(OurRNN, self).__init__(*args, **kwargs)
         # self.iii = iii
@@ -131,8 +129,10 @@ class CNNExtractor(nn.Module):
         # save dimensions of layers in policy and value nets
         if isinstance(net_arch, dict):
             # Note: if key is not specified, assume linear network
-            pi_layers_dims = net_arch.get("pi", [])  # Layer sizes of the policy network
-            vf_layers_dims = net_arch.get("vf", [])  # Layer sizes of the value network
+            pi_layers_dims = net_arch.get(
+                "pi", [])  # Layer sizes of the policy network
+            vf_layers_dims = net_arch.get(
+                "vf", [])  # Layer sizes of the value network
         else:
             pi_layers_dims = vf_layers_dims = net_arch
         # Iterate through the policy layers and build the policy net
@@ -174,6 +174,7 @@ class CNNExtractor(nn.Module):
 
     def forward_critic(self, features: th.Tensor) -> th.Tensor:
         return self.value_net(features)
+
 
 class SNNExtractor(nn.Module):
     """Constructs an MLP that receives the output from a previous features
@@ -262,6 +263,7 @@ class SNNExtractor(nn.Module):
     def forward_critic(self, features: th.Tensor) -> th.Tensor:
         return self.value_net(features)
 
+
 class RNNExtractor(nn.Module):
     """
     Constructs an MLP that receives the output from a previous features extractor (i.e. a CNN) or directly
@@ -304,8 +306,10 @@ class RNNExtractor(nn.Module):
         # save dimensions of layers in policy and value nets
         if isinstance(net_arch, dict):
             # Note: if key is not specified, assume linear network
-            pi_layers_dims = net_arch.get("pi", [])  # Layer sizes of the policy network
-            vf_layers_dims = net_arch.get("vf", [])  # Layer sizes of the value network
+            pi_layers_dims = net_arch.get(
+                "pi", [])  # Layer sizes of the policy network
+            vf_layers_dims = net_arch.get(
+                "vf", [])  # Layer sizes of the value network
         else:
             pi_layers_dims = vf_layers_dims = net_arch
         # Iterate through the policy layers and build the policy net
@@ -379,7 +383,8 @@ class BaseModel(nn.Module):
         self,
         observation_space: spaces.Space,
         action_space: spaces.Space,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         features_extractor: Optional[BaseFeaturesExtractor] = None,
         normalize_images: bool = True,
@@ -405,7 +410,8 @@ class BaseModel(nn.Module):
         self.features_extractor_class = features_extractor_class
         self.features_extractor_kwargs = features_extractor_kwargs
         # Automatically deactivate dtype and bounds checks
-        if not normalize_images and issubclass(features_extractor_class, (NatureCNN, CombinedExtractor)):
+        if not normalize_images and issubclass(features_extractor_class,
+                                               (NatureCNN, CombinedExtractor)):
             self.features_extractor_kwargs.update(dict(normalized_image=True))
 
     def _update_features_extractor(
@@ -427,14 +433,19 @@ class BaseModel(nn.Module):
         if features_extractor is None:
             # The features extractor is not shared, create a new one
             features_extractor = self.make_features_extractor()
-        net_kwargs.update(dict(features_extractor=features_extractor, features_dim=features_extractor.features_dim))
+        net_kwargs.update(
+            dict(features_extractor=features_extractor,
+                 features_dim=features_extractor.features_dim))
         return net_kwargs
 
     def make_features_extractor(self) -> BaseFeaturesExtractor:
         """Helper method to create a features extractor."""
-        return self.features_extractor_class(self.observation_space, **self.features_extractor_kwargs)
+        return self.features_extractor_class(self.observation_space,
+                                             **self.features_extractor_kwargs)
 
-    def extract_features(self, obs: PyTorchObs, features_extractor: BaseFeaturesExtractor) -> th.Tensor:
+    def extract_features(
+            self, obs: PyTorchObs,
+            features_extractor: BaseFeaturesExtractor) -> th.Tensor:
         """
         Preprocess the observation if needed and extract features.
 
@@ -442,7 +453,10 @@ class BaseModel(nn.Module):
         :param features_extractor: The features extractor to use.
         :return: The extracted features
         """
-        preprocessed_obs = preprocess_obs(obs, self.observation_space, normalize_images=self.normalize_images)
+        preprocessed_obs = preprocess_obs(
+            obs,
+            self.observation_space,
+            normalize_images=self.normalize_images)
         return features_extractor(preprocessed_obs)
 
     def _get_constructor_parameters(self) -> Dict[str, Any]:
@@ -476,10 +490,16 @@ class BaseModel(nn.Module):
 
         :param path:
         """
-        th.save({"state_dict": self.state_dict(), "data": self._get_constructor_parameters()}, path)
+        th.save(
+            {
+                "state_dict": self.state_dict(),
+                "data": self._get_constructor_parameters()
+            }, path)
 
     @classmethod
-    def load(cls: Type[SelfBaseModel], path: str, device: Union[th.device, str] = "auto") -> SelfBaseModel:
+    def load(cls: Type[SelfBaseModel],
+             path: str,
+             device: Union[th.device, str] = "auto") -> SelfBaseModel:
         """
         Load model from path.
 
@@ -490,7 +510,9 @@ class BaseModel(nn.Module):
         device = get_device(device)
         # Note(antonin): we cannot use `weights_only=True` here because we need to allow
         # gymnasium imports for the policy to be loaded successfully
-        saved_variables = th.load(path, map_location=device, weights_only=False)
+        saved_variables = th.load(path,
+                                  map_location=device,
+                                  weights_only=False)
 
         # Create policy object
         model = cls(**saved_variables["data"])
@@ -505,7 +527,9 @@ class BaseModel(nn.Module):
 
         :param vector:
         """
-        th.nn.utils.vector_to_parameters(th.as_tensor(vector, dtype=th.float, device=self.device), self.parameters())
+        th.nn.utils.vector_to_parameters(
+            th.as_tensor(vector, dtype=th.float, device=self.device),
+            self.parameters())
 
     def parameters_to_vector(self) -> np.ndarray:
         """
@@ -513,7 +537,8 @@ class BaseModel(nn.Module):
 
         :return:
         """
-        return th.nn.utils.parameters_to_vector(self.parameters()).detach().cpu().numpy()
+        return th.nn.utils.parameters_to_vector(
+            self.parameters()).detach().cpu().numpy()
 
     def set_training_mode(self, mode: bool) -> None:
         """
@@ -525,7 +550,9 @@ class BaseModel(nn.Module):
         """
         self.train(mode)
 
-    def is_vectorized_observation(self, observation: Union[np.ndarray, Dict[str, np.ndarray]]) -> bool:
+    def is_vectorized_observation(
+            self, observation: Union[np.ndarray, Dict[str,
+                                                      np.ndarray]]) -> bool:
         """
         Check whether or not the observation is vectorized,
         apply transposition to image (so that they are channel-first) if needed.
@@ -541,14 +568,17 @@ class BaseModel(nn.Module):
             ), f"The observation provided is a dict but the obs space is {self.observation_space}"
             for key, obs in observation.items():
                 obs_space = self.observation_space.spaces[key]
-                vectorized_env = vectorized_env or is_vectorized_observation(maybe_transpose(obs, obs_space), obs_space)
+                vectorized_env = vectorized_env or is_vectorized_observation(
+                    maybe_transpose(obs, obs_space), obs_space)
         else:
             vectorized_env = is_vectorized_observation(
-                maybe_transpose(observation, self.observation_space), self.observation_space
-            )
+                maybe_transpose(observation, self.observation_space),
+                self.observation_space)
         return vectorized_env
 
-    def obs_to_tensor(self, observation: Union[np.ndarray, Dict[str, np.ndarray]]) -> Tuple[PyTorchObs, bool]:
+    def obs_to_tensor(
+        self, observation: Union[np.ndarray, Dict[str, np.ndarray]]
+    ) -> Tuple[PyTorchObs, bool]:
         """
         Convert an input observation to a PyTorch tensor that can be fed to a model.
         Includes sugar-coating to handle different observations (e.g. normalizing images).
@@ -570,9 +600,12 @@ class BaseModel(nn.Module):
                     obs_ = maybe_transpose(obs, obs_space)
                 else:
                     obs_ = np.array(obs)
-                vectorized_env = vectorized_env or is_vectorized_observation(obs_, obs_space)
+                vectorized_env = vectorized_env or is_vectorized_observation(
+                    obs_, obs_space)
                 # Add batch dimension if needed
-                observation[key] = obs_.reshape((-1, *self.observation_space[key].shape))  # type: ignore[misc]
+                observation[key] = obs_.reshape(
+                    (-1,
+                     *self.observation_space[key].shape))  # type: ignore[misc]
 
         elif is_image_space(self.observation_space):
             # Handle the different cases for images
@@ -584,9 +617,11 @@ class BaseModel(nn.Module):
 
         if not isinstance(observation, dict):
             # Dict obs need to be handled separately
-            vectorized_env = is_vectorized_observation(observation, self.observation_space)
+            vectorized_env = is_vectorized_observation(observation,
+                                                       self.observation_space)
             # Add batch dimension if needed
-            observation = observation.reshape((-1, *self.observation_space.shape))  # type: ignore[misc]
+            observation = observation.reshape(
+                (-1, *self.observation_space.shape))  # type: ignore[misc]
 
         obs_tensor = obs_as_tensor(observation, self.device)
         return obs_tensor, vectorized_env
@@ -631,7 +666,9 @@ class BasePolicy(BaseModel, ABC):
                 module.bias.data.fill_(0.0)
 
     @abstractmethod
-    def _predict(self, observation: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = False) -> th.Tensor:
         """
         Get the action according to the policy for a given observation.
 
@@ -668,7 +705,9 @@ class BasePolicy(BaseModel, ABC):
 
         # Check for common mistake that the user does not mix Gym/VecEnv API
         # Tuple obs are not supported by SB3, so we can safely do that check
-        if isinstance(observation, tuple) and len(observation) == 2 and isinstance(observation[1], dict):
+        if isinstance(observation,
+                      tuple) and len(observation) == 2 and isinstance(
+                          observation[1], dict):
             raise ValueError(
                 "You have passed a tuple to the predict() function instead of a Numpy array or a Dict. "
                 "You are probably mixing Gym API with SB3 VecEnv API: `obs, info = env.reset()` (Gym) "
@@ -682,16 +721,20 @@ class BasePolicy(BaseModel, ABC):
         with th.no_grad():
             actions = self._predict(obs_tensor, deterministic=deterministic)
         # Convert to numpy, and reshape to the original action shape
-        actions = actions.cpu().numpy().reshape((-1, *self.action_space.shape))  # type: ignore[misc, assignment]
+        actions = actions.cpu().numpy().reshape(
+            (-1, *self.action_space.shape))  # type: ignore[misc, assignment]
 
         if isinstance(self.action_space, spaces.Box):
             if self.squash_output:
                 # Rescale to proper domain when using squashing
-                actions = self.unscale_action(actions)  # type: ignore[assignment, arg-type]
+                actions = self.unscale_action(
+                    actions)  # type: ignore[assignment, arg-type]
             else:
                 # Actions could be on arbitrary scale, so clip the actions to avoid
                 # out of bound error (e.g. if sampling from a Gaussian distribution)
-                actions = np.clip(actions, self.action_space.low, self.action_space.high)  # type: ignore[assignment, arg-type]
+                actions = np.clip(actions, self.action_space.low,
+                                  self.action_space.high
+                                  )  # type: ignore[assignment, arg-type]
 
         # Remove batch dimension if needed
         if not vectorized_env:
@@ -773,7 +816,8 @@ class ACCNNPolicy(BasePolicy):
         full_std: bool = True,
         use_expln: bool = False,
         squash_output: bool = False,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         share_features_extractor: bool = True,
         normalize_images: bool = True,
@@ -797,14 +841,13 @@ class ACCNNPolicy(BasePolicy):
             normalize_images=normalize_images,
         )
 
-        if isinstance(net_arch, list) and len(net_arch) > 0 and isinstance(net_arch[0], dict):
-            warnings.warn(
-                (
-                    "As shared layers in the mlp_extractor are removed since SB3 v1.8.0, "
-                    "you should now pass directly a dictionary and not a list "
-                    "(net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])"
-                ),
-            )
+        if isinstance(net_arch, list) and len(net_arch) > 0 and isinstance(
+                net_arch[0], dict):
+            warnings.warn((
+                "As shared layers in the mlp_extractor are removed since SB3 v1.8.0, "
+                "you should now pass directly a dictionary and not a list "
+                "(net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])"
+            ), )
             net_arch = net_arch[0]
 
         # Default network architecture, from stable-baselines
@@ -831,7 +874,9 @@ class ACCNNPolicy(BasePolicy):
         self.log_std_init = log_std_init
         dist_kwargs = None
 
-        assert not (squash_output and not use_sde), "squash_output=True is only available when using gSDE (use_sde=True)"
+        assert not (
+            squash_output and not use_sde
+        ), "squash_output=True is only available when using gSDE (use_sde=True)"
         # Keyword arguments for gSDE distribution
         if use_sde:
             dist_kwargs = {
@@ -845,14 +890,17 @@ class ACCNNPolicy(BasePolicy):
         self.dist_kwargs = dist_kwargs
 
         # Action distribution
-        self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
+        self.action_dist = make_proba_distribution(action_space,
+                                                   use_sde=use_sde,
+                                                   dist_kwargs=dist_kwargs)
 
         self._build(lr_schedule)
 
     def _get_constructor_parameters(self) -> Dict[str, Any]:
         data = super()._get_constructor_parameters()
 
-        default_none_kwargs = self.dist_kwargs or collections.defaultdict(lambda: None)  # type: ignore[arg-type, return-value]
+        default_none_kwargs = self.dist_kwargs or collections.defaultdict(
+            lambda: None)  # type: ignore[arg-type, return-value]
 
         data.update(
             dict(
@@ -863,14 +911,14 @@ class ACCNNPolicy(BasePolicy):
                 squash_output=default_none_kwargs["squash_output"],
                 full_std=default_none_kwargs["full_std"],
                 use_expln=default_none_kwargs["use_expln"],
-                lr_schedule=self._dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
+                lr_schedule=self.
+                _dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
                 ortho_init=self.ortho_init,
                 optimizer_class=self.optimizer_class,
                 optimizer_kwargs=self.optimizer_kwargs,
                 features_extractor_class=self.features_extractor_class,
                 features_extractor_kwargs=self.features_extractor_kwargs,
-            )
-        )
+            ))
         return data
 
     def reset_noise(self, n_envs: int = 1) -> None:
@@ -879,7 +927,8 @@ class ACCNNPolicy(BasePolicy):
 
         :param n_envs:
         """
-        assert isinstance(self.action_dist, StateDependentNoiseDistribution), "reset_noise() is only available when using gSDE"
+        assert isinstance(self.action_dist, StateDependentNoiseDistribution
+                          ), "reset_noise() is only available when using gSDE"
         self.action_dist.sample_weights(self.log_std, batch_size=n_envs)
 
     def _build_mlp_extractor(self) -> None:
@@ -895,8 +944,6 @@ class ACCNNPolicy(BasePolicy):
             device=self.device,
         )
 
-        
-
     def _build(self, lr_schedule: Schedule) -> None:
         """
         Create the networks and the optimizer.
@@ -910,16 +957,20 @@ class ACCNNPolicy(BasePolicy):
 
         if isinstance(self.action_dist, DiagGaussianDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=latent_dim_pi, log_std_init=self.log_std_init
-            )
+                latent_dim=latent_dim_pi, log_std_init=self.log_std_init)
         elif isinstance(self.action_dist, StateDependentNoiseDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=latent_dim_pi, latent_sde_dim=latent_dim_pi, log_std_init=self.log_std_init
-            )
-        elif isinstance(self.action_dist, (CategoricalDistribution, MultiCategoricalDistribution, BernoulliDistribution)):
-            self.action_net = self.action_dist.proba_distribution_net(latent_dim=latent_dim_pi)
+                latent_dim=latent_dim_pi,
+                latent_sde_dim=latent_dim_pi,
+                log_std_init=self.log_std_init)
+        elif isinstance(self.action_dist,
+                        (CategoricalDistribution, MultiCategoricalDistribution,
+                         BernoulliDistribution)):
+            self.action_net = self.action_dist.proba_distribution_net(
+                latent_dim=latent_dim_pi)
         else:
-            raise NotImplementedError(f"Unsupported distribution '{self.action_dist}'.")
+            raise NotImplementedError(
+                f"Unsupported distribution '{self.action_dist}'.")
 
         self.value_net = nn.Linear(self.mlp_extractor.latent_dim_vf, 1)
         # Init weights: use orthogonal initialization
@@ -946,9 +997,15 @@ class ACCNNPolicy(BasePolicy):
                 module.apply(partial(self.init_weights, gain=gain))
 
         # Setup optimizer with initial learning rate
-        self.optimizer = self.optimizer_class(self.parameters(), lr=lr_schedule(1), **self.optimizer_kwargs)  # type: ignore[call-arg]
+        self.optimizer = self.optimizer_class(
+            self.parameters(), lr=lr_schedule(1),
+            **self.optimizer_kwargs)  # type: ignore[call-arg]
 
-    def forward(self, obs: th.Tensor, deterministic: bool = False) -> Tuple[th.Tensor, th.Tensor, th.Tensor]:
+    def forward(
+            self,
+            obs: th.Tensor,
+            deterministic: bool = False
+    ) -> Tuple[th.Tensor, th.Tensor, th.Tensor]:
         """
         Forward pass in all the networks (actor and critic)
 
@@ -969,11 +1026,14 @@ class ACCNNPolicy(BasePolicy):
         distribution = self._get_action_dist_from_latent(latent_pi)
         actions = distribution.get_actions(deterministic=deterministic)
         log_prob = distribution.log_prob(actions)
-        actions = actions.reshape((-1, *self.action_space.shape))  # type: ignore[misc]
+        actions = actions.reshape(
+            (-1, *self.action_space.shape))  # type: ignore[misc]
         return actions, values, log_prob
 
     def extract_features(  # type: ignore[override]
-        self, obs: PyTorchObs, features_extractor: Optional[BaseFeaturesExtractor] = None
+        self,
+        obs: PyTorchObs,
+        features_extractor: Optional[BaseFeaturesExtractor] = None
     ) -> Union[th.Tensor, Tuple[th.Tensor, th.Tensor]]:
         """
         Preprocess the observation if needed and extract features.
@@ -984,7 +1044,9 @@ class ACCNNPolicy(BasePolicy):
             features for the actor and the features for the critic.
         """
         if self.share_features_extractor:
-            return super().extract_features(obs, self.features_extractor if features_extractor is None else features_extractor)
+            return super().extract_features(
+                obs, self.features_extractor
+                if features_extractor is None else features_extractor)
         else:
             if features_extractor is not None:
                 warnings.warn(
@@ -992,11 +1054,14 @@ class ACCNNPolicy(BasePolicy):
                     UserWarning,
                 )
 
-            pi_features = super().extract_features(obs, self.pi_features_extractor)
-            vf_features = super().extract_features(obs, self.vf_features_extractor)
+            pi_features = super().extract_features(obs,
+                                                   self.pi_features_extractor)
+            vf_features = super().extract_features(obs,
+                                                   self.vf_features_extractor)
             return pi_features, vf_features
 
-    def _get_action_dist_from_latent(self, latent_pi: th.Tensor) -> Distribution:
+    def _get_action_dist_from_latent(self,
+                                     latent_pi: th.Tensor) -> Distribution:
         """
         Retrieve action distribution given the latent codes.
 
@@ -1006,22 +1071,29 @@ class ACCNNPolicy(BasePolicy):
         mean_actions = self.action_net(latent_pi)
 
         if isinstance(self.action_dist, DiagGaussianDistribution):
-            return self.action_dist.proba_distribution(mean_actions, self.log_std)
+            return self.action_dist.proba_distribution(mean_actions,
+                                                       self.log_std)
         elif isinstance(self.action_dist, CategoricalDistribution):
             # Here mean_actions are the logits before the softmax
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, MultiCategoricalDistribution):
             # Here mean_actions are the flattened logits
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, BernoulliDistribution):
             # Here mean_actions are the logits (before rounding to get the binary actions)
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, StateDependentNoiseDistribution):
-            return self.action_dist.proba_distribution(mean_actions, self.log_std, latent_pi)
+            return self.action_dist.proba_distribution(mean_actions,
+                                                       self.log_std, latent_pi)
         else:
             raise ValueError("Invalid action distribution")
 
-    def _predict(self, observation: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = False) -> th.Tensor:
         """
         Get the action according to the policy for a given observation.
 
@@ -1029,9 +1101,12 @@ class ACCNNPolicy(BasePolicy):
         :param deterministic: Whether to use stochastic or deterministic actions
         :return: Taken action according to the policy
         """
-        return self.get_distribution(observation).get_actions(deterministic=deterministic)
+        return self.get_distribution(observation).get_actions(
+            deterministic=deterministic)
 
-    def evaluate_actions(self, obs: PyTorchObs, actions: th.Tensor) -> Tuple[th.Tensor, th.Tensor, Optional[th.Tensor]]:
+    def evaluate_actions(
+        self, obs: PyTorchObs, actions: th.Tensor
+    ) -> Tuple[th.Tensor, th.Tensor, Optional[th.Tensor]]:
         """
         Evaluate actions according to the current policy,
         given the observations.
@@ -1076,6 +1151,7 @@ class ACCNNPolicy(BasePolicy):
         features = super().extract_features(obs, self.vf_features_extractor)
         latent_vf = self.mlp_extractor.forward_critic(features)
         return self.value_net(latent_vf)
+
 
 class ACSNNPolicy(BasePolicy):
     """
@@ -1122,7 +1198,8 @@ class ACSNNPolicy(BasePolicy):
         full_std: bool = True,
         use_expln: bool = False,
         squash_output: bool = False,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         share_features_extractor: bool = True,
         normalize_images: bool = True,
@@ -1146,14 +1223,13 @@ class ACSNNPolicy(BasePolicy):
             normalize_images=normalize_images,
         )
 
-        if isinstance(net_arch, list) and len(net_arch) > 0 and isinstance(net_arch[0], dict):
-            warnings.warn(
-                (
-                    "As shared layers in the mlp_extractor are removed since SB3 v1.8.0, "
-                    "you should now pass directly a dictionary and not a list "
-                    "(net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])"
-                ),
-            )
+        if isinstance(net_arch, list) and len(net_arch) > 0 and isinstance(
+                net_arch[0], dict):
+            warnings.warn((
+                "As shared layers in the mlp_extractor are removed since SB3 v1.8.0, "
+                "you should now pass directly a dictionary and not a list "
+                "(net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])"
+            ), )
             net_arch = net_arch[0]
 
         # Default network architecture, from stable-baselines
@@ -1180,7 +1256,9 @@ class ACSNNPolicy(BasePolicy):
         self.log_std_init = log_std_init
         dist_kwargs = None
 
-        assert not (squash_output and not use_sde), "squash_output=True is only available when using gSDE (use_sde=True)"
+        assert not (
+            squash_output and not use_sde
+        ), "squash_output=True is only available when using gSDE (use_sde=True)"
         # Keyword arguments for gSDE distribution
         if use_sde:
             dist_kwargs = {
@@ -1194,14 +1272,17 @@ class ACSNNPolicy(BasePolicy):
         self.dist_kwargs = dist_kwargs
 
         # Action distribution
-        self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
+        self.action_dist = make_proba_distribution(action_space,
+                                                   use_sde=use_sde,
+                                                   dist_kwargs=dist_kwargs)
 
         self._build(lr_schedule)
 
     def _get_constructor_parameters(self) -> Dict[str, Any]:
         data = super()._get_constructor_parameters()
 
-        default_none_kwargs = self.dist_kwargs or collections.defaultdict(lambda: None)  # type: ignore[arg-type, return-value]
+        default_none_kwargs = self.dist_kwargs or collections.defaultdict(
+            lambda: None)  # type: ignore[arg-type, return-value]
 
         data.update(
             dict(
@@ -1212,14 +1293,14 @@ class ACSNNPolicy(BasePolicy):
                 squash_output=default_none_kwargs["squash_output"],
                 full_std=default_none_kwargs["full_std"],
                 use_expln=default_none_kwargs["use_expln"],
-                lr_schedule=self._dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
+                lr_schedule=self.
+                _dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
                 ortho_init=self.ortho_init,
                 optimizer_class=self.optimizer_class,
                 optimizer_kwargs=self.optimizer_kwargs,
                 features_extractor_class=self.features_extractor_class,
                 features_extractor_kwargs=self.features_extractor_kwargs,
-            )
-        )
+            ))
         return data
 
     def reset_noise(self, n_envs: int = 1) -> None:
@@ -1228,7 +1309,8 @@ class ACSNNPolicy(BasePolicy):
 
         :param n_envs:
         """
-        assert isinstance(self.action_dist, StateDependentNoiseDistribution), "reset_noise() is only available when using gSDE"
+        assert isinstance(self.action_dist, StateDependentNoiseDistribution
+                          ), "reset_noise() is only available when using gSDE"
         self.action_dist.sample_weights(self.log_std, batch_size=n_envs)
 
     def _build_mlp_extractor(self) -> None:
@@ -1260,7 +1342,6 @@ class ACSNNPolicy(BasePolicy):
         #         activation_fn=self.activation_fn,
         #         device=self.device,
         #     )
-        
 
     def _build(self, lr_schedule: Schedule) -> None:
         """
@@ -1275,16 +1356,20 @@ class ACSNNPolicy(BasePolicy):
 
         if isinstance(self.action_dist, DiagGaussianDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=latent_dim_pi, log_std_init=self.log_std_init
-            )
+                latent_dim=latent_dim_pi, log_std_init=self.log_std_init)
         elif isinstance(self.action_dist, StateDependentNoiseDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=latent_dim_pi, latent_sde_dim=latent_dim_pi, log_std_init=self.log_std_init
-            )
-        elif isinstance(self.action_dist, (CategoricalDistribution, MultiCategoricalDistribution, BernoulliDistribution)):
-            self.action_net = self.action_dist.proba_distribution_net(latent_dim=latent_dim_pi)
+                latent_dim=latent_dim_pi,
+                latent_sde_dim=latent_dim_pi,
+                log_std_init=self.log_std_init)
+        elif isinstance(self.action_dist,
+                        (CategoricalDistribution, MultiCategoricalDistribution,
+                         BernoulliDistribution)):
+            self.action_net = self.action_dist.proba_distribution_net(
+                latent_dim=latent_dim_pi)
         else:
-            raise NotImplementedError(f"Unsupported distribution '{self.action_dist}'.")
+            raise NotImplementedError(
+                f"Unsupported distribution '{self.action_dist}'.")
 
         self.value_net = nn.Linear(self.mlp_extractor.latent_dim_vf, 1)
         # Init weights: use orthogonal initialization
@@ -1311,9 +1396,15 @@ class ACSNNPolicy(BasePolicy):
                 module.apply(partial(self.init_weights, gain=gain))
 
         # Setup optimizer with initial learning rate
-        self.optimizer = self.optimizer_class(self.parameters(), lr=lr_schedule(1), **self.optimizer_kwargs)  # type: ignore[call-arg]
+        self.optimizer = self.optimizer_class(
+            self.parameters(), lr=lr_schedule(1),
+            **self.optimizer_kwargs)  # type: ignore[call-arg]
 
-    def forward(self, obs: th.Tensor, deterministic: bool = False) -> Tuple[th.Tensor, th.Tensor, th.Tensor]:
+    def forward(
+            self,
+            obs: th.Tensor,
+            deterministic: bool = False
+    ) -> Tuple[th.Tensor, th.Tensor, th.Tensor]:
         """
         Forward pass in all the networks (actor and critic)
 
@@ -1334,11 +1425,14 @@ class ACSNNPolicy(BasePolicy):
         distribution = self._get_action_dist_from_latent(latent_pi)
         actions = distribution.get_actions(deterministic=deterministic)
         log_prob = distribution.log_prob(actions)
-        actions = actions.reshape((-1, *self.action_space.shape))  # type: ignore[misc]
+        actions = actions.reshape(
+            (-1, *self.action_space.shape))  # type: ignore[misc]
         return actions, values, log_prob
 
     def extract_features(  # type: ignore[override]
-        self, obs: PyTorchObs, features_extractor: Optional[BaseFeaturesExtractor] = None
+        self,
+        obs: PyTorchObs,
+        features_extractor: Optional[BaseFeaturesExtractor] = None
     ) -> Union[th.Tensor, Tuple[th.Tensor, th.Tensor]]:
         """
         Preprocess the observation if needed and extract features.
@@ -1349,7 +1443,9 @@ class ACSNNPolicy(BasePolicy):
             features for the actor and the features for the critic.
         """
         if self.share_features_extractor:
-            return super().extract_features(obs, self.features_extractor if features_extractor is None else features_extractor)
+            return super().extract_features(
+                obs, self.features_extractor
+                if features_extractor is None else features_extractor)
         else:
             if features_extractor is not None:
                 warnings.warn(
@@ -1357,11 +1453,14 @@ class ACSNNPolicy(BasePolicy):
                     UserWarning,
                 )
 
-            pi_features = super().extract_features(obs, self.pi_features_extractor)
-            vf_features = super().extract_features(obs, self.vf_features_extractor)
+            pi_features = super().extract_features(obs,
+                                                   self.pi_features_extractor)
+            vf_features = super().extract_features(obs,
+                                                   self.vf_features_extractor)
             return pi_features, vf_features
 
-    def _get_action_dist_from_latent(self, latent_pi: th.Tensor) -> Distribution:
+    def _get_action_dist_from_latent(self,
+                                     latent_pi: th.Tensor) -> Distribution:
         """
         Retrieve action distribution given the latent codes.
 
@@ -1371,22 +1470,29 @@ class ACSNNPolicy(BasePolicy):
         mean_actions = self.action_net(latent_pi)
 
         if isinstance(self.action_dist, DiagGaussianDistribution):
-            return self.action_dist.proba_distribution(mean_actions, self.log_std)
+            return self.action_dist.proba_distribution(mean_actions,
+                                                       self.log_std)
         elif isinstance(self.action_dist, CategoricalDistribution):
             # Here mean_actions are the logits before the softmax
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, MultiCategoricalDistribution):
             # Here mean_actions are the flattened logits
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, BernoulliDistribution):
             # Here mean_actions are the logits (before rounding to get the binary actions)
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, StateDependentNoiseDistribution):
-            return self.action_dist.proba_distribution(mean_actions, self.log_std, latent_pi)
+            return self.action_dist.proba_distribution(mean_actions,
+                                                       self.log_std, latent_pi)
         else:
             raise ValueError("Invalid action distribution")
 
-    def _predict(self, observation: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = False) -> th.Tensor:
         """
         Get the action according to the policy for a given observation.
 
@@ -1394,9 +1500,12 @@ class ACSNNPolicy(BasePolicy):
         :param deterministic: Whether to use stochastic or deterministic actions
         :return: Taken action according to the policy
         """
-        return self.get_distribution(observation).get_actions(deterministic=deterministic)
+        return self.get_distribution(observation).get_actions(
+            deterministic=deterministic)
 
-    def evaluate_actions(self, obs: PyTorchObs, actions: th.Tensor) -> Tuple[th.Tensor, th.Tensor, Optional[th.Tensor]]:
+    def evaluate_actions(
+        self, obs: PyTorchObs, actions: th.Tensor
+    ) -> Tuple[th.Tensor, th.Tensor, Optional[th.Tensor]]:
         """
         Evaluate actions according to the current policy,
         given the observations.
@@ -1488,7 +1597,8 @@ class ACRNNPolicy(BasePolicy):
         full_std: bool = True,
         use_expln: bool = False,
         squash_output: bool = False,
-        features_extractor_class: Type[BaseFeaturesExtractor] = FlattenExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = FlattenExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         share_features_extractor: bool = True,
         normalize_images: bool = True,
@@ -1512,14 +1622,13 @@ class ACRNNPolicy(BasePolicy):
             normalize_images=normalize_images,
         )
 
-        if isinstance(net_arch, list) and len(net_arch) > 0 and isinstance(net_arch[0], dict):
-            warnings.warn(
-                (
-                    "As shared layers in the mlp_extractor are removed since SB3 v1.8.0, "
-                    "you should now pass directly a dictionary and not a list "
-                    "(net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])"
-                ),
-            )
+        if isinstance(net_arch, list) and len(net_arch) > 0 and isinstance(
+                net_arch[0], dict):
+            warnings.warn((
+                "As shared layers in the mlp_extractor are removed since SB3 v1.8.0, "
+                "you should now pass directly a dictionary and not a list "
+                "(net_arch=dict(pi=..., vf=...) instead of net_arch=[dict(pi=..., vf=...)])"
+            ), )
             net_arch = net_arch[0]
 
         # Default network architecture, from stable-baselines
@@ -1546,7 +1655,9 @@ class ACRNNPolicy(BasePolicy):
         self.log_std_init = log_std_init
         dist_kwargs = None
 
-        assert not (squash_output and not use_sde), "squash_output=True is only available when using gSDE (use_sde=True)"
+        assert not (
+            squash_output and not use_sde
+        ), "squash_output=True is only available when using gSDE (use_sde=True)"
         # Keyword arguments for gSDE distribution
         if use_sde:
             dist_kwargs = {
@@ -1560,14 +1671,17 @@ class ACRNNPolicy(BasePolicy):
         self.dist_kwargs = dist_kwargs
 
         # Action distribution
-        self.action_dist = make_proba_distribution(action_space, use_sde=use_sde, dist_kwargs=dist_kwargs)
+        self.action_dist = make_proba_distribution(action_space,
+                                                   use_sde=use_sde,
+                                                   dist_kwargs=dist_kwargs)
 
         self._build(lr_schedule)
 
     def _get_constructor_parameters(self) -> Dict[str, Any]:
         data = super()._get_constructor_parameters()
 
-        default_none_kwargs = self.dist_kwargs or collections.defaultdict(lambda: None)  # type: ignore[arg-type, return-value]
+        default_none_kwargs = self.dist_kwargs or collections.defaultdict(
+            lambda: None)  # type: ignore[arg-type, return-value]
 
         data.update(
             dict(
@@ -1578,14 +1692,14 @@ class ACRNNPolicy(BasePolicy):
                 squash_output=default_none_kwargs["squash_output"],
                 full_std=default_none_kwargs["full_std"],
                 use_expln=default_none_kwargs["use_expln"],
-                lr_schedule=self._dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
+                lr_schedule=self.
+                _dummy_schedule,  # dummy lr schedule, not needed for loading policy alone
                 ortho_init=self.ortho_init,
                 optimizer_class=self.optimizer_class,
                 optimizer_kwargs=self.optimizer_kwargs,
                 features_extractor_class=self.features_extractor_class,
                 features_extractor_kwargs=self.features_extractor_kwargs,
-            )
-        )
+            ))
         return data
 
     def reset_noise(self, n_envs: int = 1) -> None:
@@ -1594,7 +1708,8 @@ class ACRNNPolicy(BasePolicy):
 
         :param n_envs:
         """
-        assert isinstance(self.action_dist, StateDependentNoiseDistribution), "reset_noise() is only available when using gSDE"
+        assert isinstance(self.action_dist, StateDependentNoiseDistribution
+                          ), "reset_noise() is only available when using gSDE"
         self.action_dist.sample_weights(self.log_std, batch_size=n_envs)
 
     def _build_mlp_extractor(self) -> None:
@@ -1626,7 +1741,6 @@ class ACRNNPolicy(BasePolicy):
         #         activation_fn=self.activation_fn,
         #         device=self.device,
         #     )
-        
 
     def _build(self, lr_schedule: Schedule) -> None:
         """
@@ -1641,16 +1755,20 @@ class ACRNNPolicy(BasePolicy):
 
         if isinstance(self.action_dist, DiagGaussianDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=latent_dim_pi, log_std_init=self.log_std_init
-            )
+                latent_dim=latent_dim_pi, log_std_init=self.log_std_init)
         elif isinstance(self.action_dist, StateDependentNoiseDistribution):
             self.action_net, self.log_std = self.action_dist.proba_distribution_net(
-                latent_dim=latent_dim_pi, latent_sde_dim=latent_dim_pi, log_std_init=self.log_std_init
-            )
-        elif isinstance(self.action_dist, (CategoricalDistribution, MultiCategoricalDistribution, BernoulliDistribution)):
-            self.action_net = self.action_dist.proba_distribution_net(latent_dim=latent_dim_pi)
+                latent_dim=latent_dim_pi,
+                latent_sde_dim=latent_dim_pi,
+                log_std_init=self.log_std_init)
+        elif isinstance(self.action_dist,
+                        (CategoricalDistribution, MultiCategoricalDistribution,
+                         BernoulliDistribution)):
+            self.action_net = self.action_dist.proba_distribution_net(
+                latent_dim=latent_dim_pi)
         else:
-            raise NotImplementedError(f"Unsupported distribution '{self.action_dist}'.")
+            raise NotImplementedError(
+                f"Unsupported distribution '{self.action_dist}'.")
 
         self.value_net = nn.Linear(self.mlp_extractor.latent_dim_vf, 1)
         # Init weights: use orthogonal initialization
@@ -1677,9 +1795,15 @@ class ACRNNPolicy(BasePolicy):
                 module.apply(partial(self.init_weights, gain=gain))
 
         # Setup optimizer with initial learning rate
-        self.optimizer = self.optimizer_class(self.parameters(), lr=lr_schedule(1), **self.optimizer_kwargs)  # type: ignore[call-arg]
+        self.optimizer = self.optimizer_class(
+            self.parameters(), lr=lr_schedule(1),
+            **self.optimizer_kwargs)  # type: ignore[call-arg]
 
-    def forward(self, obs: th.Tensor, deterministic: bool = False) -> Tuple[th.Tensor, th.Tensor, th.Tensor]:
+    def forward(
+            self,
+            obs: th.Tensor,
+            deterministic: bool = False
+    ) -> Tuple[th.Tensor, th.Tensor, th.Tensor]:
         """
         Forward pass in all the networks (actor and critic)
 
@@ -1700,11 +1824,14 @@ class ACRNNPolicy(BasePolicy):
         distribution = self._get_action_dist_from_latent(latent_pi)
         actions = distribution.get_actions(deterministic=deterministic)
         log_prob = distribution.log_prob(actions)
-        actions = actions.reshape((-1, *self.action_space.shape))  # type: ignore[misc]
+        actions = actions.reshape(
+            (-1, *self.action_space.shape))  # type: ignore[misc]
         return actions, values, log_prob
 
     def extract_features(  # type: ignore[override]
-        self, obs: PyTorchObs, features_extractor: Optional[BaseFeaturesExtractor] = None
+        self,
+        obs: PyTorchObs,
+        features_extractor: Optional[BaseFeaturesExtractor] = None
     ) -> Union[th.Tensor, Tuple[th.Tensor, th.Tensor]]:
         """
         Preprocess the observation if needed and extract features.
@@ -1715,7 +1842,9 @@ class ACRNNPolicy(BasePolicy):
             features for the actor and the features for the critic.
         """
         if self.share_features_extractor:
-            return super().extract_features(obs, self.features_extractor if features_extractor is None else features_extractor)
+            return super().extract_features(
+                obs, self.features_extractor
+                if features_extractor is None else features_extractor)
         else:
             if features_extractor is not None:
                 warnings.warn(
@@ -1723,11 +1852,14 @@ class ACRNNPolicy(BasePolicy):
                     UserWarning,
                 )
 
-            pi_features = super().extract_features(obs, self.pi_features_extractor)
-            vf_features = super().extract_features(obs, self.vf_features_extractor)
+            pi_features = super().extract_features(obs,
+                                                   self.pi_features_extractor)
+            vf_features = super().extract_features(obs,
+                                                   self.vf_features_extractor)
             return pi_features, vf_features
 
-    def _get_action_dist_from_latent(self, latent_pi: th.Tensor) -> Distribution:
+    def _get_action_dist_from_latent(self,
+                                     latent_pi: th.Tensor) -> Distribution:
         """
         Retrieve action distribution given the latent codes.
 
@@ -1737,22 +1869,29 @@ class ACRNNPolicy(BasePolicy):
         mean_actions = self.action_net(latent_pi)
 
         if isinstance(self.action_dist, DiagGaussianDistribution):
-            return self.action_dist.proba_distribution(mean_actions, self.log_std)
+            return self.action_dist.proba_distribution(mean_actions,
+                                                       self.log_std)
         elif isinstance(self.action_dist, CategoricalDistribution):
             # Here mean_actions are the logits before the softmax
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, MultiCategoricalDistribution):
             # Here mean_actions are the flattened logits
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, BernoulliDistribution):
             # Here mean_actions are the logits (before rounding to get the binary actions)
-            return self.action_dist.proba_distribution(action_logits=mean_actions)
+            return self.action_dist.proba_distribution(
+                action_logits=mean_actions)
         elif isinstance(self.action_dist, StateDependentNoiseDistribution):
-            return self.action_dist.proba_distribution(mean_actions, self.log_std, latent_pi)
+            return self.action_dist.proba_distribution(mean_actions,
+                                                       self.log_std, latent_pi)
         else:
             raise ValueError("Invalid action distribution")
 
-    def _predict(self, observation: PyTorchObs, deterministic: bool = False) -> th.Tensor:
+    def _predict(self,
+                 observation: PyTorchObs,
+                 deterministic: bool = False) -> th.Tensor:
         """
         Get the action according to the policy for a given observation.
 
@@ -1760,9 +1899,12 @@ class ACRNNPolicy(BasePolicy):
         :param deterministic: Whether to use stochastic or deterministic actions
         :return: Taken action according to the policy
         """
-        return self.get_distribution(observation).get_actions(deterministic=deterministic)
+        return self.get_distribution(observation).get_actions(
+            deterministic=deterministic)
 
-    def evaluate_actions(self, obs: PyTorchObs, actions: th.Tensor) -> Tuple[th.Tensor, th.Tensor, Optional[th.Tensor]]:
+    def evaluate_actions(
+        self, obs: PyTorchObs, actions: th.Tensor
+    ) -> Tuple[th.Tensor, th.Tensor, Optional[th.Tensor]]:
         """
         Evaluate actions according to the current policy,
         given the observations.
@@ -1807,8 +1949,6 @@ class ACRNNPolicy(BasePolicy):
         features = super().extract_features(obs, self.vf_features_extractor)
         latent_vf = self.mlp_extractor.forward_critic(features)
         return self.value_net(latent_vf)
-
-
 
 
 class ActorCriticCnnPolicy(ActorCriticPolicy):
@@ -1929,7 +2069,8 @@ class MultiInputActorCriticPolicy(ActorCriticPolicy):
         full_std: bool = True,
         use_expln: bool = False,
         squash_output: bool = False,
-        features_extractor_class: Type[BaseFeaturesExtractor] = CombinedExtractor,
+        features_extractor_class: Type[
+            BaseFeaturesExtractor] = CombinedExtractor,
         features_extractor_kwargs: Optional[Dict[str, Any]] = None,
         share_features_extractor: bool = True,
         normalize_images: bool = True,
@@ -2011,12 +2152,14 @@ class ContinuousCritic(BaseModel):
         self.n_critics = n_critics
         self.q_networks: List[nn.Module] = []
         for idx in range(n_critics):
-            q_net_list = create_mlp(features_dim + action_dim, 1, net_arch, activation_fn)
+            q_net_list = create_mlp(features_dim + action_dim, 1, net_arch,
+                                    activation_fn)
             q_net = nn.Sequential(*q_net_list)
             self.add_module(f"qf{idx}", q_net)
             self.q_networks.append(q_net)
 
-    def forward(self, obs: th.Tensor, actions: th.Tensor) -> Tuple[th.Tensor, ...]:
+    def forward(self, obs: th.Tensor,
+                actions: th.Tensor) -> Tuple[th.Tensor, ...]:
         # Learn the features extractor using the policy loss only
         # when the features_extractor is shared with the actor
         with th.set_grad_enabled(not self.share_features_extractor):

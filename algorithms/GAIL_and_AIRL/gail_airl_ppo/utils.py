@@ -1,10 +1,10 @@
 import numpy as np
 import torch
 import torch_npu
+from torch_npu.contrib import transfer_to_npu
 from tqdm import tqdm
 
 from .buffer import Buffer
-from torch_npu.contrib import transfer_to_npu
 
 
 def soft_update(target, source, tau):
@@ -29,12 +29,10 @@ def collect_demo(env, algo, buffer_size, device, std, p_rand, seed=0):
     torch.manual_seed(seed)
     torch.cuda.manual_seed(seed)
 
-    buffer = Buffer(
-        buffer_size=buffer_size,
-        state_shape=env.observation_space.shape,
-        action_shape=env.action_space.shape,
-        device=device
-    )
+    buffer = Buffer(buffer_size=buffer_size,
+                    state_shape=env.observation_space.shape,
+                    action_shape=env.action_space.shape,
+                    device=device)
 
     total_return = 0.0
     num_episodes = 0

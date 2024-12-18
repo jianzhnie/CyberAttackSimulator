@@ -12,13 +12,14 @@ CyberAttack.
 import os
 import sys
 import time
+
 import torch_npu
-from torch_npu.contrib import transfer_to_npu
 from stable_baselines3 import PPO
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
+from torch_npu.contrib import transfer_to_npu
 
 sys.path.append(os.getcwd())
 from cyberattacksim.agents.sinewave_red import SineWaveRedAgent

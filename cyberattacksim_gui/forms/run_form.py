@@ -10,6 +10,26 @@ class RunForm(django_forms.Form):
     `~cyberattacksim.cyberattacksim_run.CyberAttackRun`.
     """
 
+    algorithm = django_forms.ChoiceField(
+        choices=[
+            ('dqn', 'DQN'),
+            ('rainbow', 'Rainbow'),
+            ('her', 'HER'),
+            ('a2c', 'A2C'),
+            ('ppo', 'PPO'),
+            ('sac', 'SAC'),
+            ('td3', 'TD3'),
+            ('gail', 'GAIL'),
+            ('airl', 'AIRL'),
+            ('mc', 'MC'),
+            ('cfr', 'CFR'),
+        ],
+        required=True,
+        label='Algorithm',
+        initial='ppo',  # 默认选中值
+        help_text=
+        'The algorithm to use for training the agent, Defalut set to PPO',
+    )
     deterministic = django_forms.BooleanField(
         widget=widgets.CheckboxInput(attrs={
             'role': 'switch',
@@ -17,6 +37,7 @@ class RunForm(django_forms.Form):
         }),
         required=False,
         label='Deterministic',
+        initial=False,
         help_text=
         'Whether the evaluation should use stochastic or deterministic actions',
     )
@@ -26,6 +47,7 @@ class RunForm(django_forms.Form):
             'class': 'inline form-check-input'
         }),
         required=False,
+        initial=False,
         label='Collect additional data',
         help_text=
         'Whether to collect additional data for each timestep of the game',
@@ -88,6 +110,7 @@ class RunForm(django_forms.Form):
             'class': 'inline form-check-input'
         }),
         required=False,
+        initial=True,
         label='Generate Animated GIF',
         help_text=
         'Whether the output should render an animated GIF of an evaluation run',
@@ -98,6 +121,7 @@ class RunForm(django_forms.Form):
             'class': 'inline form-check-input'
         }),
         required=False,
+        initial=True,
         label='Generate WEBM video',
         help_text=
         'Whether the output should render a WEBM video of an evaluation run',
@@ -135,6 +159,7 @@ class RunForm(django_forms.Form):
         """The fields of the form related to agent training."""
         return [
             f for f in self if f.id_for_label.replace('id_', '') in [
+                'algorithm',
                 'deterministic',
                 'collect_additional_per_ts_data',
                 'save',

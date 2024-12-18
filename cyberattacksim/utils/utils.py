@@ -1,8 +1,17 @@
 import platform
-
+from typing import Iterable
 import psutil
 import torch
 from transformers.utils import is_torch_cuda_available, is_torch_npu_available
+import logging
+import time
+
+
+# 配置 logging
+logging.basicConfig(
+    format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO
+)
+logger = logging.getLogger(__name__)
 
 
 def get_system_info(logger: None):
@@ -44,3 +53,21 @@ def get_system_info(logger: None):
         logger.info(f"{key}: {value}")
 
     return info
+
+
+def print_process_items(
+    iterable_items: Iterable, description: str = "H", interval: int = 100
+) -> None:
+    total = len(iterable_items)
+    for idx, item in enumerate(iterable_items, start=1):
+        # 每处理固定步长打印进度
+        if idx % interval == 0 or idx == total:
+            logger.info(
+                f"{description} {idx}/{total} items ({(idx / total) * 100:.2f}%)"
+            )
+
+
+# 示例使用
+if __name__ == "__main__":
+    items = range(100)
+    print_process_items(items)

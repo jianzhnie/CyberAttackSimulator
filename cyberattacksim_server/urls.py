@@ -16,6 +16,7 @@ from cyberattacksim_gui.views.run_view import RunView
 from cyberattacksim_gui.views.utils.update_network_layout import \
     update_network_layout
 from cyberattacksim_gui.views.utils.utils import (db_manager, get_output,
+                                                  massive_network_get_output,
                                                   update_game_mode)
 from cyberattacksim_gui.views.vrl_view import VrlView
 
@@ -77,4 +78,5 @@ urlpatterns = [
     path('manage_db/', db_manager, name='db manager'),
     path('update_game_mode/', update_game_mode, name='update config'),
     path('output/', get_output, name='stderr'),
+    path('massive_network_output/', massive_network_get_output, name='stderr'),
 ]

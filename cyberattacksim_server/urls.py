@@ -5,6 +5,8 @@ from cyberattacksim_gui.views.game_mode_config_view import GameModeConfigView
 from cyberattacksim_gui.views.game_modes_view import GameModesView
 from cyberattacksim_gui.views.home_view import HomeView
 from cyberattacksim_gui.views.marl_view import MarlView
+from cyberattacksim_gui.views.massive_network_run_view import \
+    MassiveNetworkRunView
 from cyberattacksim_gui.views.network_creator_view import NetworkCreator
 from cyberattacksim_gui.views.network_editor_view import NetworkEditor
 from cyberattacksim_gui.views.network_view import NetWorkView
@@ -35,6 +37,11 @@ urlpatterns = [
     path('app/', AppView.as_view(), name='App'),
     path('platform/', PlatformView.as_view(), name='PlatForm'),
     path('run/', RunView.as_view(), name='Run session'),
+    path(
+        'massive_network/',
+        MassiveNetworkRunView.as_view(),
+        name='Massive Network Simulator',
+    ),
     path('game_modes/', GameModesView.as_view(), name='Manage game modes'),
     path('networks/', NetworksView.as_view(), name='Manage networks'),
     path('network_creator', NetworkCreator.as_view(), name='network creator'),

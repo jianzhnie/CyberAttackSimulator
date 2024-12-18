@@ -13,10 +13,12 @@ from uuid import uuid4
 
 import torch
 import yaml
-from stable_baselines3 import PPO
+from stable_baselines3 import A2C, DQN, PPO, HerReplayBuffer
+from stable_baselines3.a2c import MlpPolicy as A2CMlp
 from stable_baselines3.common.callbacks import EvalCallback
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
+from stable_baselines3.dqn import MlpPolicy as DQNMlp
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
 
 sys.path.append(os.getcwd())
@@ -79,6 +81,7 @@ class CyberAttackRun:
         game_mode: Optional[GameMode] = None,
         red_agent_class=RedInterface,
         blue_agent_class=BlueInterface,
+        algorithm: str = 'ppo',
         print_metrics: bool = False,
         show_metrics_every: int = 1,
         collect_additional_per_ts_data: bool = False,
@@ -152,6 +155,7 @@ class CyberAttackRun:
         self._red_agent_class = red_agent_class
         self._blue_agent_class = blue_agent_class
 
+        self.algorithm = algorithm
         self.print_metrics = print_metrics
         self.show_metrics_every = show_metrics_every
         self.collect_additional_per_ts_data = collect_additional_per_ts_data
@@ -167,8 +171,8 @@ class CyberAttackRun:
         self.device = device
 
         self.logger = _LOGGER if logger is None else logger
+        self.sys_info = get_system_info(logger=self.logger)
         self.logger.info(f'CyberAttackSim Run  {self.uuid}: Run initialised')
-        self.sys_info = get_system_info()
 
         self.output_dir = output_dir
 
@@ -203,39 +207,75 @@ class CyberAttackRun:
 
     def _get_new_ppo(self) -> PPO:
         """Get a new instance of ``stable_baselines.ppo.ppo.PPO``."""
-        return PPO(
-            PPOMlp,
-            self.env,
-            verbose=self.verbose,
-            tensorboard_log=str(PPO_TENSORBOARD_LOGS_DIR),
-            seed=self.env.network_interface.random_seed,
-            device=self.device,
-        )
+        self.logger.info(f'New instance of {self.algorithm} agent.')
+        if self.algorithm == 'dqn':
+            agent = DQN(
+                DQNMlp,
+                self.env,
+                verbose=self.verbose,
+                seed=self.env.network_interface.random_seed,
+                device=self.device,
+            )
 
-    def _load_existing_ppo(self, ppo_zip_path: str) -> PPO:
+        if self.algorithm == 'her':
+            agent = DQN(
+                A2CMlp,
+                self.env,
+                verbose=self.verbose,
+                replay_buffer_class=HerReplayBuffer,
+                seed=self.env.network_interface.random_seed,
+                device=self.device,
+            )
+        if self.algorithm == 'a2c':
+            agent = A2C(
+                A2CMlp,
+                self.env,
+                verbose=self.verbose,
+                seed=self.env.network_interface.random_seed,
+                device=self.device,
+            )
+        if self.algorithm == 'ppo':
+            agent = PPO(
+                PPOMlp,
+                self.env,
+                verbose=self.verbose,
+                seed=self.env.network_interface.random_seed,
+                device=self.device,
+            )
+        else:
+            agent = PPO(
+                PPOMlp,
+                self.env,
+                verbose=self.verbose,
+                seed=self.env.network_interface.random_seed,
+                device=self.device,
+            )
+        return agent
+
+    def _load_existing_ppo(self, agent_zip_path: str) -> PPO:
         """Load an existing ppo.zip file into
         ``stable_baselines.ppo.ppo.PPO``."""
-        return PPO.load(
-            ppo_zip_path,
+        return self.agent.load(
+            agent_zip_path,
             self.env,
             verbose=self.verbose,
             tensorboard_log=str(PPO_TENSORBOARD_LOGS_DIR),
             seed=self.env.network_interface.random_seed,
         )
 
-    def setup(self, new: bool = True, ppo_zip_path: Optional[str] = None):
+    def setup(self, new: bool = True, agent_zip_path: Optional[str] = None):
         """Performs a setup of the ``NetworkInterface``, ``GenericNetworkEnv``,
         ``PPO`` algorithm.
 
         The setup needs to be performed before training can occur.
 
-        :param new: If True, a new instance of PPO is generated. If False, a ppo_zip_path must be passed tooo.
-        :param ppo_zip_path: Optional path to a saved ppo.zip file. Required if new = False.
+        :param new: If True, a new instance of PPO is generated. If False, a agent_zip_path must be passed tooo.
+        :param agent_zip_path: Optional path to a saved ppo.zip file. Required if new = False.
 
-        :raise AttributeError: When new=False and ppo_zip_path hasn't been provided.
+        :raise AttributeError: When new=False and agent_zip_path hasn't been provided.
         """
-        if not new and not ppo_zip_path:
-            msg = 'Performing setup when new=False requires ppo_zip_path as the path of a saved ppo.zip file.'
+        if not new and not agent_zip_path:
+            msg = f'Performing setup when new=False requires agent_zip_path as the path of a saved {agent_zip_path} file.'
             try:
                 raise AttributeError(msg)
             except AttributeError as e:
@@ -289,7 +329,7 @@ class CyberAttackRun:
         if new:
             self.agent = self._get_new_ppo()
         else:
-            self.agent = self._load_existing_ppo(ppo_zip_path)
+            self.agent = self._load_existing_ppo(agent_zip_path)
         self.logger.info(
             f'CyberAttackSim Run  {self.uuid}: Agent instantiated')
 
@@ -365,7 +405,7 @@ class CyberAttackRun:
         """
         if self.agent:
             # Save the agent
-            agent_path = os.path.join(self.output_dir, 'ppo.zip')
+            agent_path = os.path.join(self.output_dir, self.algorithm + '.zip')
             self.agent.save(path=agent_path)
 
             # Dump the args down to yaml file
@@ -494,7 +534,7 @@ class CyberAttackRun:
             raise ValueError(msg)
 
     @classmethod
-    def load(cls, path: str):
+    def load(cls, algorithm: str, path: str):
         """Load and return a saved CyberAttackRun.
 
         CyberAttackRun's that have auto=True will not be automatically ran on load.
@@ -509,7 +549,8 @@ class CyberAttackRun:
 
         cas_runner = CyberAttackRun(**args, auto=False)
         cas_runner.uuid = uuid  # noqa - We'll allow it here :)
-        cas_runner.setup(new=False, ppo_zip_path=os.path.join(path, 'ppo.zip'))
+        cas_runner.setup(new=False,
+                         agent_zip_path=os.path.join(path, algorithm + '.zip'))
 
         return cas_runner
 
@@ -547,8 +588,7 @@ class CyberAttackRun:
             _LOGGER.debug('   Verification successful.')
         return True
 
-    @classmethod
-    def import_from_export(cls,
+    def import_from_export(self,
                            exported_zip_file_path: str,
                            overwrite_existing: bool = False) -> CyberAttackRun:
         """Import and return an exported CyberAttackRun.
@@ -572,7 +612,7 @@ class CyberAttackRun:
         shutil.unpack_archive(exported_zip_file_path, unzip_path, 'zip')
 
         # Verify the contents
-        verified = cls._verify_import_export_zip_file(unzip_path)
+        verified = self._verify_import_export_zip_file(unzip_path)
         if not verified:
             msg = f'Failed to verify the contents while importing CyberAttackRun from {exported_zip_file_path}.'
             try:
@@ -599,7 +639,7 @@ class CyberAttackRun:
                     f'Existing CyberAttack overwritten at {new_unzip_path}.')
 
         # Pass new_unzip_path to .load and return
-        return cls.load(str(new_unzip_path))
+        return self.load(self.algorithm, str(new_unzip_path))
 
     def __repr__(self):
         return (
@@ -609,6 +649,7 @@ class CyberAttackRun:
             f'game_mode={self.game_mode}, '
             f'red_agent_class={self._red_agent_class}, '
             f'blue_agent_class={self._blue_agent_class}, '
+            f'algorithm ={self.algorithm}, '
             f'print_metrics={self.print_metrics}, '
             f'show_metrics_every={self.show_metrics_every}, '
             f'collect_additional_per_ts_data={self.collect_additional_per_ts_data}, '

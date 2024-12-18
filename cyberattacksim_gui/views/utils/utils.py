@@ -9,6 +9,8 @@ from cyberattacksim.networks.network import Network
 from cyberattacksim_gui.forms.game_mode_forms import GameModeFormManager
 from cyberattacksim_gui.views.utils.helpers import (GameModeManager,
                                                     NetworkManager, RunManager)
+from cyberattacksim_gui.views.utils.massive_network_run import \
+    MassiveNetworkRunManager
 
 protected_game_mode_ids = ['base_config.yaml']
 
@@ -22,6 +24,15 @@ def get_output(request: HttpRequest):
     """
     if request.method == 'GET':
         return JsonResponse(RunManager.get_output())
+
+
+def massive_network_get_output(request: HttpRequest):
+    """Get the output of a :class:
+
+    `~cyberattacksim.cyberattacksim_run.CyberAttackRun`.
+    """
+    if request.method == 'GET':
+        return JsonResponse(MassiveNetworkRunManager.get_output())
 
 
 def db_manager(request: HttpRequest) -> JsonResponse:

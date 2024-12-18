@@ -29,12 +29,14 @@ class Network:
         decoys=[],
         disconnected_nodes=[],
         isolated_hosts=[],
+        logger=None,
     ):
         self.graph = nx.DiGraph(name=name) if graph == None else graph
         self.name = name
         self.decoys = decoys
         self.disconnected_nodes = disconnected_nodes
         self.isolated_hosts: List[Host] = isolated_hosts
+        self.logger = logger
 
     def __iter__(self):
         return iter(self.graph)
@@ -292,13 +294,19 @@ class Network:
             plt.show()
 
     @classmethod
-    def create_network_from_yaml(cls, network_config=None, host_config="host_defs_services.yaml"):  # type: ignore
+    def create_network_from_yaml(
+        cls,
+        network_config=None,
+        host_config="host_defs_services.yaml",
+        interval=10000,
+        logger: str = None,
+    ):  # type: ignore
         if network_config is None:
             config_dir = Path("cyberwheel/resources/configs/network")
             network_config: PosixPath = config_dir.joinpath(
                 "example_config.yaml"
             )  # type:ignore
-            print(
+            logger.info(
                 "Using default network config file ({})".format(
                     network_config.absolute()
                 )
@@ -319,10 +327,12 @@ class Network:
 
         ## parse topology
         # parse routers
-        routers = tqdm(config["routers"])
-        routers.set_description("Building Routers")
-        for r in routers:
-            routers.set_description(f"Building Routers: {r}", refresh=True)
+        description = "Building Routers"
+        total = len(config["routers"])
+        for idx, r in enumerate(config["routers"], start=1):
+            # 每处理固定步长打印进度
+            if idx % interval == 0 or idx == total:
+                logger.info(f"{description}: {idx}/{total} ")
             router = Router(
                 r,
                 # val.get('routes', []),
@@ -330,10 +340,13 @@ class Network:
             )
             # add router to network graph
             network.add_router(router)
-        subnets = tqdm(config["subnets"])
-        subnets.set_description("Building Subnets")
-        for s in subnets:
-            subnets.set_description(f"Building Subnets: {s}", refresh=True)
+
+        description = "Building Subnets"
+        total = len(config["subnets"])
+        for idx, s in enumerate(config["subnets"], start=1):
+            # 每处理固定步长打印进度
+            if idx % interval == 0 or idx == total:
+                logger.info(f"{description}: {idx}/{total} ")
             router = network.get_node_from_name(config["subnets"][s]["router"])
             subnet = Subnet(
                 s,
@@ -361,9 +374,13 @@ class Network:
             router_interface_ip = router.get_interface_ip(subnet.name)
             if subnet.dns_server is None and router_interface_ip is not None:
                 subnet.set_dns_server(router_interface_ip)
-        hosts = tqdm(config["hosts"])
-        hosts.set_description("Building Hosts")
-        for h in hosts:
+
+        description = "Building Hosts"
+        total = len(config["hosts"])
+        for idx, h in enumerate(config["hosts"], start=1):
+            # 每处理固定步长打印进度
+            if idx % interval == 0 or idx == total:
+                logger.info(f"{description}: {idx}/{total} ")
             # hosts.set_description(f"Building Hosts: {h}", refresh=True)
             # instantiate firewall rules, if defined
             val = config["hosts"][h]

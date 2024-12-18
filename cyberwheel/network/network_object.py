@@ -162,7 +162,7 @@ class NetworkObject:
         for route in routes:
             # make sure 'dest' is an ip_network object
             try:
-                if not isinstance(route['dest'], ipa.IPv4Network | ipa.IPv6Network):
+                if not isinstance(route["dest"], ipa.IPv4Network or ipa.IPv6Network):
                     dest = self.generate_ip_network_object(route['dest'])
                 else:
                     dest = route['dest']
@@ -171,7 +171,7 @@ class NetworkObject:
                 raise e
             # make sure 'via' is an ip_address object
             try:
-                if not isinstance(route['via'], ipa.IPv4Address | ipa.IPv6Address):
+                if not isinstance(route["via"], ipa.IPv4Address or ipa.IPv6Address):
                     via = self.generate_ip_object(route['via'])
                 else:
                     via = route['via']

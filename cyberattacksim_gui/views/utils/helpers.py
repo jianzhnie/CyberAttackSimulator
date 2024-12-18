@@ -458,6 +458,13 @@ def get_toolbar(current_page_title: str = None):
             'cypressRefToolbar': 'toolbar-run-yt',
             'cypressRefMenu': 'menu-run-yt',
         },
+        'massive-network': {
+            'icon': 'bi-play',
+            'title': 'Massive Network Simulator',
+            'title_zh': '超大规模网络仿真',
+            'cypressRefToolbar': 'toolbar-run-yt',
+            'cypressRefMenu': 'menu-run-yt',
+        },
         'about': {
             'icon':
             'bi-question-lg',

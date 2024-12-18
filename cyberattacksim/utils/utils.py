@@ -5,8 +5,8 @@ import torch
 from transformers.utils import is_torch_cuda_available, is_torch_npu_available
 
 
-def get_system_info():
-    print('系统诊断信息:')
+def get_system_info(logger: None):
+    logger.info("系统诊断信息:")
 
     # 获取平台信息
     plat_info = {
@@ -41,6 +41,6 @@ def get_system_info():
 
     # 打印所有信息
     for key, value in info.items():
-        print(f'{key}: {value}')
+        logger.info(f"{key}: {value}")
 
     return info

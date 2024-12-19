@@ -58,11 +58,11 @@ class RunManager:
         if CAS_GUI_RUN_LOG.exists():
             CAS_GUI_RUN_LOG.unlink()  # 删除旧的运行日志
         logger = logging.getLogger('cas_run')
-        logger.setLevel(logging.DEBUG)
+        logger.setLevel(logging.INFO)
 
         # 设置文件日志记录
         fh = logging.FileHandler(CAS_GUI_RUN_LOG.as_posix())
-        fh.setLevel(logging.DEBUG)
+        fh.setLevel(logging.INFO)
         logger.addHandler(fh)
 
         # 捕获 stdout 输出

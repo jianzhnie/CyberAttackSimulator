@@ -78,5 +78,5 @@ urlpatterns = [
     path('manage_db/', db_manager, name='db manager'),
     path('update_game_mode/', update_game_mode, name='update config'),
     path('output/', get_output, name='stderr'),
-    path('massive_network_output/', massive_network_get_output, name='stderr'),
+    # path('massive_network_output/', massive_network_get_output, name='stderr'),
 ]

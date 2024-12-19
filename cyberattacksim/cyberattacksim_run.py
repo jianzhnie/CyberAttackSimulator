@@ -1,13 +1,14 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
 import os.path
 import pathlib
 import shutil
 import sys
 from datetime import datetime
-from logging import Logger, getLogger
+from logging import Logger
 from typing import Dict, Final, List, Optional, Union
 from uuid import uuid4
 
@@ -38,7 +39,10 @@ from cyberattacksim.networks.network import Network
 from cyberattacksim.networks.network_db import default_18_node_network
 from cyberattacksim.utils.utils import get_system_info
 
-_LOGGER = getLogger(__name__)
+# 配置 logging
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+_LOGGER = logging.getLogger(__name__)
 
 
 class CyberAttackRun:

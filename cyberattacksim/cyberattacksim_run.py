@@ -423,7 +423,7 @@ class CyberAttackRun:
                 file.write(self.uuid)
 
             self.logger.info(
-                f'CyberAttackSim Run  {self.uuid}: Saved trained agent (Stable Baselines3 PPO) to: {agent_path}'
+                f"CyberAttackSim Run  {self.uuid}: Saved trained agent {self.algorithm} to: {agent_path}"
             )
             return str(agent_path)
         else:

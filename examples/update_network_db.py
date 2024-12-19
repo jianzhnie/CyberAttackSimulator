@@ -66,6 +66,14 @@ if __name__ == '__main__':
     author = 'Robin/CyberAttackSim'
     base_name = 'Corporate Network'
     network = network_creator.create_corporate_network()
+    network.set_random_entry_nodes = True
+    network.num_of_random_entry_nodes = 1
+    network.reset_random_entry_nodes()
+    network.set_random_high_value_nodes = True
+    network.num_of_random_high_value_nodes = 1
+    network.reset_random_high_value_nodes()
+    network.set_random_vulnerabilities = True
+    network.reset_random_vulnerabilities()
     name = base_name
     db.upsert(network,
               name=name,
@@ -78,6 +86,14 @@ if __name__ == '__main__':
     base_name = 'Two group Network'
     network = network_creator.create_p2p()
     name = base_name
+    network.set_random_entry_nodes = True
+    network.num_of_random_entry_nodes = 1
+    network.reset_random_entry_nodes()
+    network.set_random_high_value_nodes = True
+    network.num_of_random_high_value_nodes = 1
+    network.reset_random_high_value_nodes()
+    network.set_random_vulnerabilities = True
+    network.reset_random_vulnerabilities()
     db.upsert(network,
               name=name,
               description=description,
@@ -89,6 +105,14 @@ if __name__ == '__main__':
     base_name = 'Ring Network'
     network = network_creator.create_ring()
     name = base_name
+    network.set_random_entry_nodes = True
+    network.num_of_random_entry_nodes = 1
+    network.reset_random_entry_nodes()
+    network.set_random_high_value_nodes = True
+    network.num_of_random_high_value_nodes = 1
+    network.reset_random_high_value_nodes()
+    network.set_random_vulnerabilities = True
+    network.reset_random_vulnerabilities()
     db.upsert(network,
               name=name,
               description=description,

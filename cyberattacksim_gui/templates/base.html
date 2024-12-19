@@ -35,31 +35,21 @@
 
 <body class="preload">
     <!-- 顶部导航栏 -->
-    <nav id="top-nav" class="border-bottom"
-        style="background-color:black ; display: flex; justify-content: space-between;
-                                                                                                                                                                                                        align-items: center;">
-        <!-- 三明治图标，点击时展开工具栏 -->
-        <div id="sandwich-icon" data-toolbar="#toolbar">
+    <nav id="top-nav" class="border-bottom d-flex align-items-center bg-black px-3">
+        <!-- 三明治图标 -->
+        <div id="sandwich-icon" data-toolbar="#toolbar" class="me-3">
             <span></span>
             <span></span>
             <span></span>
             <span></span>
         </div>
         <!-- 页面标题 -->
-        <h2 class="head" style="color:whitesmoke; display: inline-block;">自动化网络攻防对抗模拟仿真</h2>
-        <!-- 返回首页链接 -->
-        <div style="margin-right: auto;">
-            <a href="/" class="home-link" style="color: whitesmoke;  font-size: 18; margin-left: 1850px;">
-                <i class="bi bi-house-door-fill"></i> 返回首页
-            </a>
-        </div>
-        <!-- 用于分隔的空白区域 -->
-        <div class="flex-break"></div>
-        <!-- 定义顶部按钮块，子模板可以扩展 -->
-        {% block top-buttons %}
-        {% endblock %}
+        <h2 class="head text-white m-0">网络空间博弈对抗仿真引擎</h2>
+        <!-- 返回首页 -->
+        <a href="/" class="home-link text-white fs-5 ms-auto">
+            <i class="bi bi-house-door-fill"></i> 返回首页
+        </a>
     </nav>
-
     <!-- 页面内容容器 -->
     <div id="window-container">
         <!-- 工具栏 -->
@@ -129,4 +119,28 @@
 
 <!-- 定义样式块，子模板可以扩展 -->
 {% block style %}
+<style>
+    #top-nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: black;
+    }
+
+    #sandwich-icon span {
+        display: block;
+        height: 4px;
+        width: 30px;
+        background-color: white;
+        margin: 5px 0;
+    }
+
+    .home-link {
+        text-decoration: none;
+        font-size: 18px;
+        padding: 5px 10px;
+    }
+</style>
+
 {% endblock %}

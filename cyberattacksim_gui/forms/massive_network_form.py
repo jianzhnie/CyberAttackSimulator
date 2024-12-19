@@ -10,9 +10,6 @@ class MassiveNetworkForm(django_forms.Form):
 
     massive_node_size = django_forms.ChoiceField(
         choices=[
-            (10, '10-nodes'),
-            (50, '50-nodes'),
-            (200, '200-nodes'),
             (1000, '1000-nodes'),
             (5000, '5000-nodes'),
             (10000, '10000-nodes'),
@@ -72,6 +69,7 @@ class MassiveNetworkForm(django_forms.Form):
             'class': 'inline form-check-input'
         }),
         required=False,
+        initial=True,
         label='Export run',
         help_text='Export the CyberAttackRun as a zip.',
     )
@@ -80,7 +78,7 @@ class MassiveNetworkForm(django_forms.Form):
         required=False,
         help_text='The number of samples (env steps) to train on',
         label='Total timesteps',
-        initial=2000,
+        initial=5000,
     )
     training_runs = django_forms.IntegerField(
         widget=widgets.NumberInput(attrs={'class': 'inline form-control'}),

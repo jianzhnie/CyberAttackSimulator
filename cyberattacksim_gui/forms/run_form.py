@@ -58,6 +58,7 @@ class RunForm(django_forms.Form):
             'class': 'inline form-check-input'
         }),
         required=False,
+        initial=True,
         label='Save trained agent',
         help_text=
         'Saves the trained agent using the stable_baselines3 save as zip functionality.',
@@ -68,6 +69,7 @@ class RunForm(django_forms.Form):
             'class': 'inline form-check-input'
         }),
         required=False,
+        initial=True,
         label='Export run',
         help_text='Export the CyberAttackRun as a zip.',
     )
@@ -131,7 +133,7 @@ class RunForm(django_forms.Form):
         required=False,
         help_text='The number of episodes to run',
         label='Number of episodes',
-        initial=2,
+        initial=1,
     )
 
     def __init__(self, *args, **kwargs) -> None:

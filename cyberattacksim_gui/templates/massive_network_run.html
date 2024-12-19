@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load tags %}
 
 {% block scripts %}
 <script src="{% static 'js/massive_network.js' %}"></script>
@@ -11,8 +12,8 @@
 
 {% block main %}
 <div id="grid-container" class="stretch clear">
-    <!-- 运行配置容器 -->
-    <div id="run-config" class="grid-item top-item">
+    <!-- 上层：运行配置容器 -->
+    <div id="run-config" class="grid-item top-container">
         <form id="run-form">
             <div id="training-fields" class="run-fieldset">
                 {% include 'elements/el_form_fields.html' with fields=form.training_fields protected=False %}
@@ -22,15 +23,16 @@
         </form>
     </div>
 
+    <!-- 下层：日志视图和指标视图 -->
     <div class="bottom-container">
         <!-- 日志视图容器 -->
-        <div id="log-view" class="grid-item bottom-item">
+        <div id="log-view" class="grid-item">
             <h3>训练日志</h3>
             <div class="inner logs-container" data-cy="training-logs-output"></div>
         </div>
 
         <!-- 指标视图容器 -->
-        <div id="metric-view" class="grid-item bottom-item">
+        <div id="metric-view" class="grid-item">
             <h3>评估指标</h3>
             <div class="inner logs-container"></div>
         </div>
@@ -40,84 +42,55 @@
 
 {% block style %}
 <style>
-    /* 网格容器样式 */
+    /* 网格容器的样式 */
     #grid-container {
         display: flex;
         flex-direction: column;
-        height: 100vh;
-        /* 高度限制为视口高度 */
+        height: 100%;
         width: 100%;
-        overflow: hidden;
-        gap: calc(var(--increment) * 2);
     }
 
-    /* 上方运行配置容器样式 */
-    .top-item {
-        flex: 0 0 35%;
-        /* 占顶部35%高度 */
-        padding: calc(var(--increment) * 2);
+    /* 上层容器样式 */
+    .top-container {
+        flex: 1;
         display: flex;
         flex-direction: column;
         background-color: var(--dark);
         border-radius: 1rem;
-        overflow: auto;
-        /* 内容超出时可滚动 */
+        padding: calc(3 * var(--increment));
+        margin: calc(3 * var(--increment));
+        min-height: 0;
+        overflow-y: auto;
     }
 
-    /* 底部两个容器的父容器样式 */
+    /* 下层容器样式 */
     .bottom-container {
         display: flex;
         flex: 1;
-        /* 剩余空间自动分配 */
-        justify-content: space-between;
+        flex-direction: row;
+        justify-content: space-around;
         align-items: stretch;
-        gap: calc(var(--increment) * 2);
+        height: 50%;
+        overflow-y: auto;
     }
 
-    /* 底部日志和指标容器样式 */
-    .bottom-item {
+    /* 日志视图和指标视图容器样式 */
+    .grid-item {
         flex: 1;
-        /* 每个容器平分宽度 */
-        margin: 0 calc(var(--increment) * 2);
-        padding: calc(var(--increment) * 2);
         display: flex;
         flex-direction: column;
         background-color: var(--dark);
         border-radius: 1rem;
-        overflow: auto;
-        /* 内容超出时可滚动 */
-        box-sizing: border-box;
-        /* 确保内边距不会影响布局 */
-    }
-
-    /* 调整日志和指标容器左右间距 */
-    .bottom-container .bottom-item:not(:last-child) {
-        margin-right: calc(var(--increment) * 2);
-    }
-
-    /* 日志和指标内容样式 */
-    .logs-container {
-        flex: 1;
+        padding: calc(3 * var(--increment));
+        margin: calc(3 * var(--increment));
+        min-width: 0;
+        min-height: 0;
         overflow-y: auto;
-        font-family: 'Courier New';
-        font-size: 12px;
-        color: var(--text-superlight);
-        padding: 0.5rem;
-        /* 增加内容内边距，避免内容贴边 */
-        box-sizing: border-box;
-        /* 确保边距内计算 */
     }
 
-    /* 项目列表和日志容器的样式 */
-    .item-list,
+    /* 日志容器的滚动条样式 */
     .logs-container {
-        overflow: auto;
-    }
-
-    /* 项目列表和日志容器的样式 */
-    .item-list,
-    .logs-container {
-        overflow: auto;
+        overflow-y: auto;
     }
 
     /* 日志视图和指标视图内部容器的样式 */
@@ -128,59 +101,29 @@
         color: var(--text-superlight);
     }
 
-
-    /* 日志视图和指标视图内部容器的样式 */
-    #log-view .inner,
-    #metric-view .inner {
-        font-family: 'Courier New';
-        font-size: 12px;
-        color: var(--text-superlight);
-    }
-
-    /* 为滚动条添加样式 */
-    .logs-container::-webkit-scrollbar,
-    .top-item::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .logs-container::-webkit-scrollbar-thumb,
-    .top-item::-webkit-scrollbar-thumb {
-        background-color: var(--primary);
-        border-radius: 4px;
-    }
-
-    .logs-container::-webkit-scrollbar-track,
-    .top-item::-webkit-scrollbar-track {
-        background-color: var(--dark-light);
-    }
-
-
-    /* 运行按钮样式 */
+    /* 运行按钮的样式 */
     #run {
         margin-top: var(--increment);
         width: 100%;
     }
 
-    /* 适配小屏幕 */
-    @media (max-height: 600px) {
-        .top-item {
-            flex: 0 0 40%;
-            /* 小屏幕时增加顶部高度 */
-        }
+    /* 运行表单的样式 */
+    #run-form {
+        min-height: 0;
+        max-height: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-y: auto;
     }
 
-    @media (max-width: 768px) {
-        .bottom-container {
-            flex-direction: column;
-            /* 小屏幕时垂直排列 */
-        }
-
-        .bottom-item {
-            flex: 0 0 auto;
-            /* 内容根据自身高度调整 */
-            height: 50%;
-            /* 每个容器占父容器的一半高度 */
-        }
+    /* 运行表单内部容器的样式 */
+    #run-form>div {
+        width: 100%;
+        max-height: 100%;
+        overflow-y: auto;
     }
 </style>
 {% endblock %}

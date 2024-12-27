@@ -8,8 +8,11 @@ docker run -it -u root --ipc=host --net=host \
         --device=/dev/devmm_svm \
         --device=/dev/hisi_hdc \
         -v /usr/local/Ascend/driver:/usr/local/Ascend/driver \
+        -v /usr/local/dcmi:/usr/local/dcmi   \
         -v /usr/local/Ascend/add-ons/:/usr/local/Ascend/add-ons/ \
         -v /usr/local/sbin/npu-smi:/usr/local/sbin/npu-smi \
+        -v /usr/local/sbin/npu-smi:/usr/local/sbin/npu-smi   \
+        -v /usr/local/Ascend/firmware:/usr/local/Ascend/firmware  \
         -v ${model_dir}:${model_dir} \
         -v /var/log/npu:/usr/slog ${docker_images} \
         /bin/bash

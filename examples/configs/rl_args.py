@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from typing import Optional
 
 
 @dataclass
@@ -55,6 +56,19 @@ class RLArguments:
             'help': 'Maximum number of training steps. Defaults to 12000'
         },
     )
+    rollout_length: int = field(
+        default=200, metadata={'help': 'The rollout length (time dimension)'})
+    eval_episodes: int = field(
+        default=5,
+        metadata={'help': 'Number of episodes to evaluate. Defaults to 10'},
+    )
+    n_steps: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Use multi-step experience replay buffer, defaults to False'
+        },
+    )
     gamma: float = field(
         default=0.99,
         metadata={
@@ -73,6 +87,12 @@ class RLArguments:
             "Directory for storing work-related files. Defaults to 'work_dirs'"
         },
     )
+    save_model: Optional[bool] = field(
+        default=False,
+        metadata={
+            'help': 'Flag indicating whether to save the trained model.'
+        },
+    )
     train_log_interval: int = field(
         default=10,
         metadata={'help': 'Logging interval during training. Defaults to 10'},
@@ -81,6 +101,12 @@ class RLArguments:
         default=100,
         metadata={
             'help': 'Logging interval during evaluation. Defaults to 20'
+        },
+    )
+    logger: str = field(
+        default='tensorboard',
+        metadata={
+            'help': "Logger to use for recording logs. Defaults to 'wandb'"
         },
     )
 
@@ -133,8 +159,165 @@ class DQNArguments(RLArguments):
 
 
 @dataclass
+class DistDQNArguments(RLArguments):
+    """DQN-specific settings."""
+
+    per: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Flag indicating whether to use Prioritized Experience Replay. Defaults to False'
+        },
+    )
+    hidden_dim: int = field(
+        default=128,
+        metadata={
+            'help':
+            'The hidden dimension size of the neural network. Defaults to 128'
+        },
+    )
+    double_dqn: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Flag indicating whether to use Double DQN. Defaults to False'
+        },
+    )
+    dueling_dqn: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Flag indicating whether to use Dueling DQN. Defaults to False'
+        },
+    )
+    noisy_dqn: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Flag indicating whether to use Noisy DQN. Defaults to False'
+        },
+    )
+    categorical_dqn: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Flag indicating whether to use Categorical DQN. Defaults to False'
+        },
+    )
+    v_min: float = field(
+        default=0.0,
+        metadata={
+            'help': 'Minimum value for the value function. Defaults to 0.0'
+        },
+    )
+    v_max: float = field(
+        default=200.0,
+        metadata={
+            'help': 'Maximum value for the value function. Defaults to 200.0'
+        },
+    )
+    num_atoms: float = field(
+        default=51,
+        metadata={
+            'help': 'Number of atoms for the value function. Defaults to 51'
+        },
+    )
+    noisy_std: float = field(
+        default=0.5,
+        metadata={
+            'help':
+            'Standard deviation for the initial weights of the value function. Defaults to 0.1'
+        },
+    )
+    learning_rate: float = field(
+        default=1e-3,
+        metadata={
+            'help': 'Learning rate used by the optimizer. Defaults to 1e-4'
+        },
+    )
+    min_learning_rate: float = field(
+        default=1e-5,
+        metadata={
+            'help':
+            'Minimum learning rate used by the optimizer. Defaults to 1e-5'
+        },
+    )
+    lr_scheduler_method: str = field(
+        default='linear',
+        metadata={
+            'help':
+            "Method used for learning rate scheduling. Defaults to 'linear'"
+        },
+    )
+    eps_greedy_start: float = field(
+        default=1.0,
+        metadata={
+            'help':
+            'Initial value of epsilon for epsilon-greedy exploration. Defaults to 1.0'
+        },
+    )
+    eps_greedy_end: float = field(
+        default=0.1,
+        metadata={
+            'help':
+            'Final value of epsilon for epsilon-greedy exploration. Defaults to 0.1'
+        },
+    )
+    eps_greedy_scheduler: str = field(
+        default='linear',
+        metadata={
+            'help':
+            "Type of scheduler used for epsilon-greedy exploration. Defaults to 'linear'"
+        },
+    )
+    max_grad_norm: float = field(
+        default=None,
+        metadata={'help': 'Maximum gradient norm. Defaults to 1.0'},
+    )
+    use_smooth_l1_loss: bool = field(
+        default=False,
+        metadata={
+            'help':
+            'Flag indicating whether to use the smooth L1 loss. Defaults to False'
+        },
+    )
+    warmup_learn_steps: int = field(
+        default=1000,
+        metadata={
+            'help':
+            'Number of steps before starting to update the model. Defaults to 1000'
+        },
+    )
+    target_update_frequency: int = field(
+        default=100,
+        metadata={
+            'help': 'Frequency of updating the target network. Defaults to 100'
+        },
+    )
+    soft_update_tau: float = field(
+        default=1.0,
+        metadata={
+            'help':
+            'Interpolation parameter for soft target updates. Defaults to 1.0'
+        },
+    )
+    train_frequency: int = field(
+        default=10,
+        metadata={'help': 'Frequency of training updates. Defaults to 1'},
+    )
+    learn_steps: int = field(
+        default=1,
+        metadata={
+            'help':
+            'Number of times to update the learner network. Defaults to 1'
+        },
+    )
+
+
+@dataclass
 class A2CArguments(RLArguments):
     """Actor-Critic specific settings."""
+
     learning_rate: float = field(
         default=1e-3,
         metadata={

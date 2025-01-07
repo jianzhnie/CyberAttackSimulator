@@ -65,7 +65,3 @@ her:
     train_frequency: 100
     gradient_steps: 1
     target_update_frequency: 10000
-
-
-
-

@@ -3,6 +3,8 @@ import os
 import sys
 
 import torch_npu
+from torch_npu.contrib import transfer_to_npu
+
 import tyro
 import wandb
 from stable_baselines3 import A2C, DQN, PPO, HerReplayBuffer
@@ -13,7 +15,6 @@ from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.dqn import MlpPolicy as DQNMlp
 from stable_baselines3.ppo import MlpPolicy as PPOMlp
-from torch_npu.contrib import transfer_to_npu
 from wandb.integration.sb3 import WandbCallback
 
 sys.path.append(os.getcwd())

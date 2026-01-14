@@ -22,6 +22,6 @@ jsonpickle
 pydantic
 torch_geometric
 spikingjelly
-torch==2.2
+torch==2.8.0
 torch_npu==2.2
 mindspore
